@@ -2,7 +2,12 @@
   <div id="date-menu-wrap">
     <ul id='date-menu'>
       <li v-for='item in articalMenu' :key='item.index' @click='clickTest'>
-        {{item.name}}
+        <div class="item-title">
+          {{item.title}}
+        </div>
+        <div class="item-date">
+          {{item.time}}
+        </div>
       </li>
     </ul>
   </div>
@@ -43,10 +48,15 @@ export default {
     display: flex;
   }
   #date-menu li {
-    width: 320px;
-    height: 320px;
+    width: 240px;
+    height: 240px;
     border-radius: 6px;
     background-color: #d18c4b;
     margin: 10px;
+    box-sizing: border-box;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 </style>

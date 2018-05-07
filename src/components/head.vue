@@ -76,5 +76,6 @@ export default {
 
   #search-wrap {
     float: right;
+    margin-top: 20px;
   }
 </style>
