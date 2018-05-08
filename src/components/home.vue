@@ -1,7 +1,7 @@
 <template lang="html">
   <div id="date-menu-wrap">
     <ul id='date-menu'>
-      <li v-for='item in articalMenu' :key='item.index' @click='deliveryMsg(item.content)'>
+      <li v-for='item in articalMenu' :key='item.index' @click='deliveryMsg(item)'>
         <div class="item-title">
           {{item.title}}
         </div>
@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import Msg from '../store/msg'
 var url = 'https://www.easy-mock.com/mock/5ae432a63ed818654bc27f5e/blog/date'
 
 export default {
@@ -26,15 +25,13 @@ export default {
   mounted () {
     this.$http.post(url).then((d) => {
       this.articalMenu = d.data.data
-      console.log(d)
     })
   },
   methods: {
-    clickTest () {
-      console.log(this.articalMenu)
-    },
-    deliveryMsg (msg) {
-      Msg.$emit('content', msg)
+    deliveryMsg (blog) {
+      this.$store.commit('getBlogInfo', blog)
+      console.log(this.$store)
+      this.$router.push({path: '/content?id=' + blog.id})
     }
   }
 }

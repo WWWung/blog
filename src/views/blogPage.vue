@@ -1,20 +1,21 @@
 <template lang="html">
-  <div id="wrap">
+  <div id="blog" >
     <Head-view></Head-view>
-    <Home-content></Home-content>
+    <Artical-view></Artical-view>
   </div>
 </template>
 
 <script>
-import Head from '../components/head.vue'
-import homeContent from '../components/home'
+import Head from '../components/head'
+import Artical from '../components/artical'
 export default {
   components: {
     'Head-view': Head,
-    'Home-content': homeContent
+    'Artical-view': Artical
   }
 }
 </script>
 
 <style lang="css">
+
 </style>
