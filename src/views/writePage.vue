@@ -1,21 +1,20 @@
 <template lang="html">
-  <div id="blog" >
+  <div id="write-page">
     <Head-view></Head-view>
-    <Artical-view></Artical-view>
+    <Write-view></Write-view>
   </div>
 </template>
 
 <script>
 import Head from '../components/head'
-import Artical from '../components/article'
+import Write from '../components/write'
 export default {
   components: {
     'Head-view': Head,
-    'Artical-view': Artical
+    'Write-view': Write
   }
 }
 </script>
 
-<style lang="css">
-
+<style lang="css" scoped>
 </style>

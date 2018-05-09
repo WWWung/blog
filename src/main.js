@@ -9,6 +9,8 @@ import store from './store/store'
 
 Vue.use(VueAxios, axios)
 
+import './assets/css/clear.css'
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
