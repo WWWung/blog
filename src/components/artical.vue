@@ -48,7 +48,7 @@ export default {
   },
   mounted () {
     this.blog = this.$store.state.blogInfo
-  },
+  }
 }
 </script>
 
