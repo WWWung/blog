@@ -6,10 +6,9 @@ import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import store from './store/store'
+import './assets/css/clear.css'
 
 Vue.use(VueAxios, axios)
-
-import './assets/css/clear.css'
 
 Vue.config.productionTip = false
 
