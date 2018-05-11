@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import MainPage from '@/views/mainPage'
 import BlogPage from '@/views/blogPage'
 import WritePage from '@/views/writePage'
-import EditorPage from '@/components/editor'
 
 Vue.use(Router)
 
@@ -23,11 +22,6 @@ export default new Router({
       path: '/write',
       name: 'WritePage',
       component: WritePage
-    },
-    {
-      path: '/editor',
-      name: 'EditorPage',
-      component: EditorPage
     }
   ]
 })

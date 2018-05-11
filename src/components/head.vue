@@ -42,9 +42,10 @@ export default {
 
 <style lang="css">
   #app-head {
-    width: 1400px;
+    width: 1000px;
     height: 135px;
     text-align: center;
+    border-bottom: 1px solid #ddd;
   }
 
   #user-img , #user-img-wrap {

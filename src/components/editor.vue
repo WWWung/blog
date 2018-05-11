@@ -1,5 +1,7 @@
 <template lang="html">
-  <textarea :id='id' :value='value'></textarea>
+  <div class="">
+    <textarea :id='id'></textarea>
+  </div>
 </template>
 
 <script>
@@ -7,10 +9,10 @@ import tinymce from 'tinymce'
 import 'tinymce/themes/modern/theme'
 import 'tinymce/plugins/paste'
 import 'tinymce/plugins/link'
-
+import 'tinymce/plugins/image'
+//
 const INIT = 0
-const CHANGED = 2
-var EDITOR = null
+// const CHANGED = 2
 
 export default {
   props: {
@@ -20,33 +22,37 @@ export default {
     },
     setting: {}
   },
-  watch: {
-    value: function (val) {
-      if (this.status === INIT || tinymce.activeEditor.getContent() !== val) {
-        tinymce.activeEditor.setContent(val)
-      }
-      this.status = CHANGED
-    }
-  },
+  // watch: {
+  //   value (val) {
+  //     if (this.status === INIT || tinymce.activeEditor.getContent() !== val) {
+  //       tinymce.activeEditor.setContent(val)
+  //     }
+  //     this.status = CHANGED
+  //   }
+  // },
   data () {
     return {
       status: INIT,
-      id: 'editor-' + new Date().getMilliseconds()
+      id: 'editor'
     }
   },
   mounted () {
     const _this = this
     const setting = {
       selector: '#' + this.id,
+      language_url: '/static/tinymce/zh_CN.js',
+      skin_url: '/static/tinymce/skins/lightgray',
       language: 'zh_CN',
+      plugins: 'link image paste',
+      toolbar: 'bold italic underline strikethrough | fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | undo redo | link unlink image code | removeformat',
       init_instance_callback: function (editor) {
-        EDITOR = editor
         editor.on('input change undo redo', () => {
           let content = editor.getContent()
           _this.$emit('input', content)
         })
       },
-      plugins: []
+      fontsize_formats: '10px 11px 12px 14px 16px 18px 20px 24px',
+      menubar: 'edit, format, insert'
     }
     Object.assign(setting, _this.setting)
     tinymce.init(setting)
@@ -58,4 +64,8 @@ export default {
 </script>
 
 <style lang="css">
+#mceu_39 {
+  display: none;
+}
+
 </style>
