@@ -3,9 +3,7 @@
     <div id="blog-title">
       {{blog.title}}
     </div>
-    <div id="blog-content">
-      {{blog.content}}
-    </div>
+    <div id="blog-content" v-html='blog.content'></div>
     <div id="blog-time">
       {{blog.time}}
     </div>

@@ -1,13 +1,20 @@
-<template lang="html">
+<template lang="html" >
   <div id="write-page">
     <Head-view></Head-view>
-    <Details></Details>
+    <Details @submitClick='getDetails'
+              :showDetails='showDetails'>
+            </Details>
     <div id="show-wrap" v-html='editorHtml'>
     </div>
     <Editor v-model='editorHtml'></Editor>
-    <div id="submit-article">
+    <div id="submit-article" @click='submitArticle'>
       <a href="#">提交</a>
     </div>
+    <Dialog :width='dialog.width'
+            :msg='dialog.msg'
+            :height='dialog.height'
+            :show-dialog='dialog.show'>
+          </Dialog>
   </div>
 </template>
 
@@ -15,12 +22,15 @@
 import Head from '../components/head'
 import Editor from '../components/editor'
 import Details from '../components/article_details'
-// import tinymce from 'tinymce/tinymce'
+import Dialog from '../components/dialog'
+
+const url = 'http://127.0.0.8:3000/?baseName=article'
 export default {
   components: {
     'Head-view': Head,
     'Editor': Editor,
-    Details
+    Details,
+    Dialog
   },
   data () {
     return {
@@ -28,16 +38,63 @@ export default {
       article: {
         name: '',
         time: '',
-        user_id: null,
+        userId: 1,
         type: 1,
-        content: '',
-      }
+        content: ''
+      },
+      dialog: {
+        width: 600,
+        height: 300,
+        msg: '正在上传...',
+        show: false
+      },
+      showDetails: true
     }
   },
   methods: {
     submitArticle () {
-      // let article = {}
-      // article.
+      const _this = this
+      if (!this.editorHtml) {
+        this.dialog = {
+          width: 300,
+          height: 100,
+          msg: '请输入博客内容',
+          show: true
+        }
+        this.letDialogClear(_this, 1000)
+      } else {
+        this.dialog = {
+          width: 300,
+          height: 100,
+          msg: '正在上传博客...',
+          show: true
+        }
+        this.article.time = (new Date()).getTime()
+        console.log(this.article.time)
+        this.article.content = this.editorHtml
+        this.$http.post(url, JSON.stringify(this.article)).then((d) => {
+          _this.dialog.msg = '博客上传成功'
+          this.letDialogClear(_this, 1000, () => {
+            this.$router.push({path: '/'})
+          })
+        }).catch((err) => {
+          _this.dialog.msg = '博客上传失败'
+          this.letDialogClear(_this, 1000)
+          console.log(err)
+        })
+      }
+    },
+    getDetails (detail) {
+      Object.assign(this.article, detail)
+    },
+    letDialogClear (_this, time, fun) {
+      let timer = setTimeout(() => {
+        _this.dialog.show = false
+        clearTimeout(timer)
+        if (typeof fun === 'function') {
+          fun()
+        }
+      }, time)
     }
   }
 }

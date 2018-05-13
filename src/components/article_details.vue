@@ -1,24 +1,87 @@
 <template lang="html">
-  <div id="page-mask">
+  <div id="page-mask" v-show='isShow'>
+    <Dialog :width='dialog.width'
+            :msg='dialog.msg'
+            :height='dialog.height'
+            :show-dialog='dialog.show'>
+          </Dialog>
     <div id="details-wrap">
       <div class="details-row">
         <span class="detail-name">文章标题</span>
-        <input type="text" class="detail-input" placeholder="请输入">
+        <input type="text" class="detail-input" placeholder="请输入" v-model='details.name'>
       </div>
       <div class="details-row">
         <span class="detail-name">文章类型</span>
-        <input type="text" class="detail-input" placeholder="请输入">
+        <span class="checkbox-wrap">
+          <input type="radio" name="" value=0 v-model='details.type'>
+          <label for="">私人</label>
+          <input type="radio" name="" value=2 v-model='details.type' >
+          <label for="">好友</label>
+          <input type="radio" name="" value=1 v-model='details.type' >
+          <label for="">公开</label>
+        </span>
       </div>
       <div class="details-row">
         <span class="detail-name">是否置顶</span>
-        <input type="text" class="detail-input" placeholder="请输入">
+        <span class="checkbox-wrap">
+          <input type="radio" name="" value=1 v-model='details.up'>
+          <label for="">是</label>
+          <input type="radio" name="" value=0 v-model='details.up'>
+          <label for="">否</label>
+        </span>
+      </div>
+      <div class="details-row">
+        <span class="detail-name" @click='submitClick'>确定</span>
+        <span class="detail-name">返回</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Dialog from './dialog'
 export default {
+  components: {
+    Dialog
+  },
+  data () {
+    return {
+      dialog: {
+        width: 300,
+        height: 100,
+        msg: '正在上传...',
+        show: false
+      },
+      details: {
+        type: 1,
+        up: 0,
+        name: ''
+      },
+      isShow: this.showDetails
+    }
+  },
+  props: {
+    showDetails: {
+      type: Boolean,
+      default: false
+    }
+  },
+  methods: {
+    submitClick () {
+      this.$emit('submitClick', this.details)
+      if (!this.details.name) {
+        this.dialog.msg = '请输入文章标题'
+        this.dialog.show = true
+        const _this = this
+        let timer = setTimeout(() => {
+          _this.dialog.show = false
+          clearTimeout(timer)
+        }, 1000)
+      } else {
+        this.isShow = false
+      }
+    }
+  }
 }
 </script>
 
@@ -45,6 +108,7 @@ export default {
   display: flex;
   justify-content: space-around;
   flex-direction: column;
+  position: absolute;
 }
 .details-row {
   display: flex;

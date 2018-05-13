@@ -3,7 +3,7 @@
     <ul id='date-menu'>
       <li v-for='item in articalMenu' :key='item.index' @click='deliveryMsg(item)'>
         <div class="item-title">
-          {{item.title}}
+          {{item.name}}
         </div>
         <div class="item-date">
           {{item.time}}
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-var url = 'http://127.0.0.8:3000/?baseName=article'
+const url = 'http://127.0.0.8:3000/?baseName=article'
 
 export default {
   data () {
@@ -25,13 +25,11 @@ export default {
   mounted () {
     this.$http.get(url).then((d) => {
       this.articalMenu = d.data
-      console.log(d)
     })
   },
   methods: {
     deliveryMsg (blog) {
       this.$store.commit('getBlogInfo', blog)
-      console.log(this.$store)
       this.$router.push({path: '/content?id=' + blog.id})
     }
   }
