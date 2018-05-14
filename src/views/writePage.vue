@@ -36,7 +36,7 @@ export default {
     return {
       editorHtml: '',
       article: {
-        name: '',
+        title: '',
         time: '',
         userId: 1,
         type: 1,
@@ -70,8 +70,8 @@ export default {
           show: true
         }
         this.article.time = (new Date()).getTime()
-        console.log(this.article.time)
         this.article.content = this.editorHtml
+        // 把数据转换成JSON格式，否则浏览器会先发送options请求，等服务器成功响应成功之后再发送post，原因在于跨域，具体机制不明白...待学习
         this.$http.post(url, JSON.stringify(this.article)).then((d) => {
           _this.dialog.msg = '博客上传成功'
           this.letDialogClear(_this, 1000, () => {
@@ -84,9 +84,11 @@ export default {
         })
       }
     },
+    // 获取子组件的数据
     getDetails (detail) {
       Object.assign(this.article, detail)
     },
+    // 在特定时间后关掉弹窗，并执行函数fun
     letDialogClear (_this, time, fun) {
       let timer = setTimeout(() => {
         _this.dialog.show = false

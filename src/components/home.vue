@@ -3,10 +3,10 @@
     <ul id='date-menu'>
       <li v-for='item in articalMenu' :key='item.index' @click='deliveryMsg(item)'>
         <div class="item-title">
-          {{item.name}}
+          {{item.title}}
         </div>
         <div class="item-date">
-          {{item.time}}
+          {{timeFormater(item.time)}}
         </div>
       </li>
     </ul>
@@ -25,12 +25,19 @@ export default {
   mounted () {
     this.$http.get(url).then((d) => {
       this.articalMenu = d.data
+    }).catch((e) => {
+      console.log(e)
     })
   },
   methods: {
     deliveryMsg (blog) {
       this.$store.commit('getBlogInfo', blog)
       this.$router.push({path: '/content?id=' + blog.id})
+    },
+    // 此处因为要传参数所以不适合用计算属性
+    timeFormater (t) {
+      const time = new Date(t)
+      return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()
     }
   }
 }
@@ -55,5 +62,8 @@ export default {
     box-sizing: border-box;
     padding: 30px;
     float: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 </style>

@@ -8,7 +8,7 @@
     <div id="details-wrap">
       <div class="details-row">
         <span class="detail-name">文章标题</span>
-        <input type="text" class="detail-input" placeholder="请输入" v-model='details.name'>
+        <input type="text" class="detail-input" placeholder="请输入" v-model='details.title'>
       </div>
       <div class="details-row">
         <span class="detail-name">文章类型</span>
@@ -55,7 +55,7 @@ export default {
       details: {
         type: 1,
         up: 0,
-        name: ''
+        title: ''
       },
       isShow: this.showDetails
     }
@@ -68,8 +68,9 @@ export default {
   },
   methods: {
     submitClick () {
+      // 把数据传递给父组件
       this.$emit('submitClick', this.details)
-      if (!this.details.name) {
+      if (!this.details.title) {
         this.dialog.msg = '请输入文章标题'
         this.dialog.show = true
         const _this = this
