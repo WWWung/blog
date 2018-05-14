@@ -8,6 +8,7 @@ import VueAxios from 'vue-axios'
 import store from './store/store'
 import './assets/css/clear.css'
 
+axios.defaults.withCredentials = true
 Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false
