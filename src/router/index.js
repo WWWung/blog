@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import MainPage from '@/views/mainPage'
 import BlogPage from '@/views/blogPage'
 import WritePage from '@/views/writePage'
+import LoginPage from '@/views/loginPage'
 
 Vue.use(Router)
 
@@ -22,6 +23,11 @@ export default new Router({
       path: '/write',
       name: 'WritePage',
       component: WritePage
+    },
+    {
+      path: '/login',
+      name: 'LoginPage',
+      component: LoginPage
     }
   ]
 })
