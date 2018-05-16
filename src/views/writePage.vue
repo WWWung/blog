@@ -24,7 +24,7 @@ import Editor from '../components/editor'
 import Details from '../components/article_details'
 import Dialog from '../components/dialog'
 
-const url = 'http://127.0.0.8:3000/?baseName=article'
+const url = 'http://127.0.0.8:3000/submitArticle?baseName=article'
 export default {
   components: {
     'Head-view': Head,

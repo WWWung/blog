@@ -1,14 +1,20 @@
 <template lang="html">
   <header id="app-head">
-    <div id="user-img-wrap">
-      <img :src="user.image" alt="" id='user-img'/>
+    <div v-show='!isLogin' id="login-tip-wrap">
+      <span>您还未登录，请</span>
+      <a href="#" @click='clickToLogin'>登录</a>
     </div>
-    <div id="user-info-wrap">
-      <div id="user-name">
-        {{user.name}}
+    <div v-show='isLogin'>
+      <div id="user-img-wrap">
+        <img :src="user.image" alt="" id='user-img'/>
       </div>
-      <div id="user-introduce">
-        {{user.introduce}}
+      <div id="user-info-wrap">
+        <div id="user-name">
+          {{user.name}}
+        </div>
+        <div id="user-introduce">
+          {{user.introduce}}
+        </div>
       </div>
     </div>
     <div id="search-wrap">
@@ -19,23 +25,27 @@
 </template>
 
 <script>
-var url = 'https://www.easy-mock.com/mock/5ae432a63ed818654bc27f5e/blog/users'
 export default {
   data () {
     return {
       user: {
         name: '',
-        introduce: '',
-        image: ''
-      }
+        description: '',
+        imageUrl: ''
+      },
+      isLogin: false
     }
   },
   mounted () {
-    this.$http.get(url).then((d) => {
-      this.user.name = d.data.users[0].name
-      this.user.introduce = d.data.users[0].introduce
-      this.user.image = d.data.users[0].img
-    })
+    this.user.name = this.$store.state.user.name
+    this.user.description = this.$store.state.user.description
+    this.user.imageUrl = this.$store.state.user.imageUrl
+    this.isLogin = this.$store.state.isLogin
+  },
+  methods: {
+    clickToLogin () {
+      this.$router.push({path: '/login'})
+    }
   }
 }
 </script>
@@ -46,6 +56,12 @@ export default {
     height: 135px;
     text-align: center;
     border-bottom: 1px solid #ddd;
+  }
+
+  #login-tip-wrap {
+    text-align: left;
+    line-height: 36px;
+    font-size: 14px;
   }
 
   #user-img , #user-img-wrap {

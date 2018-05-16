@@ -15,6 +15,12 @@ const mutations = {
     state.blogInfo.title = blog.title
     state.blogInfo.content = blog.content
     state.blogInfo.time = blog.time
+  },
+  getUserInfo (state, user) {
+    Object.assign(state.user, user)
+  },
+  setLoginState (state, statu) {
+    state.isLogin = statu
   }
 }
 
