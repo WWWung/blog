@@ -4,6 +4,7 @@ import MainPage from '@/views/mainPage'
 import BlogPage from '@/views/blogPage'
 import WritePage from '@/views/writePage'
 import LoginPage from '@/views/loginPage'
+import RegisterPage from '@/views/registerPage'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/login',
       name: 'LoginPage',
       component: LoginPage
+    },
+    {
+      path: '/register',
+      name: 'RegisterPage',
+      component: RegisterPage
     }
   ]
 })
