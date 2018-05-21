@@ -24,7 +24,7 @@ import Editor from '../components/editor'
 import Details from '../components/article_details'
 import Dialog from '../components/dialog'
 
-const url = 'http://127.0.0.8:3000/submitArticle?baseName=article'
+const url = 'http://127.0.0.8:3000/submitArticle'
 export default {
   components: {
     'Head-view': Head,
@@ -53,7 +53,6 @@ export default {
   },
   methods: {
     submitArticle () {
-      const _this = this
       if (!this.editorHtml) {
         this.dialog = {
           width: 300,
@@ -61,7 +60,7 @@ export default {
           msg: '请输入博客内容',
           show: true
         }
-        this.letDialogClear(_this, 1000)
+        this.letDialogClear(this, 1000)
       } else {
         this.dialog = {
           width: 300,
@@ -73,13 +72,13 @@ export default {
         this.article.content = this.editorHtml
         // 把数据转换成JSON格式，否则浏览器会先发送options请求，等服务器成功响应成功之后再发送post，原因在于跨域，具体机制不明白...待学习
         this.$http.post(url, JSON.stringify(this.article)).then((d) => {
-          _this.dialog.msg = '博客上传成功'
-          this.letDialogClear(_this, 1000, () => {
+          this.dialog.msg = '博客上传成功'
+          this.letDialogClear(this, 1000, () => {
             this.$router.push({path: '/'})
           })
         }).catch((err) => {
-          _this.dialog.msg = '博客上传失败'
-          this.letDialogClear(_this, 1000)
+          this.dialog.msg = '博客上传失败'
+          this.letDialogClear(this, 1000)
           console.log(err)
         })
       }

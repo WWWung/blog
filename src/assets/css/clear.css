@@ -10,6 +10,7 @@ ol {
 }
 a {
 	text-decoration: none;
+	color: #444;
 }
 img {
 	border: none;
@@ -20,6 +21,7 @@ textarea {
 	margin: 0;
 	padding: 0;
 	outline: none;
+	border: none;
 }
 textarea {
 	resize: none;

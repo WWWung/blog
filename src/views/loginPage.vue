@@ -11,24 +11,37 @@
         <input type="password" name="" value="" id='password' v-model='psw'>
       </div>
       <div class="login-row">
-        <a href="#" @click='loginIn'>登录</a>
+        <a href="javascript:;" @click='loginIn'>登录</a>
         <a href="#">注册</a>
       </div>
     </div>
+    <Dialog :width='dialog.width'
+            :msg='dialog.msg'
+            :height='dialog.height'
+            :show-dialog='dialog.show'>
+          </Dialog>
   </div>
 </template>
 
 <script>
 import Head from '../components/head'
-const url = 'http://127.0.0.8:3000/loginIn?baseName=users'
+import Dialog from '../components/dialog'
+const url = 'http://127.0.0.8:3000/loginIn'
 export default {
   components: {
-    'Head-view': Head
+    'Head-view': Head,
+    Dialog
   },
   data () {
     return {
       name: '',
-      psw: ''
+      psw: '',
+      dialog: {
+        width: 300,
+        height: 100,
+        msg: '正在上传...',
+        show: false
+      }
     }
   },
   methods: {
@@ -44,10 +57,24 @@ export default {
         if (d.data.name) {
           this.$store.commit('getUserInfo', d.data)
           this.$store.commit('setLoginState', true)
+          this.$router.push({path: '/'})
+        } else {
+          this.dialog.msg = d.data
+          this.dialog.show = true
+          this.letDialogClear(this, 1000)
         }
       }).catch((err) => {
         console.log(err)
       })
+    },
+    letDialogClear (_this, time, fun) {
+      let timer = setTimeout(() => {
+        _this.dialog.show = false
+        clearTimeout(timer)
+        if (typeof fun === 'function') {
+          fun()
+        }
+      }, time)
     }
   }
 }

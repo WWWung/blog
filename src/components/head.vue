@@ -2,7 +2,7 @@
   <header id="app-head">
     <div v-show='!isLogin' id="login-tip-wrap">
       <span>您还未登录，请</span>
-      <a href="#" @click='clickToLogin'>登录</a>
+      <a href="javascript:;" @click='clickToLogin'>登录</a>
     </div>
     <div v-show='isLogin'>
       <div id="user-img-wrap">
@@ -19,12 +19,13 @@
     </div>
     <div id="search-wrap">
       <input type="text" name="" value="" id="search-box">
-      <a href="#">搜索</a>
+      <a href="javascript:;">搜索</a>
     </div>
   </header>
 </template>
 
 <script>
+const url = 'http://127.0.0.8:3000/isLogin'
 export default {
   data () {
     return {
@@ -37,10 +38,22 @@ export default {
     }
   },
   mounted () {
-    this.user.name = this.$store.state.user.name
-    this.user.description = this.$store.state.user.description
-    this.user.imageUrl = this.$store.state.user.imageUrl
-    this.isLogin = this.$store.state.isLogin
+    this.$http.post(url).then((d) => {
+      if (d.data === '未登录') {
+        this.$store.commit('setLoginState', false)
+        return false
+      }
+      delete d.data.sessionId
+      delete d.data.pwd
+      this.$store.commit('getUserInfo', d.data)
+      this.$store.commit('setLoginState', true)
+      this.user.name = this.$store.state.user.name
+      this.user.description = this.$store.state.user.description
+      this.user.imageUrl = this.$store.state.user.imageUrl
+      this.isLogin = this.$store.state.isLogin
+    }).catch((err) => {
+      console.log(err)
+    })
   },
   methods: {
     clickToLogin () {
