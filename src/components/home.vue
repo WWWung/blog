@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="date-menu-wrap">
-    <ul id='date-menu'>
+    <ul id='date-menu' class="clearfix">
       <li v-for='item in articalMenu' :key='item.index' @click='deliveryMsg(item)'>
         <div class="item-title">
           {{item.title}}
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-const url = 'http://127.0.0.8:3000/?baseName=article'
+const url = 'http://127.0.0.8:3000/articles'
 
 export default {
   data () {
@@ -50,15 +50,18 @@ export default {
     margin: 0;
   }
   #date-menu {
-    width: 1200px;
+    width: 1000px;
     margin: 0 auto;
   }
+  #date-menu-wrap {
+    padding-top: 50px;
+  }
   #date-menu li {
-    width: 240px;
-    height: 240px;
+    width: 220px;
+    height: 220px;
     border-radius: 6px;
     background-color: #d18c4b;
-    margin: 10px;
+    margin: 15px;
     box-sizing: border-box;
     padding: 30px;
     float: left;

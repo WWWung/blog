@@ -19,6 +19,6 @@ body {
   width: 1000px;
   margin: 20px auto;
   background-color: #fff;
-  padding: 50px 0;
+  padding: 50px 30px;
 }
 </style>

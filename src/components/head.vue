@@ -1,25 +1,25 @@
 <template lang="html">
   <header id="app-head">
+    <div v-show='isLogin' class="clearfix">
+      <div id="user-img-wrap">
+        <img :src="user.imageUrl" alt="个人头像" id='user-img'/>
+      </div>
+      <div id="user-info-wrap">
+        <div id="user-name">
+          <h1>{{user.name}}</h1>
+        </div>
+        <div id="user-introduce">
+          {{user.description}}
+        </div>
+      </div>
+    </div>
     <div v-show='!isLogin' id="login-tip-wrap">
       <span>您还未登录，请</span>
       <a href="javascript:;" @click='clickToLogin'>登录</a>
     </div>
-    <div v-show='isLogin'>
-      <div id="user-img-wrap">
-        <img :src="user.image" alt="" id='user-img'/>
-      </div>
-      <div id="user-info-wrap">
-        <div id="user-name">
-          {{user.name}}
-        </div>
-        <div id="user-introduce">
-          {{user.introduce}}
-        </div>
-      </div>
-    </div>
     <div id="search-wrap">
       <input type="text" name="" value="" id="search-box">
-      <a href="javascript:;">搜索</a>
+      <a href="javascript:;" id="search-keyword">搜索</a>
     </div>
   </header>
 </template>
@@ -66,15 +66,46 @@ export default {
 <style lang="css">
   #app-head {
     width: 1000px;
-    height: 135px;
+    /* height: 135px; */
     text-align: center;
     border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+    position: relative;
+  }
+
+  #search-wrap {
+    position: absolute;
+    top: 0;
+    right: 20px;
+  }
+
+  #search-box {
+    width: 200px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1px solid #bebebe;
+    margin: 0 10px;
+  }
+
+  #search-keyword {
+    font-size: 16px;
+    display: inline-block;
+    vertical-align: middle;
   }
 
   #login-tip-wrap {
     text-align: left;
     line-height: 36px;
     font-size: 14px;
+    text-indent: 20px;
+  }
+
+  #login-tip-wrap a:hover, #search-keyword:hover {
+    color: #54cbed;
+  }
+
+  #user-img-wrap {
+    margin-left: 20px;
   }
 
   #user-img , #user-img-wrap {
@@ -95,13 +126,23 @@ export default {
   }
 
   #user-name , #user-introduce {
-    line-height: 24px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     text-align: left;
     margin: 5px;
     max-width: 200px;
+  }
+
+  #user-name h1 {
+    font-size: 32px;
+    line-height: 42px;
+  }
+
+  #user-introduce {
+    font-size: 14px;
+    line-height: 18px;
+    color: #646464;
   }
 
   #search-wrap {

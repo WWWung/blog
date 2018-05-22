@@ -6,6 +6,14 @@
         <a href="javascript:;" class="upload-portrait" @click="changePortrait">点击上传头像</a>
         <input type="file" name="portrait" value="" ref="portrait" accept="image/gif,image/jpeg,image/jpg,image/png" @change='changeFile($event)'>
       </div>
+      <div class="head-welcome-msg">
+        <h1 class="register-title">
+          欢迎加入!
+        </h1>
+        <span class="register-tip">
+          (带*号的是必填项。您填写的个人信息我们不会主动公开)
+        </span>
+      </div>
     </header>
     <div class="register-row">
       <label for="rg-name" class="register-row-left">名称</label>
@@ -98,8 +106,12 @@
 
 <script>
 import Dialog from '../components/dialog'
+//  注册请求地址
 const url = 'http://127.0.0.8:3000/register'
+//  上传头像请求地址
 const poUrl = 'http://127.0.0.8:3000/portrait'
+//  获取头像请求地址
+const imgUrl = 'http://127.0.0.8:3000/imgs/'
 export default {
   components: {
     Dialog
@@ -182,7 +194,6 @@ export default {
       }
       data.birthday = new Date(data.birthday).getTime()
       this.$http.post(url, JSON.stringify(data)).then((d) => {
-        console.log(d.data)
         this.$store.commit('getUserInfo', data)
         this.$store.commit('setLoginState', true)
         this.$router.push({path: '/'})
@@ -203,7 +214,6 @@ export default {
       this.$refs.portrait.click()
     },
     changeFile (e) {
-      console.log(e.target.files[0])
       const file = e.target.files[0]
       if (file.size > 3148576) {
         alert('请选择小于3M的图片')
@@ -212,7 +222,8 @@ export default {
       let formData = new FormData()
       formData.append('portrait', file)
       this.$http.post(poUrl, formData).then((d) => {
-        console.log(d.data)
+        //  返回图片名称
+        this.user.imageUrl = imgUrl + d.data
       }).catch((err) => {
         console.log(err)
       })
@@ -286,5 +297,17 @@ export default {
   background-color: rgba(26, 26, 26, .4);
   line-height: 168px;
   color: #fff;
+}
+.head-welcome-msg {
+  position: absolute;
+  left: 230px;
+  top: 20px;
+}
+.register-title {
+  margin: 10px 0;
+}
+.register-tip {
+  font-size: 12px;
+  color: #8590a6;
 }
 </style>
