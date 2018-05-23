@@ -1,18 +1,18 @@
 <template lang="html">
-  <div>
-    <Head-view></Head-view>
+  <div class="login-layer">
     <div id="login-wrap">
       <div class="login-row">
-        <label for="account">账号</label>
-        <input type="text" name="" value="" id='account' v-model='name'>
+        <h2>欢迎加入王建BLOG</h2>
       </div>
       <div class="login-row">
-        <label for="password">密码</label>
-        <input type="password" name="" value="" id='password' v-model='psw'>
+        <input type="text" name="" value="" id='account' v-model='name' placeholder="请输入用户名称">
       </div>
       <div class="login-row">
-        <a href="javascript:;" @click='loginIn'>登录</a>
-        <a href="#">注册</a>
+        <input type="password" name="" value="" id='password' v-model='psw' placeholder="请输入用户密码">
+      </div>
+      <div class="login-row">
+        <a href="javascript:;" @click='loginIn' ref='login-btn' class="login-btn">登录</a>
+        <a href="javascript:;" @click='toRegisterPage' class="register-btn">注册</a>
       </div>
     </div>
     <Dialog :width='dialog.width'
@@ -24,12 +24,10 @@
 </template>
 
 <script>
-import Head from '../components/head'
 import Dialog from '../components/dialog'
 const url = 'http://127.0.0.8:3000/loginIn'
 export default {
   components: {
-    'Head-view': Head,
     Dialog
   },
   data () {
@@ -46,7 +44,16 @@ export default {
   },
   methods: {
     loginIn () {
-      if (!this.name || !this.psw) {
+      if (!this.name) {
+        this.dialog.msg = '请输入名称'
+        this.dialog.show = true
+        this.letDialogClear(this, 1000)
+        return
+      }
+      if (!this.psw) {
+        this.dialog.msg = '请输入密码'
+        this.dialog.show = true
+        this.letDialogClear(this, 1000)
         return
       }
       const data = JSON.stringify({
@@ -67,6 +74,9 @@ export default {
         console.log(err)
       })
     },
+    toRegisterPage () {
+      this.$router.push({path: '/register'})
+    },
     letDialogClear (_this, time, fun) {
       let timer = setTimeout(() => {
         _this.dialog.show = false
@@ -81,14 +91,55 @@ export default {
 </script>
 
 <style lang="css">
+.login-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  background: #d8eef8;
+  display: flex;
+  align-items: center;
+}
 #login-wrap {
-  padding: 20px;
+  width: 388px;
+  margin: 0 auto;
+  height: 340px;
+  border: 1px solid #d5dce5;
+  border-radius: 5px;
+  background: #fefefe;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  padding-top: 24px;
+  box-sizing: border-box;
+}
+#account, #password {
+  width: 302px;
+  border: 1px solid #d5dce5;
+  height: 40px;
+  line-height: 30px;
+  border-radius: 4px;
+  text-indent: 20px;
 }
 .login-row {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+}
+.login-btn, .register-btn{
+  width: 60px;
+  height: 28px;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  text-align: center;
+  line-height: 28px;
+}
+.login-btn {
+  background-color: #0077e6;
+  color: #fff;
+}
+.register-btn {
+  background-color: #fff;
+  color: #0077e6;
 }
 </style>

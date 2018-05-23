@@ -1,6 +1,9 @@
 <template lang="html">
   <div>
     <header class="register-head">
+      <div class="head-login-tip">
+        已有账号？请 <a href="javascript:;" class="" @click='toLoginPage'>登录</a>
+      </div>
       <div class="head-portrait-wrap">
         <img :src="user.imageUrl" alt="个人头像" class="head-portrait">
         <a href="javascript:;" class="upload-portrait" @click="changePortrait">点击上传头像</a>
@@ -227,12 +230,25 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+    },
+    toLoginPage () {
+      this.$router.push({path: '/login'})
     }
   }
 }
 </script>
 
 <style lang="css">
+.head-login-tip {
+  position: absolute;
+  font-size: 14px;
+  top: -35px;
+  left: 30px;
+  color: #c6c6c6;
+}
+.head-login-tip a:hover {
+  color: #54cbed;
+}
 .register-row {
   margin: 20px;
   display: flex;

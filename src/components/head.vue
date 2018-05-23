@@ -12,6 +12,9 @@
           {{user.description}}
         </div>
       </div>
+      <div id="login-out-wrap">
+        <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
+      </div>
     </div>
     <div v-show='!isLogin' id="login-tip-wrap">
       <span>您还未登录，请</span>
@@ -26,6 +29,7 @@
 
 <script>
 const url = 'http://127.0.0.8:3000/isLogin'
+const loginOutUrl = 'http://127.0.0.8:3000/loginOut'
 export default {
   data () {
     return {
@@ -58,6 +62,15 @@ export default {
   methods: {
     clickToLogin () {
       this.$router.push({path: '/login'})
+    },
+    loginOut () {
+      this.$http.get(loginOutUrl).then((d) => {
+        this.$store.commit('setLoginState', false)
+        this.$store.commit('clearUserInfo')
+        this.$router.push({path: '/'})
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   }
 }
@@ -75,7 +88,7 @@ export default {
 
   #search-wrap {
     position: absolute;
-    top: 0;
+    bottom: 30px;
     right: 20px;
   }
 
@@ -91,6 +104,18 @@ export default {
     font-size: 16px;
     display: inline-block;
     vertical-align: middle;
+  }
+
+  #login-out-wrap {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding-right: 30px;
+  }
+
+  #login-out {
+    font-size: 14px;
+    color: #989898;
   }
 
   #login-tip-wrap {

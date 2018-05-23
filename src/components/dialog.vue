@@ -1,13 +1,20 @@
 <template lang="html">
-  <div id="dialog-layer" v-show='showDialog'>
-    <div id="dialog" :style="'width:' + width + 'px; height: ' + height + 'px; line-height: ' + height + 'px ' ">
-      {{msg}}
+  <transition name='dialogTransition'>
+    <div id="dialog-layer" v-show='showDialog' :style="'top:' + t + 'px'">
+        <div id="dialog" :style="'width:' + width + 'px; height: ' + height + 'px; line-height: ' + height + 'px ' ">
+          {{msg}}
+        </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
 export default {
+  data () {
+    return {
+      t: 0
+    }
+  },
   props: {
     width: {
       type: Number,
@@ -25,6 +32,13 @@ export default {
       type: Boolean,
       default: true
     }
+  },
+  watch: {
+    showDialog (val) {
+      if (val) {
+        this.t = document.documentElement.scrollTop
+      }
+    }
   }
 }
 </script>
@@ -32,23 +46,27 @@ export default {
 <style lang="css" scoped>
 #dialog-layer {
   position: absolute;
-  top: 0;
+  height: 100vh;
   left: 0;
-  bottom: 0;
   right: 0;
-  background-color: #eee;
   z-index: 1000;
-  opacity: .2;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 #dialog {
   box-sizing: border-box;
-  color: gold;
-  background: green;
-  border: 1px solid #000;
+  color: #535758;
+  background: rgba(162, 219, 236, 0.8);
+  border: 1px solid #fff;
   border-radius: 8px;
   text-align: center;
+  user-select: none;
+}
+.dialogTransition-enter-active, .dialogTransition-leave-active {
+  transition: opacity .4s;
+}
+.dialogTransition-enter, .dialogTransition-leave-to {
+  opacity: 0;
 }
 </style>
