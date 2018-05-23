@@ -26,8 +26,17 @@
           </li>
         </ul>
       </div>
-      <div id="input-wrap">
-        <textarea name="name" rows="8" cols="80" id="input-box"></textarea>
+      <div id="input-wrap" class="clearfix">
+        <div class="textarea-wrap">
+          <textarea name="name" rows="8" cols="80" id="input-box" v-model='this.comment.content'></textarea>
+        </div>
+        <div class="submit-wrap">
+          <a href="javascript:;">评论文章</a>
+          <a href="javascript:;">游客评论</a>
+          <span>
+            注:请确保已登录，未登录直接评论则视为游客模式评论！
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -48,12 +57,18 @@ export default {
         type: null,
         up: null,
         support: null,
-        star: null
+        star: null,
+        comments: []
+      },
+      comment: {
+        userId: null,
+        blogId: null,
+        content: '',
+        time: null
       }
     }
   },
   mounted () {
-    // this.blog = this.$store.state.blogInfo
     const id = window.location.href.split('=')[1]
     this.$http.get(url + id).then((d) => {
       console.log(d.data)
@@ -102,6 +117,7 @@ export default {
   height: 200px;
   border: 2px solid #eee;
   display: block;
+  padding: 10px;
 }
 #comments li {
   border-bottom: 1px solid #ddd;
@@ -138,5 +154,30 @@ export default {
 }
 #input-wrap {
   margin-top: 40px;
+}
+.textarea-wrap{
+  float: left;
+}
+.submit-wrap {
+  float: left;
+  width: 176px;
+}
+.submit-wrap a {
+  background-color: #0084ff;
+  color: #fff;
+  font-size: 14px;
+  line-height: 30px;
+  padding: 0 30px;
+  display: block;
+  margin: 10px auto;
+  width: 76px;
+  text-align: center;
+  border-radius: 4px;
+}
+.submit-wrap span {
+  display: block;
+  padding: 20px;
+  font-size: 12px;
+  color: #d2d2d2;
 }
 </style>

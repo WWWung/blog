@@ -5,13 +5,13 @@
         <h2>欢迎加入王建BLOG</h2>
       </div>
       <div class="login-row">
-        <input type="text" name="" value="" id='account' v-model='name' placeholder="请输入用户名称">
+        <input type="text" name="" value="" id='account' v-model='name' placeholder="请输入用户名称" @keydown='keydown($event)'>
       </div>
       <div class="login-row">
-        <input type="password" name="" value="" id='password' v-model='psw' placeholder="请输入用户密码">
+        <input type="password" name="" value="" id='password' v-model='psw' placeholder="请输入用户密码" @keydown='keydown($event)'>
       </div>
       <div class="login-row">
-        <a href="javascript:;" @click='loginIn' ref='login-btn' class="login-btn">登录</a>
+        <a href="javascript:;" @click='loginIn' ref='loginBtn' class="login-btn">登录</a>
         <a href="javascript:;" @click='toRegisterPage' class="register-btn">注册</a>
       </div>
     </div>
@@ -76,6 +76,11 @@ export default {
     },
     toRegisterPage () {
       this.$router.push({path: '/register'})
+    },
+    keydown (e) {
+      if (e.keyCode === 13) {
+        this.$refs.loginBtn.click()
+      }
     },
     letDialogClear (_this, time, fun) {
       let timer = setTimeout(() => {
