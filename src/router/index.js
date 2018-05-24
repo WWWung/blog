@@ -4,7 +4,8 @@ import MainPage from '@/views/mainPage'
 import BlogPage from '@/views/blogPage'
 import WritePage from '@/views/writePage'
 import LoginPage from '@/views/loginPage'
-import RegisterPage from '@/views/registerPage'
+import RegisterPage from '@/views/regPage'
+import SelfPage from '@/views/selfPage'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path: '/register',
       name: 'RegisterPage',
       component: RegisterPage
+    },
+    {
+      path: '/self',
+      name: 'SelfPage',
+      component: SelfPage
     }
   ]
 })

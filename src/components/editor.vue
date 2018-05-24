@@ -12,6 +12,11 @@ import 'tinymce/themes/modern/theme'
 import 'tinymce/plugins/paste'
 import 'tinymce/plugins/link'
 import 'tinymce/plugins/image'
+import 'tinymce/plugins/code'
+import 'tinymce/plugins/table'
+import 'tinymce/plugins/lists'
+import 'tinymce/plugins/colorpicker'
+import 'tinymce/plugins/textcolor'
 //
 const INIT = 0
 // const CHANGED = 2
@@ -56,7 +61,12 @@ export default {
       },
       fontsize_formats: '10px 11px 12px 14px 16px 18px 20px 24px',
       // 最上层工具栏
-      menubar: 'edit, format, insert'
+      menubar: 'edit, format, insert',
+      image_upload_handler: (blobInfo, success, failuer) => {
+        let formData = new FormData()
+        formData.set('upload_file', blobInfo.blob())
+        // this.
+      }
     }
     Object.assign(setting, _this.setting)
     tinymce.init(setting)

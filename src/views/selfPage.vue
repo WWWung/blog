@@ -1,9 +1,6 @@
 <template lang="html">
   <div>
     <header class="register-head">
-      <div class="head-login-tip">
-        已有账号？请 <a href="javascript:;" class="" @click='toLoginPage'>登录</a>
-      </div>
       <div class="head-portrait-wrap">
         <img :src="user.imageUrl" alt="个人头像" class="head-portrait">
         <a href="javascript:;" class="upload-portrait" @click="changePortrait">点击上传头像</a>
@@ -14,90 +11,72 @@
           欢迎加入!
         </h1>
         <span class="register-tip">
-          (带*号的是必填项。您填写的个人信息我们不会主动公开)
+        您填写的个人信息我们不会主动公开
         </span>
       </div>
     </header>
-    <div class="register-row">
-      <label for="rg-name" class="register-row-left">名称</label>
-      <div class="register-row-right ">
-        <input type="text" name="" value="" id="rg-name" class="text-input" v-model='user.name'>
-        <span class="must-fill">*</span>
+    <div class="self-main">
+      <div class="register-row">
+        <label for="rg-description" class="register-row-left">个人介绍</label>
+        <div class="register-row-right ">
+          <input type="text" name="" value="" id="rg-description" class="text-input"  v-model='user.description'>
+        </div>
       </div>
-    </div>
-    <div class="register-row">
-      <label for="rg-pwd" class="register-row-left">密码</label>
-      <div class="register-row-right ">
-        <input type="password" name="" value="" id="rg-pwd" class="text-input" v-model='user.pwd'>
-        <span class="must-fill">*</span>
+      <div class="register-row">
+        <label for="rg-phone" class="register-row-left">电话</label>
+        <div class="register-row-right ">
+          <input type="text" name="" value="" id="rg-phone" class="text-input"  v-model='user.phone'>
+        </div>
       </div>
-    </div>
-    <div class="register-row">
-      <label for="rg-repwd" class="register-row-left">重复密码</label>
-      <div class="register-row-right ">
-        <input type="password" name="" value="" id="rg-repwd" class="text-input" v-model='user.repwd'>
-        <span class="must-fill">*</span>
+      <div class="register-row">
+        <label for="rg-sex" class="register-row-left">性别</label>
+        <div class="register-row-right">
+          <label for="rg-man">男</label>
+          <input type="radio" name="" value=0 id="rg-man" v-model='user.sex'>
+          <label for="rg-woman">女</label>
+          <input type="radio" name="" value=1 id="rg-woman" v-model='user.sex'>
+        </div>
       </div>
-    </div>
-    <div class="register-row">
-      <label for="rg-description" class="register-row-left">个人介绍</label>
-      <div class="register-row-right ">
-        <input type="text" name="" value="" id="rg-description" class="text-input"  v-model='user.description'>
+      <div class="register-row">
+        <label for="rg-QQ" class="register-row-left">QQ</label>
+        <div class="register-row-right ">
+          <input type="text" name="" value="" id="rg-QQ" class="text-input"  v-model='user.qq'>
+        </div>
       </div>
-    </div>
-    <div class="register-row">
-      <label for="rg-phone" class="register-row-left">电话</label>
-      <div class="register-row-right ">
-        <input type="text" name="" value="" id="rg-phone" class="text-input"  v-model='user.phone'>
+      <div class="register-row">
+        <label for="rg-email" class="register-row-left">邮箱</label>
+        <div class="register-row-right ">
+          <input type="text" name="" value="" id="rg-email" class="text-input"  v-model='user.email'>
+        </div>
       </div>
-    </div>
-    <div class="register-row">
-      <label for="rg-sex" class="register-row-left">性别</label>
-      <div class="register-row-right">
-        <label for="rg-man">男</label>
-        <input type="radio" name="" value=0 id="rg-man" v-model='user.sex'>
-        <label for="rg-woman">女</label>
-        <input type="radio" name="" value=1 id="rg-woman" v-model='user.sex'>
+      <div class="register-row">
+        <label for="rg-address" class="register-row-left">地址</label>
+        <div class="register-row-right ">
+          <input type="text" name="" value="" id="rg-address" class="text-input"  v-model='user.address'>
+        </div>
       </div>
-    </div>
-    <div class="register-row">
-      <label for="rg-QQ" class="register-row-left">QQ</label>
-      <div class="register-row-right ">
-        <input type="text" name="" value="" id="rg-QQ" class="text-input"  v-model='user.qq'>
+      <div class="register-row">
+        <label for="rg-birthday" class="register-row-left">生日</label>
+        <div class="register-row-right ">
+          <input type="text" name="" value="" id="rg-birthday" class="text-input"  v-model='user.birthday'>
+        </div>
       </div>
-    </div>
-    <div class="register-row">
-      <label for="rg-email" class="register-row-left">邮箱</label>
-      <div class="register-row-right ">
-        <input type="text" name="" value="" id="rg-email" class="text-input"  v-model='user.email'>
+      <div class="register-row">
+        <label for="rg-school" class="register-row-left">学校</label>
+        <div class="register-row-right ">
+          <input type="text" name="" value="" id="rg-school" class="text-input"  v-model='user.school'>
+        </div>
       </div>
-    </div>
-    <div class="register-row">
-      <label for="rg-address" class="register-row-left">地址</label>
-      <div class="register-row-right ">
-        <input type="text" name="" value="" id="rg-address" class="text-input"  v-model='user.address'>
+      <div class="register-row">
+        <label for="rg-weibo" class="register-row-left">微博</label>
+        <div class="register-row-right">
+          <input type="text" name="" value="" id="rg-weibo" class="text-input"  v-model='user.weibo'>
+        </div>
       </div>
-    </div>
-    <div class="register-row">
-      <label for="rg-birthday" class="register-row-left">生日</label>
-      <div class="register-row-right ">
-        <input type="text" name="" value="" id="rg-birthday" class="text-input"  v-model='user.birthday'>
+      <div class="register-row">
+        <a href="javascript:;" @click=''>注册</a>
+        <a href="javascript:;" @click=''>取消</a>
       </div>
-    </div>
-    <div class="register-row">
-      <label for="rg-school" class="register-row-left">学校</label>
-      <div class="register-row-right ">
-        <input type="text" name="" value="" id="rg-school" class="text-input"  v-model='user.school'>
-      </div>
-    </div>
-    <div class="register-row">
-      <label for="rg-weibo" class="register-row-left">微博</label>
-      <div class="register-row-right">
-        <input type="text" name="" value="" id="rg-weibo" class="text-input"  v-model='user.weibo'>
-      </div>
-    </div>
-    <div class="register-row">
-      <a href="javascript:;" @click='confirmUser'>注册</a>
     </div>
     <Dialog :width='dialog.width'
             :msg='dialog.msg'

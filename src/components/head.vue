@@ -13,6 +13,7 @@
         </div>
       </div>
       <div id="login-out-wrap">
+        <a href="javascript:;" id="about-self">个人中心</a>
         <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
       </div>
     </div>
@@ -67,7 +68,7 @@ export default {
       this.$http.get(loginOutUrl).then((d) => {
         this.$store.commit('setLoginState', false)
         this.$store.commit('clearUserInfo')
-        this.$router.push({path: '/'})
+        this.isLogin = false
       }).catch((err) => {
         console.log(err)
       })
@@ -116,6 +117,11 @@ export default {
   #login-out {
     font-size: 14px;
     color: #989898;
+  }
+
+  #about-self {
+    font-size: 14px;
+    color: #5a5a5a;
   }
 
   #login-tip-wrap {
