@@ -58,7 +58,7 @@
       <div class="register-row">
         <label for="rg-birthday" class="register-row-left">生日</label>
         <div class="register-row-right ">
-          <input type="text" name="" value="" id="rg-birthday" class="text-input"  v-model='user.birthday'>
+          <input type="date" name="" value="" id="rg-birthday" class=""  v-model='user.birthday'>
         </div>
       </div>
       <div class="register-row">
@@ -74,7 +74,7 @@
         </div>
       </div>
       <div class="register-row">
-        <a href="javascript:;" @click=''>注册</a>
+        <a href="javascript:;" @click='confirmUser'>注册</a>
         <a href="javascript:;" @click=''>取消</a>
       </div>
     </div>
@@ -89,7 +89,7 @@
 <script>
 import Dialog from '../components/dialog'
 //  注册请求地址
-const url = 'http://127.0.0.8:3000/register'
+const url = 'http://127.0.0.8:3000/changeInfo'
 //  上传头像请求地址
 const poUrl = 'http://127.0.0.8:3000/portrait'
 //  获取头像请求地址
@@ -104,7 +104,6 @@ export default {
         sex: 0,
         name: '',
         pwd: '',
-        repwd: '',
         description: null,
         phone: null,
         qq: null,
@@ -125,49 +124,8 @@ export default {
   },
   methods: {
     confirmUser () {
-      if (!this.user.name) {
-        this.dialog.msg = '请输入名称'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
-        return false
-      }
-      if (this.user.name.length < 4) {
-        this.dialog.msg = '账号不得少于四位'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
-        return false
-      }
-      if (!this.user.pwd) {
-        this.dialog.msg = '请输入密码'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
-        return false
-      }
-      if (!this.user.repwd) {
-        this.dialog.msg = '请输入重复密码'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
-        return false
-      }
-      const pwdReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/
-      if (!pwdReg.test(this.user.pwd)) {
-        this.dialog.msg = '密码必须是8-20位数字和字母的组合'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
-        return false
-      }
-      if (!this.user.repwd) {
-        this.dialog.msg = '请输入重复密码'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
-        return false
-      }
-      if (this.user.repwd !== this.user.pwd) {
-        this.dialog.msg = '重复密码必须和密码一致'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
-        return false
-      }
+      console.log(this.$store.state.user)
+      return false
       let data = {}
       for (let key in this.user) {
         if (key !== 'repwd') {
