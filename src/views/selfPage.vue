@@ -3,7 +3,7 @@
     <header class="register-head">
       <div class="head-portrait-wrap">
         <img :src="user.imageUrl" alt="个人头像" class="head-portrait">
-        <a href="javascript:;" class="upload-portrait" @click="changePortrait">点击上传头像</a>
+        <a href="javascript:;" class="upload-portrait" @click="changePortrait">点击修改头像</a>
         <input type="file" name="portrait" value="" ref="portrait" accept="image/gif,image/jpeg,image/jpg,image/png" @change='changeFile($event)'>
       </div>
       <div class="head-welcome-msg">
@@ -74,8 +74,8 @@
         </div>
       </div>
       <div class="register-row">
-        <a href="javascript:;" @click='confirmUser'>注册</a>
-        <a href="javascript:;" @click=''>取消</a>
+        <a href="javascript:;" @click='confirmUser'>保存</a>
+        <a href="javascript:;">取消</a>
       </div>
     </div>
     <Dialog :width='dialog.width'
@@ -89,7 +89,7 @@
 <script>
 import Dialog from '../components/dialog'
 //  注册请求地址
-const url = 'http://127.0.0.8:3000/changeInfo'
+const url = 'http://127.0.0.8:3000/editInfo'
 //  上传头像请求地址
 const poUrl = 'http://127.0.0.8:3000/portrait'
 //  获取头像请求地址
@@ -101,15 +101,14 @@ export default {
   data () {
     return {
       user: {
+        id: null,
         sex: 0,
-        name: '',
-        pwd: '',
         description: null,
         phone: null,
         qq: null,
         email: null,
         address: null,
-        birthday: null,
+        birthday: '1995-06-01',
         school: null,
         weibo: null,
         imageUrl: '../../static/imgs/portrait.png'
@@ -124,21 +123,18 @@ export default {
   },
   methods: {
     confirmUser () {
-      console.log(this.$store.state.user)
-      return false
-      let data = {}
-      for (let key in this.user) {
-        if (key !== 'repwd') {
-          data[key] = this.user[key]
-        }
-      }
-      data.birthday = new Date(data.birthday).getTime()
-      this.$http.post(url, JSON.stringify(data)).then((d) => {
-        this.$store.commit('getUserInfo', data)
-        this.$store.commit('setLoginState', true)
-        this.$router.push({path: '/'})
-      }).catch((err) => {
+      this.user.birthday = new Date(this.user.birthday).getTime()
+      this.user.id = this.$store.state.user.id
+      this.user.sex = Number.parseInt(this.user.sex)
+      this.$http.post(url, JSON.stringify(this.user)).then(d => {
+        this.dialog.msg = '信息修改成功'
+        this.dialog.show = true
+        this.letDialogClear(this, 1000)
+      }).catch(err => {
         console.log(err)
+        this.dialog.msg = '信息修改失败'
+        this.dialog.show = true
+        this.letDialogClear(this, 1000)
       })
     },
     letDialogClear (_this, time, fun) {
@@ -170,7 +166,20 @@ export default {
     },
     toLoginPage () {
       this.$router.push({path: '/login'})
+    },
+    dateToSec (date) {
+      const time = new Date(date)
+      return time.getFullYear() + '-' + this.add0(time.getMonth() + 1) + '-' + this.add0(time.getDate())
+    },
+    add0 (num) {
+      num = Number.parseInt(num)
+      return num < 10 ? '0'+num : num
     }
+  },
+  mounted () {
+    Object.assign(this.user, this.$store.state.user)
+    this.user.birthday = this.dateToSec(this.user.birthday)
+    console.log(this.user.birthday)
   }
 }
 </script>

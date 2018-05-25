@@ -62,6 +62,7 @@ export default {
       })
       this.$http.post(url, data).then((d) => {
         if (d.data.name) {
+          console.log(d.data)
           this.$store.commit('getUserInfo', d.data)
           this.$store.commit('setLoginState', true)
           this.$router.push({path: '/'})
