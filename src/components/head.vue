@@ -13,7 +13,7 @@
         </div>
       </div>
       <div id="login-out-wrap">
-        <a href="javascript:;" id="about-self">个人中心</a>
+        <a href="javascript:;" id="about-self" @click='toSelfPage'>个人中心</a>
         <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
       </div>
     </div>
@@ -50,6 +50,7 @@ export default {
       }
       delete d.data.sessionId
       delete d.data.pwd
+      console.log(this.$store.state.user)
       this.$store.commit('getUserInfo', d.data)
       this.$store.commit('setLoginState', true)
       this.user.name = this.$store.state.user.name
@@ -72,6 +73,9 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+    },
+    toSelfPage () {
+      this.$router.push({path: '/self'})
     }
   }
 }

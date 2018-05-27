@@ -82,7 +82,7 @@ export default {
         name: this.name,
         pwd: this.pwd,
         registerTime: new Date().getTime(),
-        imageUrl: '../../static/portrait.png'
+        imageUrl: '../../../static/imgs/portrait.png'
       }
       this.$http.post(url, JSON.stringify(user)).then((d) => {
         this.$store.commit('getUserInfo', user)

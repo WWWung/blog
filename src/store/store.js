@@ -23,9 +23,7 @@ const mutations = {
     state.isLogin = statu
   },
   clearUserInfo (state) {
-    for (let key in state.user) {
-      state.user[key] = null
-    }
+    state.user = {}
   }
 }
 

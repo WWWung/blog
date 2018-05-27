@@ -17,19 +17,19 @@
     </header>
     <div class="self-main">
       <div class="register-row">
-        <label for="rg-description" class="register-row-left">个人介绍</label>
+        <div for="rg-description" class="register-row-left">个人介绍</div>
         <div class="register-row-right ">
           <input type="text" name="" value="" id="rg-description" class="text-input"  v-model='user.description'>
         </div>
       </div>
       <div class="register-row">
-        <label for="rg-phone" class="register-row-left">电话</label>
+        <div for="rg-phone" class="register-row-left">电话</div>
         <div class="register-row-right ">
           <input type="text" name="" value="" id="rg-phone" class="text-input"  v-model='user.phone'>
         </div>
       </div>
       <div class="register-row">
-        <label for="rg-sex" class="register-row-left">性别</label>
+        <div for="rg-sex" class="register-row-left">性别</div>
         <div class="register-row-right">
           <label for="rg-man">男</label>
           <input type="radio" name="" value=0 id="rg-man" v-model='user.sex'>
@@ -38,37 +38,37 @@
         </div>
       </div>
       <div class="register-row">
-        <label for="rg-QQ" class="register-row-left">QQ</label>
+        <div for="rg-QQ" class="register-row-left">QQ</div>
         <div class="register-row-right ">
           <input type="text" name="" value="" id="rg-QQ" class="text-input"  v-model='user.qq'>
         </div>
       </div>
       <div class="register-row">
-        <label for="rg-email" class="register-row-left">邮箱</label>
+        <div for="rg-email" class="register-row-left">邮箱</div>
         <div class="register-row-right ">
           <input type="text" name="" value="" id="rg-email" class="text-input"  v-model='user.email'>
         </div>
       </div>
       <div class="register-row">
-        <label for="rg-address" class="register-row-left">地址</label>
+        <div for="rg-address" class="register-row-left">地址</div>
         <div class="register-row-right ">
           <input type="text" name="" value="" id="rg-address" class="text-input"  v-model='user.address'>
         </div>
       </div>
       <div class="register-row">
-        <label for="rg-birthday" class="register-row-left">生日</label>
+        <div for="rg-birthday" class="register-row-left">生日</div>
         <div class="register-row-right ">
           <input type="date" name="" value="" id="rg-birthday" class=""  v-model='user.birthday'>
         </div>
       </div>
       <div class="register-row">
-        <label for="rg-school" class="register-row-left">学校</label>
+        <div for="rg-school" class="register-row-left">学校</div>
         <div class="register-row-right ">
           <input type="text" name="" value="" id="rg-school" class="text-input"  v-model='user.school'>
         </div>
       </div>
       <div class="register-row">
-        <label for="rg-weibo" class="register-row-left">微博</label>
+        <div for="rg-weibo" class="register-row-left">微博</div>
         <div class="register-row-right">
           <input type="text" name="" value="" id="rg-weibo" class="text-input"  v-model='user.weibo'>
         </div>
@@ -173,13 +173,12 @@ export default {
     },
     add0 (num) {
       num = Number.parseInt(num)
-      return num < 10 ? '0'+num : num
+      return num < 10 ? '0' + num : num
     }
   },
   mounted () {
     Object.assign(this.user, this.$store.state.user)
     this.user.birthday = this.dateToSec(this.user.birthday)
-    console.log(this.user.birthday)
   }
 }
 </script>
@@ -197,8 +196,7 @@ export default {
 }
 .register-row {
   margin: 20px;
-  display: flex;
-  justify-content: space-around;
+  height: 50px;
   border-bottom: 1px solid #ebebeb;
   padding: 30px;
 }
@@ -207,7 +205,7 @@ export default {
   text-indent: 10px;
 }
 .text-input {
-  width: 300px;
+  width: 600px;
   height: 30px;
   border-radius: 3px;
   border: 1px solid #999;
@@ -219,9 +217,14 @@ export default {
   font-size: 15px;
   font-weight: 600;
   color: #444;
+  float: left;
+  line-height: 50px;
 }
 .register-row-right {
-  width: 330px;
+  width: 630px;
+  float: left;
+  margin-top: 10px;
+  margin-left: 20px;
 }
 .must-fill {
   display: inline-block;
