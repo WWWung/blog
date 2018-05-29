@@ -39,7 +39,10 @@ export default new Router({
     {
       path: '/self',
       name: 'SelfPage',
-      component: SelfPage
+      component: SelfPage,
+      meta: {
+        isLogin: true
+      }
     }
   ]
 })

@@ -18,59 +18,99 @@
     <div class="self-main">
       <div class="register-row">
         <div for="rg-description" class="register-row-left">个人介绍</div>
-        <div class="register-row-right ">
+        <div class="register-row-right " v-show='!infoList.description.show'>
           <input type="text" name="" value="" id="rg-description" class="text-input"  v-model='user.description'>
+        </div>
+        <div class="show-info" @mouseenter='showBtn("description")' @mouseleave='showBtn(false)' v-show='infoList.description.show'>
+          <span>{{user.description}}</span>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.description.edit'>编辑</a>
         </div>
       </div>
       <div class="register-row">
         <div for="rg-phone" class="register-row-left">电话</div>
-        <div class="register-row-right ">
+        <div class="register-row-right " v-show='!infoList.phone.show'>
           <input type="text" name="" value="" id="rg-phone" class="text-input"  v-model='user.phone'>
+        </div>
+        <div class="show-info" @mouseenter='showBtn("phone")' @mouseleave='showBtn(false)' v-show='infoList.phone.show'>
+          <span>{{user.phone}}</span>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.phone.edit'>编辑</a>
         </div>
       </div>
       <div class="register-row">
         <div for="rg-sex" class="register-row-left">性别</div>
-        <div class="register-row-right">
+        <div class="register-row-right" v-show='!infoList.sex.show'>
           <label for="rg-man">男</label>
           <input type="radio" name="" value=0 id="rg-man" v-model='user.sex'>
           <label for="rg-woman">女</label>
           <input type="radio" name="" value=1 id="rg-woman" v-model='user.sex'>
         </div>
+        <div class="show-info" @mouseenter='showBtn("sex")' @mouseleave='showBtn(false)' v-show='infoList.sex.show'>
+          <span>{{user.sex}}</span>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.sex.edit'>编辑</a>
+        </div>
       </div>
       <div class="register-row">
         <div for="rg-QQ" class="register-row-left">QQ</div>
-        <div class="register-row-right ">
+        <div class="register-row-right " v-show='!infoList.qq.show'>
           <input type="text" name="" value="" id="rg-QQ" class="text-input"  v-model='user.qq'>
+        </div>
+        <div class="show-info" @mouseenter='showBtn("qq")' @mouseleave='showBtn(false)' v-show='infoList.qq.show'>
+          <span>{{user.qq}}</span>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.qq.edit'>编辑</a>
         </div>
       </div>
       <div class="register-row">
         <div for="rg-email" class="register-row-left">邮箱</div>
-        <div class="register-row-right ">
+        <div class="register-row-right " v-show='!infoList.email.show'>
           <input type="text" name="" value="" id="rg-email" class="text-input"  v-model='user.email'>
+        </div>
+        <div class="show-info" @mouseenter='showBtn("email")' @mouseleave='showBtn(false)' v-show='infoList.email.show'>
+          <span>{{user.email}}</span>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.email.edit'>编辑</a>
         </div>
       </div>
       <div class="register-row">
         <div for="rg-address" class="register-row-left">地址</div>
-        <div class="register-row-right ">
+        <div class="register-row-right " v-show='!infoList.address.show'>
           <input type="text" name="" value="" id="rg-address" class="text-input"  v-model='user.address'>
+        </div>
+        <div class="show-info" @mouseenter='showBtn("address")' @mouseleave='showBtn(false)' v-show='infoList.address.show'>
+          <span>{{user.address}}</span>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.address.edit'>编辑</a>
         </div>
       </div>
       <div class="register-row">
         <div for="rg-birthday" class="register-row-left">生日</div>
-        <div class="register-row-right ">
+        <div class="register-row-right " v-show='!infoList.birthday.show'>
           <input type="date" name="" value="" id="rg-birthday" class=""  v-model='user.birthday'>
+        </div>
+        <div class="show-info" @mouseenter='showBtn("birthday")' @mouseleave='showBtn(false)' v-show='infoList.birthday.show'>
+          <span>{{user.birthday}}</span>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.birthday.edit'>编辑</a>
         </div>
       </div>
       <div class="register-row">
         <div for="rg-school" class="register-row-left">学校</div>
-        <div class="register-row-right ">
+        <div class="register-row-right " v-show='!infoList.school.show'>
           <input type="text" name="" value="" id="rg-school" class="text-input"  v-model='user.school'>
+        </div>
+        <div class="show-info" @mouseenter='showBtn("school")' @mouseleave='showBtn(false)' v-show='infoList.school.show'>
+          <span>{{user.school}}</span>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.school.edit'>编辑</a>
         </div>
       </div>
       <div class="register-row">
         <div for="rg-weibo" class="register-row-left">微博</div>
-        <div class="register-row-right">
+        <div class="register-row-right" v-show='!infoList.weibo.show'>
           <input type="text" name="" value="" id="rg-weibo" class="text-input"  v-model='user.weibo'>
+        </div>
+        <div class="show-info" @mouseenter='showBtn("weibo")' @mouseleave='showBtn(false)' v-show='infoList.weibo.show'>
+          <span>{{user.weibo}}</span>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.weibo.edit' @click='toggleEdit("weibo")'>编辑</a>
+        </div>
+        <div class="edit-btns" v-show='!infoList.weibo.show'>
+          <a href="javascript:;" class="updateInfo">保存</a>
+          <a href="javascript:;" class='cancleEdit'  @click='toggleEdit("weibo")'>取消</a>
         </div>
       </div>
       <div class="register-row">
@@ -94,6 +134,8 @@ const url = 'http://127.0.0.8:3000/editInfo'
 const poUrl = 'http://127.0.0.8:3000/portrait'
 //  获取头像请求地址
 const imgUrl = 'http://127.0.0.8:3000/imgs/'
+//  判断是否登录地址
+const selfUrl = 'http://127.0.0.8:3000/self?name='
 export default {
   components: {
     Dialog
@@ -118,10 +160,54 @@ export default {
         height: 100,
         msg: '正在上传...',
         show: false
-      }
+      },
+      //  给每一个属性一个开关
+      infoList: {
+        description: {
+          show: true, //  show用来控制是显示文字框还是输入框
+          edit: false //  edit用来控制是否显示后面的编辑按钮
+        },
+        phone: {
+          show: true,
+          edit: false
+        },
+        qq: {
+          show: true,
+          edit: false
+        },
+        email: {
+          show: true,
+          edit: false
+        },
+        address: {
+          show: true,
+          edit: false
+        },
+        birthday: {
+          show: true,
+          edit: false
+        },
+        school: {
+          show: true,
+          edit: false
+        },
+        weibo: {
+          show: true,
+          edit: false
+        },
+        sex: {
+          show: true,
+          edit: false
+        }
+      },
+      //  查看的信息页面是否是当前登录账号
+      isOwner: true
     }
   },
   methods: {
+    toggleEdit (name) {
+      this.infoList[name].show = !this.infoList[name].show
+    },
     confirmUser () {
       this.user.birthday = new Date(this.user.birthday).getTime()
       this.user.id = this.$store.state.user.id
@@ -174,16 +260,59 @@ export default {
     add0 (num) {
       num = Number.parseInt(num)
       return num < 10 ? '0' + num : num
+    },
+    showBtn (name) {
+      for (let key in this.infoList) {
+        this.infoList[key].edit = false
+      }
+      if (name) {
+        this.infoList[name].edit = true
+      }
     }
   },
   mounted () {
-    Object.assign(this.user, this.$store.state.user)
-    this.user.birthday = this.dateToSec(this.user.birthday)
+    const name = window.location.href.split('=')[1]
+    console.log(name)
+    this.$http.get(selfUrl + name).then((d) => {
+      delete d.data.sessionId
+      delete d.data.pwd
+      console.log(d.data)
+      Object.assign(this.user, d.data)
+      this.user.birthday = this.dateToSec(this.user.birthday)
+    }).catch((err) => {
+      console.log(err)
+    })
   }
 }
 </script>
 
 <style lang="css">
+.edit-btns {
+  float: left;
+  display: flex;
+  justify-content: flex-end;
+  margin: 5px 30px 0;
+}
+.updateInfo, .cancleEdit {
+  width: 60px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  margin-right: 20px;
+}
+.cancleEdit:hover {
+  background-color: rgba(212, 212, 212, .8);
+}
+.updateInfo {
+  background-color: rgba(0, 132, 235, .6);
+  border-radius: 4px;
+  color: #fff;
+}
+.cancleEdit {
+  background-color: rgba(212, 212, 212, .6);
+  border-radius: 4px;
+  color: #8590a6;
+}
 .head-login-tip {
   position: absolute;
   font-size: 14px;
@@ -224,7 +353,28 @@ export default {
   width: 630px;
   float: left;
   margin-top: 10px;
+  margin-left: 30px;
+}
+.show-info {
+  float: left;
+  height: 50px;
+  width: 600px;
+  margin-left: 30px;
+  line-height: 50px;
+  font-size: 15px;
+  color: #1a1a1a;
+}
+.edit-btn {
+  display: inline-block;
   margin-left: 20px;
+  padding: 0 10px;
+  background-color: rgba(0, 132, 235, .6);
+  border-radius: 4px;
+  line-height: 30px;
+  color: #fff;
+}
+.edit-btn:hover, .updateInfo:hover {
+  background-color: rgba(0, 132, 235, .8);
 }
 .must-fill {
   display: inline-block;

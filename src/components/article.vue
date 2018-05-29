@@ -12,7 +12,7 @@
         <ul id="comments">
           <li v-for='item in blog.comments' :key='item.id'>
             <div class="comment-info clearfix">
-              <img src="../../static/imgs/portrait.png" alt="" class="comment-portrait">
+              <img :src='item.imgUrl' alt="" class="comment-portrait">
               <span class="comment-auther">
                 {{item.username}}
               </span>
@@ -32,7 +32,7 @@
         </div>
         <div class="submit-wrap">
           <a href="javascript:;" @click='userComment'>评论文章</a>
-          <a href="javascript:;">游客评论</a>
+          <a href="javascript:;" @click='visitorComment'>游客评论</a>
           <span>
             注:请确保已登录，未登录直接评论则视为游客模式评论！
           </span>
@@ -75,7 +75,8 @@ export default {
         blogId: null,
         content: '',
         time: null,
-        username: null
+        username: null,
+        imgUrl: null
       },
       dialog: {
         width: 300,
@@ -102,17 +103,41 @@ export default {
       return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.getHours() + ':' + time.getMinutes()
     },
     userComment () {
+      if (!this.$store.state.isLogin) {
+        this.visitorComment()
+        return false
+      }
       if (!this.comment.content) {
         this.dialog.msg = '请输入评论内容'
         this.dialog.show = true
         this.letDialogClear(this, 1000)
         return false
       }
-      console.log(this.comment.content)
-      this.comment.userId = this.$store.state.isLogin ? this.$store.state.user.id : 0
-      this.comment.username = this.$store.state.isLogin ? this.$store.state.user.name : '游客'
+      this.comment.userId = this.$store.state.user.id
+      this.comment.username = this.$store.state.user.name
+      this.comment.imgUrl = this.$store.state.user.imageUrl
       this.comment.time = new Date().getTime()
       this.comment.blogId = this.blog.id
+      const data = JSON.stringify(this.comment)
+      this.$http.post(commentUrl, data).then((d) => {
+        this.renderCommentList()
+        this.comment.content = ''
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    visitorComment () {
+      if (!this.comment.content) {
+        this.dialog.msg = '请输入评论内容'
+        this.dialog.show = true
+        this.letDialogClear(this, 1000)
+        return false
+      }
+      this.comment.userId = 0
+      this.comment.username = '游客'
+      this.comment.time = new Date().getTime()
+      this.comment.blogId = this.blog.id
+      this.comment.imgUrl = '../../../static/imgs/portrait.png'
       const data = JSON.stringify(this.comment)
       this.$http.post(commentUrl, data).then((d) => {
         this.renderCommentList()
@@ -157,7 +182,7 @@ export default {
   margin-left: 60px;
 }
 #comment-wrap {
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 #input-box {
   resize: none;
@@ -173,6 +198,7 @@ export default {
 #comments li {
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
+  padding-top: 20px;
 }
 .comment-portrait {
   float: left;
