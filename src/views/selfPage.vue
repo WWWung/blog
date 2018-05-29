@@ -1,5 +1,6 @@
 <template lang="html">
   <div>
+    <Head-view v-show=false></Head-view>
     <header class="register-head">
       <div class="head-portrait-wrap">
         <img :src="user.imageUrl" alt="个人头像" class="head-portrait">
@@ -23,7 +24,11 @@
         </div>
         <div class="show-info" @mouseenter='showBtn("description")' @mouseleave='showBtn(false)' v-show='infoList.description.show'>
           <span>{{user.description}}</span>
-          <a href="javascript:;" class="edit-btn" v-show='infoList.description.edit'>编辑</a>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.description.edit&&isOwner' @click='toggleEdit("description")'>编辑</a>
+        </div>
+        <div class="edit-btns" v-show='!infoList.description.show'>
+          <a href="javascript:;" class="updateInfo" @click='confirmUser'>保存</a>
+          <a href="javascript:;" class='cancleEdit' @click='toggleEdit("description")'>取消</a>
         </div>
       </div>
       <div class="register-row">
@@ -33,7 +38,11 @@
         </div>
         <div class="show-info" @mouseenter='showBtn("phone")' @mouseleave='showBtn(false)' v-show='infoList.phone.show'>
           <span>{{user.phone}}</span>
-          <a href="javascript:;" class="edit-btn" v-show='infoList.phone.edit'>编辑</a>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.phone.edit&&isOwner' @click='toggleEdit("phone")'>编辑</a>
+        </div>
+        <div class="edit-btns" v-show='!infoList.phone.show'>
+          <a href="javascript:;" class="updateInfo" @click='confirmUser'>保存</a>
+          <a href="javascript:;" class='cancleEdit' @click='toggleEdit("phone")'>取消</a>
         </div>
       </div>
       <div class="register-row">
@@ -46,7 +55,11 @@
         </div>
         <div class="show-info" @mouseenter='showBtn("sex")' @mouseleave='showBtn(false)' v-show='infoList.sex.show'>
           <span>{{user.sex}}</span>
-          <a href="javascript:;" class="edit-btn" v-show='infoList.sex.edit'>编辑</a>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.sex.edit&&isOwner' @click='toggleEdit("sex")'>编辑</a>
+        </div>
+        <div class="edit-btns" v-show='!infoList.sex.show'>
+          <a href="javascript:;" class="updateInfo" @click='confirmUser'>保存</a>
+          <a href="javascript:;" class='cancleEdit' @click='toggleEdit("sex")'>取消</a>
         </div>
       </div>
       <div class="register-row">
@@ -56,7 +69,11 @@
         </div>
         <div class="show-info" @mouseenter='showBtn("qq")' @mouseleave='showBtn(false)' v-show='infoList.qq.show'>
           <span>{{user.qq}}</span>
-          <a href="javascript:;" class="edit-btn" v-show='infoList.qq.edit'>编辑</a>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.qq.edit&&isOwner' @click='toggleEdit("qq")'>编辑</a>
+        </div>
+        <div class="edit-btns" v-show='!infoList.qq.show'>
+          <a href="javascript:;" class="updateInfo" @click='confirmUser'>保存</a>
+          <a href="javascript:;" class='cancleEdit' @click='toggleEdit("qq")'>取消</a>
         </div>
       </div>
       <div class="register-row">
@@ -66,7 +83,11 @@
         </div>
         <div class="show-info" @mouseenter='showBtn("email")' @mouseleave='showBtn(false)' v-show='infoList.email.show'>
           <span>{{user.email}}</span>
-          <a href="javascript:;" class="edit-btn" v-show='infoList.email.edit'>编辑</a>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.email.edit&&isOwner' @click='toggleEdit("email")'>编辑</a>
+        </div>
+        <div class="edit-btns" v-show='!infoList.email.show'>
+          <a href="javascript:;" class="updateInfo" @click='confirmUser'>保存</a>
+          <a href="javascript:;" class='cancleEdit' @click='toggleEdit("email")'>取消</a>
         </div>
       </div>
       <div class="register-row">
@@ -76,7 +97,11 @@
         </div>
         <div class="show-info" @mouseenter='showBtn("address")' @mouseleave='showBtn(false)' v-show='infoList.address.show'>
           <span>{{user.address}}</span>
-          <a href="javascript:;" class="edit-btn" v-show='infoList.address.edit'>编辑</a>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.address.edit&&isOwner' @click='toggleEdit("address")'>编辑</a>
+        </div>
+        <div class="edit-btns" v-show='!infoList.address.show'>
+          <a href="javascript:;" class="updateInfo" @click='confirmUser'>保存</a>
+          <a href="javascript:;" class='cancleEdit' @click='toggleEdit("address")'>取消</a>
         </div>
       </div>
       <div class="register-row">
@@ -86,7 +111,11 @@
         </div>
         <div class="show-info" @mouseenter='showBtn("birthday")' @mouseleave='showBtn(false)' v-show='infoList.birthday.show'>
           <span>{{user.birthday}}</span>
-          <a href="javascript:;" class="edit-btn" v-show='infoList.birthday.edit'>编辑</a>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.birthday.edit&&isOwner' @click='toggleEdit("birthday")'>编辑</a>
+        </div>
+        <div class="edit-btns" v-show='!infoList.birthday.show'>
+          <a href="javascript:;" class="updateInfo" @click='confirmUser'>保存</a>
+          <a href="javascript:;" class='cancleEdit' @click='toggleEdit("birthday")'>取消</a>
         </div>
       </div>
       <div class="register-row">
@@ -96,7 +125,11 @@
         </div>
         <div class="show-info" @mouseenter='showBtn("school")' @mouseleave='showBtn(false)' v-show='infoList.school.show'>
           <span>{{user.school}}</span>
-          <a href="javascript:;" class="edit-btn" v-show='infoList.school.edit'>编辑</a>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.school.edit&&isOwner' @click='toggleEdit("school")'>编辑</a>
+        </div>
+        <div class="edit-btns" v-show='!infoList.school.show'>
+          <a href="javascript:;" class="updateInfo" @click='confirmUser'>保存</a>
+          <a href="javascript:;" class='cancleEdit' @click='toggleEdit("school")'>取消</a>
         </div>
       </div>
       <div class="register-row">
@@ -106,16 +139,12 @@
         </div>
         <div class="show-info" @mouseenter='showBtn("weibo")' @mouseleave='showBtn(false)' v-show='infoList.weibo.show'>
           <span>{{user.weibo}}</span>
-          <a href="javascript:;" class="edit-btn" v-show='infoList.weibo.edit' @click='toggleEdit("weibo")'>编辑</a>
+          <a href="javascript:;" class="edit-btn" v-show='infoList.weibo.edit&&isOwner' @click='toggleEdit("weibo")'>编辑</a>
         </div>
         <div class="edit-btns" v-show='!infoList.weibo.show'>
-          <a href="javascript:;" class="updateInfo">保存</a>
-          <a href="javascript:;" class='cancleEdit'  @click='toggleEdit("weibo")'>取消</a>
+          <a href="javascript:;" class="updateInfo" @click='confirmUser'>保存</a>
+          <a href="javascript:;" class='cancleEdit' @click='toggleEdit("weibo")'>取消</a>
         </div>
-      </div>
-      <div class="register-row">
-        <a href="javascript:;" @click='confirmUser'>保存</a>
-        <a href="javascript:;">取消</a>
       </div>
     </div>
     <Dialog :width='dialog.width'
@@ -127,6 +156,7 @@
 </template>
 
 <script>
+import Head from '../components/head.vue'
 import Dialog from '../components/dialog'
 //  注册请求地址
 const url = 'http://127.0.0.8:3000/editInfo'
@@ -138,7 +168,8 @@ const imgUrl = 'http://127.0.0.8:3000/imgs/'
 const selfUrl = 'http://127.0.0.8:3000/self?name='
 export default {
   components: {
-    Dialog
+    Dialog,
+    'Head-view': Head
   },
   data () {
     return {
@@ -209,6 +240,7 @@ export default {
       this.infoList[name].show = !this.infoList[name].show
     },
     confirmUser () {
+      console.log(this.$store.state.user)
       this.user.birthday = new Date(this.user.birthday).getTime()
       this.user.id = this.$store.state.user.id
       this.user.sex = Number.parseInt(this.user.sex)
@@ -276,7 +308,7 @@ export default {
     this.$http.get(selfUrl + name).then((d) => {
       delete d.data.sessionId
       delete d.data.pwd
-      console.log(d.data)
+      this.isOwner = this.$store.state.user.name === d.data.name
       Object.assign(this.user, d.data)
       this.user.birthday = this.dateToSec(this.user.birthday)
     }).catch((err) => {
