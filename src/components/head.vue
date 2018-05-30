@@ -51,7 +51,6 @@ export default {
       }
       delete d.data.sessionId
       delete d.data.pwd
-      console.log(d.data)
       this.$store.commit('getUserInfo', d.data)
       this.$store.commit('setLoginState', true)
       this.user.name = this.$store.state.user.name

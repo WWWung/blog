@@ -7,15 +7,22 @@
       {{getTime(blog.time)}}
     </div>
     <div id="blog-content" v-html='blog.content'></div>
+    <div class="blog-btns">
+      <a href="javascript:;" @click='toPrevBlog'>{{getPrevBlog}}</a>
+      <a href="javascript:;" @click='toNextBlog'>{{getNextBlog}}</a>
+    </div>
     <div id="comment-wrap">
+      <div class="no-comment" v-if='!blog.comments.length'>
+        这篇文章暂时还没有评论，来写下第一个评论吧！
+      </div>
       <div id="comment-list">
         <ul id="comments">
-          <li v-for='item in blog.comments' :key='item.id'>
+          <li v-for='(item, index) in blog.comments' :key='item.id'>
             <div class="comment-info clearfix">
-              <img :src='item.imgUrl' alt="" class="comment-portrait">
-              <span class="comment-auther">
+              <img :src='item.imgUrl' alt="" class="comment-portrait" @click='toSelfPage(index)'>
+              <a class="comment-auther" href="javascript:;" @click='toSelfPage(index)'>
                 {{item.username}}
-              </span>
+              </a>
               <span class="comment-date">
                 {{getTime(item.time)}}
               </span>
@@ -68,7 +75,15 @@ export default {
         up: null,
         support: null,
         star: null,
-        comments: []
+        comments: [],
+        prev: {
+          id: null,
+          title: null
+        },
+        next: {
+          id: null,
+          title: null
+        }
       },
       comment: {
         userId: null,
@@ -91,9 +106,14 @@ export default {
   },
   methods: {
     renderCommentList () {
-      const id = window.location.href.split('=')[1]
+      const id = this.$router.history.current.query.id
       this.$http.get(url + id).then((d) => {
-        Object.assign(this.blog, d.data)
+        Object.assign(this.blog, d.data.current)
+        this.blog.prev.id = d.data.prev && d.data.prev.id
+        this.blog.prev.title = d.data.prev && d.data.prev.title
+        this.blog.next.id = d.data.next && d.data.next.id
+        this.blog.next.title = d.data.next && d.data.next.title
+        console.log(this.blog.next)
       }).catch((err) => {
         console.log(err)
       })
@@ -101,6 +121,12 @@ export default {
     getTime (t) {
       const time = new Date(t)
       return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.getHours() + ':' + time.getMinutes()
+    },
+    toSelfPage (index) {
+      const name = this.blog.comments[index].username
+      if (name.length >= 4) {
+        this.$router.push({path: '/self?name=' + name})
+      }
     },
     userComment () {
       if (!this.$store.state.isLogin) {
@@ -154,6 +180,24 @@ export default {
           fun()
         }
       }, time)
+    },
+    toNextBlog () {
+      if (this.blog.next.id) {
+        this.$router.push({path: '/content?id=' + this.blog.next.id})
+      }
+    },
+    toPrevBlog () {
+      if (this.blog.prev.id) {
+        this.$router.push({path: '/content?id=' + this.blog.prev.id})
+      }
+    }
+  },
+  computed: {
+    getNextBlog () {
+      return this.blog.next.title ? '下一篇:' + this.blog.next.title : '暂时没有下一篇'
+    },
+    getPrevBlog () {
+      return this.blog.prev.title ? '上一篇:' + this.blog.prev.title : '这是第一篇博客'
     }
   }
 }
@@ -166,13 +210,30 @@ export default {
   color: #888a8b;
   text-indent: 40px;
 }
+.no-comment {
+  margin-top: 40px;
+}
+.blog-btns {
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+}
+.blog-btns a {
+  padding: 0 15px;
+  line-height: 40px;
+  font-size: 15px;
+  color: #556677;
+}
+.blog-btns a:hover {
+  color: #436f98;
+  text-decoration: underline;
+}
 #blog-content {
   line-height: 24px;
-  color: #37677e;
+  /* color: #37677e; */
   margin-top: 10px;
   min-height: 300px;
   padding: 20px;
-  border-bottom: 1px solid #ddd;
 }
 #blog-time {
   line-height: 16px;
@@ -204,6 +265,7 @@ export default {
   float: left;
   width: 40px;
   height: 40px;
+  cursor: pointer;
 }
 .comment-info {
   /* height: 24px; */
@@ -215,6 +277,9 @@ export default {
   color: #505fcf;
   margin-top: 8px;
   margin-left: 10px;
+}
+.comment-auther:hover {
+  text-decoration: underline;
 }
 .comment-date {
   float: left;

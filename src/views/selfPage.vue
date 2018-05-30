@@ -1,10 +1,10 @@
 <template lang="html">
   <div>
-    <Head-view v-show=false></Head-view>
+    <Head-view v-show='false'></Head-view>
     <header class="register-head">
       <div class="head-portrait-wrap">
         <img :src="user.imageUrl" alt="个人头像" class="head-portrait">
-        <a href="javascript:;" class="upload-portrait" @click="changePortrait">点击修改头像</a>
+        <a href="javascript:;" class="upload-portrait" @click="changePortrait" v-if='isOwner'>点击修改头像</a>
         <input type="file" name="portrait" value="" ref="portrait" accept="image/gif,image/jpeg,image/jpg,image/png" @change='changeFile($event)'>
       </div>
       <div class="head-welcome-msg">
@@ -14,6 +14,9 @@
         <span class="register-tip">
         您填写的个人信息我们不会主动公开
         </span>
+      </div>
+      <div class="return-page">
+        <a href="javascript:;" @click='returnPrevPage'>返回上一页</a>
       </div>
     </header>
     <div class="self-main">
@@ -240,7 +243,6 @@ export default {
       this.infoList[name].show = !this.infoList[name].show
     },
     confirmUser () {
-      console.log(this.$store.state.user)
       this.user.birthday = new Date(this.user.birthday).getTime()
       this.user.id = this.$store.state.user.id
       this.user.sex = Number.parseInt(this.user.sex)
@@ -300,11 +302,14 @@ export default {
       if (name) {
         this.infoList[name].edit = true
       }
+    },
+    returnPrevPage () {
+      console.log(this.$router.history)
+      this.$router.go(-1)
     }
   },
   mounted () {
-    const name = window.location.href.split('=')[1]
-    console.log(name)
+    const name = this.$router.history.current.query.name
     this.$http.get(selfUrl + name).then((d) => {
       delete d.data.sessionId
       delete d.data.pwd
@@ -324,6 +329,19 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin: 5px 30px 0;
+}
+.return-page {
+  position: absolute;
+  right: 100px;
+  top: 30px;
+}
+.return-page a {
+  font-size: 14px;
+  color: #1a1a1a;
+}
+.return-page a:hover {
+  text-decoration: underline;
+  color: #79dce8;
 }
 .updateInfo, .cancleEdit {
   width: 60px;
