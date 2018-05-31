@@ -1,6 +1,6 @@
 <template lang="html">
   <header id="app-head">
-    <div v-show='isLogin' class="clearfix">
+    <div v-if='isLogin' class="clearfix">
       <div id="user-img-wrap">
         <img :src="user.imageUrl" alt="个人头像" id='user-img'/>
       </div>
@@ -17,7 +17,7 @@
         <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
       </div>
     </div>
-    <div v-show='!isLogin' id="login-tip-wrap">
+    <div v-else id="login-tip-wrap">
       <span>您还未登录，请</span>
       <a href="javascript:;" @click='clickToLogin'>登录</a>
     </div>

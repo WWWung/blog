@@ -4,8 +4,8 @@
     <Details @submitClick='getDetails'
               :showDetails='showDetails'>
             </Details>
-    <div id="show-wrap" v-html='editorHtml'>
-    </div>
+    <!-- <div id="show-wrap" v-html='editorHtml'>
+    </div> -->
     <Editor v-model='editorHtml'></Editor>
     <div id="submit-article" @click='submitArticle'>
       <a href="#">提交</a>
@@ -102,11 +102,6 @@ export default {
 </script>
 
 <style lang="css" scoped>
-#show-wrap {
-  padding: 20px;
-  margin-bottom: 30px;
-  border-bottom: 1px solid #ddd;
-}
 #submit-article {
   margin-top: 15px;
 }
