@@ -1,42 +1,79 @@
 <template lang="html">
   <div class="">
-    <div id="page-aside">
-      <div id="blogger-info">
-        <div class="">
-          <a href="http://localhost:8080/#/self?name=wwwung" class="blogger-portrait">
-            <img :src="'../../../static/imgs/z.png'" alt="">
-          </a>
+    <transition name='aside'>
+      <div id="page-aside" v-show='show'>
+        <div id="blogger-info">
+          <div class="">
+            <a href="http://localhost:8080/#/self?name=wwwung" class="blogger-portrait">
+              <img :src="'../../../static/imgs/w.png'" alt="">
+            </a>
+          </div>
+          <div class="blogger-name">
+            王建的博客
+          </div>
+          <div class="blogger-tag">
+            分享我所学到的知识。
+          </div>
         </div>
-        <div class="blogger-name">
-          王建的博客
-        </div>
-        <div class="blogger-tag">
-          分享我所学到的知识。
+        <ul id='page-aside-list'>
+          <li>
+            <a href="http://localhost:8080/#/">首页</a>
+          </li>
+          <li>
+            <a href="javascript:;">日志</a>
+          </li>
+          <li v-show='power'>
+            <a href="http://localhost:8080/#/write">写博客</a>
+          </li>
+          <li>
+            <a href="javascript:;">留言板</a>
+          </li>
+          <li>
+            <a href="javascript:;" @click='stopRain'>{{getRainHtml}}</a>
+          </li>
+        </ul>
+        <div id="about-links">
+          相关链接
         </div>
       </div>
-      <ul id='page-aside-list'>
-        <li>
-          <a href="http://localhost:8080/#/">首页</a>
-        </li>
-        <li>
-          <a href="javascript:;">日志</a>
-        </li>
-        <li>
-          <a href="http://localhost:8080/#/write">写博客</a>
-        </li>
-        <li>
-          <a href="javascript:;">留言板</a>
-        </li>
-      </ul>
-      <div id="about-links">
-        相关链接
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    show: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    return {
+      power: false,
+      showRain: false
+    }
+  },
+  methods: {
+    stopRain () {
+      this.showRain = !this.showRain
+      this.$emit('showRain', this.showRain)
+    }
+  },
+  watch: {
+    '$store.state.user' () {
+      this.power = this.$store.state.user.power === '0'
+    }
+  },
+  mounted () {
+    this.power = this.$store.state.user.power === '0'
+    console.log(this.$store.state.user)
+  },
+  computed: {
+    getRainHtml () {
+      return this.showRain ? '雨停' : '下雨'
+    }
+  }
 }
 </script>
 
@@ -89,5 +126,13 @@ export default {
 }
 .blogger-tag {
   font-size: 14px;
+}
+.aside-enter, .aside-leave-to {
+  width: 0;
+  /* opacity: 0; */
+  transform: translateX(-200px);
+}
+.aside-enter-active, .aside-leave-active {
+  transition: all .3s ease;
 }
 </style>

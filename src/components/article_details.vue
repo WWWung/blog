@@ -1,10 +1,5 @@
 <template lang="html">
   <div id="page-mask" v-show='isShow'>
-    <Dialog :width='dialog.width'
-            :msg='dialog.msg'
-            :height='dialog.height'
-            :show-dialog='dialog.show'>
-          </Dialog>
     <div id="details-wrap">
       <div class="details-row">
         <span class="detail-name">文章标题</span>
@@ -35,6 +30,11 @@
         <span class="detail-name">返回</span>
       </div>
     </div>
+    <Dialog :width='dialog.width'
+            :msg='dialog.msg'
+            :height='dialog.height'
+            :show-dialog='dialog.show'>
+          </Dialog>
   </div>
 </template>
 

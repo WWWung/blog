@@ -2,7 +2,7 @@
   <div id="wrap">
     <Head-view></Head-view>
     <Home-content></Home-content>
-    <Aside></Aside>
+    <!-- <Aside></Aside> -->
   </div>
 </template>
 
