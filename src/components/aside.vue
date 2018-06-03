@@ -80,9 +80,11 @@ export default {
 <style lang="css">
 #blogger-info {
   height: 35vh;
+  min-height: 200px;
 }
 #page-aside-list {
   height: 50vh;
+  min-height: 270px;
 }
 #page-aside-list li {
   height: 5vh;

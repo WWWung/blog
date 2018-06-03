@@ -2,11 +2,17 @@
   <div id="date-menu-wrap">
     <ul id='date-menu' class="clearfix">
       <li v-for='item in articalMenu' :key='item.index' @click='deliveryMsg(item)'>
-        <div class="item-title">
+        <h2 class="item-title">
           {{item.title}}
-        </div>
+        </h2>
+        <p class="easy-content">
+          省略的博客内容
+        </p>
         <div class="item-date">
-          {{timeFormater(item.time)}}
+          <time>
+            {{timeFormater(item.time)}}
+          </time>
+          <i class='support-icon'></i>
         </div>
       </li>
     </ul>
@@ -14,7 +20,10 @@
 </template>
 
 <script>
-const url = 'http://127.0.0.8:3000/articles'
+const count = 5
+const start = 0
+const end = start + count
+const url = 'http://127.0.0.8:3000/support?start=' + start + '&end=' + end
 
 export default {
   data () {
@@ -25,6 +34,7 @@ export default {
   mounted () {
     this.$http.get(url).then((d) => {
       this.articalMenu = d.data
+      console.log(d.data)
     }).catch((e) => {
       console.log(e)
     })
@@ -57,16 +67,37 @@ export default {
     padding-top: 50px;
   }
   #date-menu li {
-    width: 220px;
     height: 220px;
     border-radius: 6px;
-    background-color: #d18c4b;
-    margin: 15px;
+    margin: 20px;
     box-sizing: border-box;
-    padding: 30px;
-    float: left;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    box-shadow: 1px 1px 1px 0 rgba(31, 35, 46, 0.25);
+    padding: 15px;
+  }
+  #date-menu li:hover {
+    box-shadow: 15px 15px 45px -10px rgba(10, 16, 34, 0.3);
+  }
+  #date-menu li h2 {
+    font-style: 32px;
+    line-height: 34px;
+  }
+  .easy-content {
+    font-size: 15px;
+    line-height: 24px;
+    height: 130px;
+  }
+  .item-date time{
+    font-size: 12px;
+    line-height: 24px;
+    display: inline-block;
+  }
+  .support-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: url('../../static/imgs/support.png') no-repeat center center;
+    background-size: 100%, 100%;
+    vertical-align: middle;
+    margin-left: 20px;
   }
 </style>

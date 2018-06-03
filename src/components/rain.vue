@@ -20,8 +20,9 @@ export default {
       speed: 0, //      雨滴的速度
       lineNum: 0, //    雨滴的数量
       canvas: null, //   保存canvas DOM对象
-      w: document.body.clientWidth,
-      h: document.body.clientHeight
+      w: document.documentElement.offsetWidth,
+      h: document.documentElement.clientHeight,
+      animate: null
     }
   },
   methods: {
@@ -82,6 +83,8 @@ export default {
       }
 
       const deadLine = this.h - Math.floor(Math.random() * this.h / 6)
+      // console.log(this.h)
+      // console.log(deadLine)
 
       this.lineList.forEach(line => {
         //  雨水离鼠标的距离
@@ -117,17 +120,18 @@ export default {
       window.requestAnimationFrame(_this.rainStart)
     },
     render () {
+      // console.log(this.h)
       const ctx = this.canvas.getContext('2d')
       ctx.clearRect(0, 0, this.canvas.offsetWidth, this.canvas.offsetHeight)
       this.lineList.forEach(line => {
         ctx.beginPath()
         ctx.strokeStyle = line.color
-        ctx.lineWidth = 1
+        ctx.lineWidth = 3
         ctx.moveTo(line.posx, line.posy)
         ctx.lineTo(line.posx + this.speed * line.h, line.posy + line.h)
         ctx.stroke()
       })
-      ctx.lineWidth = 1
+      ctx.lineWidth = 2
       ctx.strokeStyle = '#fff'
       this.dropList.forEach(drop => {
         ctx.beginPath()
@@ -145,7 +149,14 @@ export default {
   mounted () {
     this.canvas = this.$refs.canvas
     const _this = this
-    window.requestAnimationFrame(_this.rainStart)
+    this.animate = window.requestAnimationFrame(_this.rainStart)
+    window.onresize = () => {
+      _this.h = document.documentElement.clientHeight
+      _this.w = document.documentElement.offsetWidth
+    }
+  },
+  beforeDestroy () {
+    window.cancelAnimationFrame(this.animate)
   }
 }
 </script>

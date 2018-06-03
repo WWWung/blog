@@ -271,6 +271,9 @@ export default {
     },
     changeFile (e) {
       const file = e.target.files[0]
+      if (!file) {
+        return false
+      }
       if (file.size > 3148576) {
         alert('请选择小于3M的图片')
         return false

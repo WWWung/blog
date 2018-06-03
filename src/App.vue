@@ -47,13 +47,15 @@ export default {
 
 <style>
 body {
-  background-color: #f6f6f6;
+  background-color: #f0f0f0;
   font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
 }
 #page {
   width: 1000px;
   margin: 20px auto;
-  background-color: #fff;
+  background-color: #fdfdfd;
   padding: 50px 30px;
+  border-radius: 4px;
+  box-shadow: 10px
 }
 </style>

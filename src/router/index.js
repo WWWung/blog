@@ -8,8 +8,7 @@ import RegisterPage from '@/views/regPage'
 import SelfPage from '@/views/selfPage'
 
 Vue.use(Router)
-
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -46,3 +45,10 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  console.log(this)
+  next()
+})
+
+export default router

@@ -42,7 +42,7 @@ export default {
       isLogin: false
     }
   },
-  mounted () {
+  created () {
     this.$http.post(url).then((d) => {
       if (d.data === '未登录') {
         this.$store.commit('setLoginState', false)
