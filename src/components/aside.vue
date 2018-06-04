@@ -63,11 +63,17 @@ export default {
   watch: {
     '$store.state.user' () {
       this.power = this.$store.state.user.power === '0'
+      // console.log('a')
     }
   },
   mounted () {
-    this.power = this.$store.state.user.power === '0'
-    console.log(this.$store.state.user)
+    const url = 'http://127.0.0.8:3000/isLogin'
+    this.$http.post(url).then((d) => {
+      if (d.data !== '未登录') {
+        this.power = this.$store.state.user.power === '0'
+      }
+    })
+    // console.log(this.$store.state.user.power)
   },
   computed: {
     getRainHtml () {

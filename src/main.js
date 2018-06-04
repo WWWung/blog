@@ -13,6 +13,24 @@ Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false
 
+const url = 'http://127.0.0.8:3000/isLogin'
+
+router.beforeEach((to, from, next) => {
+  axios.post(url).then((d) => {
+    if (d.data !== '未登录') {
+      store.dispatch('getUserInfo', d.data)
+      store.dispatch('setLoginState', true)
+    } else {
+      // store.dispatch('setLoginState', false)
+      // store.dispatch('clearUserInfo')
+    }
+    next()
+  }).catch((err) => {
+    console.log(err)
+    next()
+  })
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

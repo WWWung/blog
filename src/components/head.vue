@@ -29,7 +29,6 @@
 </template>
 
 <script>
-const url = 'http://127.0.0.8:3000/isLogin'
 const loginOutUrl = 'http://127.0.0.8:3000/loginOut'
 export default {
   data () {
@@ -43,23 +42,10 @@ export default {
     }
   },
   created () {
-    this.$http.post(url).then((d) => {
-      if (d.data === '未登录') {
-        this.$store.commit('setLoginState', false)
-        this.$store.commit('clearUserInfo')
-        return false
-      }
-      delete d.data.sessionId
-      delete d.data.pwd
-      this.$store.commit('getUserInfo', d.data)
-      this.$store.commit('setLoginState', true)
-      this.user.name = this.$store.state.user.name
-      this.user.description = this.$store.state.user.description
-      this.user.imageUrl = this.$store.state.user.imageUrl
-      this.isLogin = this.$store.state.isLogin
-    }).catch((err) => {
-      console.log(err)
-    })
+    this.user.name = this.$store.state.user.name
+    this.user.description = this.$store.state.user.description
+    this.user.imageUrl = this.$store.state.user.imageUrl
+    this.isLogin = this.$store.state.isLogin
   },
   methods: {
     clickToLogin () {
@@ -76,6 +62,11 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+    }
+  },
+  watch: {
+    '$store.state.user' () {
+      console.log('a')
     }
   }
 }

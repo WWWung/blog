@@ -2,32 +2,59 @@
   <div id="page-mask" v-show='isShow'>
     <div id="details-wrap">
       <div class="details-row">
-        <span class="detail-name">文章标题</span>
-        <input type="text" class="detail-input" placeholder="请输入" v-model='details.title'>
+        <div class="details-row-left">
+          <span class="detail-name">文章标题</span>
+        </div>
+        <div class="details-row-right">
+          <input type="text" class="detail-input" placeholder="请输入" v-model='details.title'>
+        </div>
       </div>
       <div class="details-row">
-        <span class="detail-name">文章类型</span>
-        <span class="checkbox-wrap">
-          <input type="radio" name="" value=0 v-model='details.type'>
-          <label for="">私人</label>
-          <input type="radio" name="" value=2 v-model='details.type' >
-          <label for="">好友</label>
-          <input type="radio" name="" value=1 v-model='details.type' >
-          <label for="">公开</label>
-        </span>
+        <div class="details-row-left">
+          <span class="detail-name">阅读权限</span>
+        </div>
+        <div class="details-row-right">
+          <span class="checkbox-wrap">
+            <input type="radio" name="" value=0 v-model='details.mode'>
+            <label for="">学习</label>
+            <input type="radio" name="" value=2 v-model='details.mode' >
+            <label for="">日记</label>
+            <input type="radio" name="" value=1 v-model='details.mode' >
+            <label for="">随笔</label>
+          </span>
+        </div>
       </div>
       <div class="details-row">
-        <span class="detail-name">是否置顶</span>
-        <span class="checkbox-wrap">
-          <input type="radio" name="" value=1 v-model='details.up'>
-          <label for="">是</label>
-          <input type="radio" name="" value=0 v-model='details.up'>
-          <label for="">否</label>
-        </span>
+        <div class="details-row-left">
+          <span class="detail-name">文章分类</span>
+        </div>
+        <div class="details-row-right">
+          <span class="checkbox-wrap">
+            <input type="radio" name="" value=0 v-model='details.type'>
+            <label for="">私人</label>
+            <input type="radio" name="" value=2 v-model='details.type' >
+            <label for="">好友</label>
+            <input type="radio" name="" value=1 v-model='details.type' >
+            <label for="">公开</label>
+          </span>
+        </div>
       </div>
       <div class="details-row">
-        <span class="detail-name" @click='submitClick'>确定</span>
-        <span class="detail-name">返回</span>
+        <div class="details-row-left">
+          <span class="detail-name">是否置顶</span>
+        </div>
+        <div class="details-row-right">
+          <span class="checkbox-wrap">
+            <input type="radio" name="" value=1 v-model='details.up'>
+            <label for="">是</label>
+            <input type="radio" name="" value=0 v-model='details.up'>
+            <label for="">否</label>
+          </span>
+        </div>
+      </div>
+      <div class="details-row">
+        <a href="javascript:;" class="detail-name" @click='submitClick'>确定</a>
+        <a href="javascript:;" class="detail-name">返回</a>
       </div>
     </div>
     <Dialog :width='dialog.width'
@@ -55,7 +82,8 @@ export default {
       details: {
         type: 1,
         up: 0,
-        title: ''
+        title: '',
+        mode: 0
       },
       isShow: this.showDetails
     }
@@ -110,9 +138,30 @@ export default {
   justify-content: space-around;
   flex-direction: column;
   position: absolute;
+  font-size: 15px;
+}
+.detail-input {
+  height: 28px;
+  line-height: 28px;
+  font-size: 15px;
+  padding-left: 10px;
+  border-radius: 3px;
 }
 .details-row {
   display: flex;
   justify-content: space-around;
+  line-height: 28px;
+}
+.details-row-left {
+  text-align: center;
+}
+.details-row-right {
+  text-align: center;
+}
+.details-row-left {
+  width: 160px;
+}
+.details-row-right {
+  width: 320px;
 }
 </style>

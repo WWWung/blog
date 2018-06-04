@@ -41,6 +41,9 @@ export default {
     stopRain (toggled) {
       this.startRain = toggled
     }
+  },
+  created () {
+    console.log('app加载完成')
   }
 }
 </script>

@@ -6,7 +6,11 @@ Vue.use(Vuex)
 const state = {
   user: {},
   blogInfo: {},
-  isLogin: false
+  isLogin: false,
+  mark: {
+    time: null,
+    random: null
+  }
 }
 
 const mutations = {
@@ -24,10 +28,25 @@ const mutations = {
   },
   clearUserInfo (state) {
     state.user = {}
+  },
+  markVuex (state) {
+    state.mark.time = Date.now().valueOf()
+    state.mark.random = Math.random()
+    console.log(state.mark.time)
+  }
+}
+
+const actions = {
+  getUserInfo (context, user) {
+    context.commit('getUserInfo', user)
+  },
+  setLoginState (context, statu) {
+    context.commit('setLoginState', statu)
   }
 }
 
 export default new Vuex.Store({
   state,
-  mutations
+  mutations,
+  actions
 })

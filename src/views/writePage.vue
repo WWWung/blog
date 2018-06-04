@@ -4,8 +4,9 @@
     <Details @submitClick='getDetails'
               :showDetails='showDetails'>
             </Details>
-    <!-- <div id="show-wrap" v-html='editorHtml'>
-    </div> -->
+    <h2 class="write-title">
+      {{article.title}}
+    </h2>
     <Editor v-model='editorHtml'></Editor>
     <div id="submit-article" @click='submitArticle'>
       <a href="#">提交</a>
@@ -40,7 +41,8 @@ export default {
         time: '',
         userId: 1,
         type: 1,
-        content: ''
+        content: '',
+        mode: 0
       },
       dialog: {
         width: 600,
@@ -104,5 +106,8 @@ export default {
 <style lang="css" scoped>
 #submit-article {
   margin-top: 15px;
+}
+.write-title {
+  line-height: 50px;
 }
 </style>

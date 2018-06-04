@@ -46,9 +46,4 @@ const router = new Router({
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  console.log(this)
-  next()
-})
-
 export default router

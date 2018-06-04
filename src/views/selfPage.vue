@@ -1,6 +1,5 @@
 <template lang="html">
   <div>
-    <Head-view v-show='false'></Head-view>
     <header class="register-head">
       <div class="head-portrait-wrap">
         <img :src="user.imageUrl" alt="个人头像" class="head-portrait">
@@ -159,7 +158,6 @@
 </template>
 
 <script>
-import Head from '../components/head.vue'
 import Dialog from '../components/dialog'
 //  注册请求地址
 const url = 'http://127.0.0.8:3000/editInfo'
@@ -171,8 +169,7 @@ const imgUrl = 'http://127.0.0.8:3000/imgs/'
 const selfUrl = 'http://127.0.0.8:3000/self?name='
 export default {
   components: {
-    Dialog,
-    'Head-view': Head
+    Dialog
   },
   data () {
     return {

@@ -38,13 +38,14 @@ export default {
         toolbar: 'bold italic underline strikethrough | fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | undo redo | link unlink image | removeformat',
         fontsize_formats: '10px 11px 12px 14px 16px 18px 20px 24px',
         // 最上层工具栏
-        menubar: 'edit, format, insert',
+        menubar: 'edit, format, insert'
         //  上传图片
-        image_upload_handler: (blobInfo, success, failuer) => {
-          let formData = new FormData()
-          formData.set('upload_file', blobInfo.blob())
-          // this.
-        }
+        // image_upload_handler: (blobInfo, success, failuer) => {
+        //   let formData = new FormData()
+        //   formData.set('upload_file', blobInfo.blob())
+        //   console.log('a')
+        //   // this.
+        // }
       }
     }
   },

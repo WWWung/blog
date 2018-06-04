@@ -1,5 +1,5 @@
 <template lang="html">
-  <div id="date-menu-wrap">
+  <div id="date-menu-wrap" ref='list'>
     <ul id='date-menu' class="clearfix">
       <li v-for='item in articalMenu' :key='item.index' @click='deliveryMsg(item)'>
         <h2 class="item-title">
@@ -20,23 +20,29 @@
 </template>
 
 <script>
-const count = 5
-const start = 0
-const end = start + count
-const url = 'http://127.0.0.8:3000/support?start=' + start + '&end=' + end
+let count = 5
+let start = 0
+let end = start + count
 
 export default {
   data () {
     return {
-      articalMenu: []
+      articalMenu: [],
+      url: 'http://127.0.0.8:3000/support?start=',
+      dataSwitch: true
     }
   },
   mounted () {
-    this.$http.get(url).then((d) => {
-      this.articalMenu = d.data
-      console.log(d.data)
-    }).catch((e) => {
-      console.log(e)
+    this.getData(this)
+    const _this = this
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop
+      const clientHeight = document.documentElement.clientHeight
+      const offsetHeight = document.body.offsetHeight
+      if (offsetHeight - clientHeight - scrollTop < 30 && _this.dataSwitch) {
+        _this.dataSwitch = false
+        _this.getData(_this)
+      }
     })
   },
   methods: {
@@ -48,6 +54,19 @@ export default {
     timeFormater (t) {
       const time = new Date(t)
       return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()
+    },
+    getData (_this) {
+      const url = _this.url + start + '&end=' + end
+      _this.$http.get(url).then((d) => {
+        console.log(url)
+        _this.articalMenu = _this.articalMenu.concat(d.data)
+        start += d.data.length
+        end = start + 3
+        _this.dataSwitch = true
+      }).catch((e) => {
+        console.log(e)
+        _this.dataSwitch = true
+      })
     }
   }
 }
@@ -73,9 +92,11 @@ export default {
     box-sizing: border-box;
     box-shadow: 1px 1px 1px 0 rgba(31, 35, 46, 0.25);
     padding: 15px;
+    transition: all .2s ease;
   }
   #date-menu li:hover {
     box-shadow: 15px 15px 45px -10px rgba(10, 16, 34, 0.3);
+    transform: translate(0, -2px);
   }
   #date-menu li h2 {
     font-style: 32px;

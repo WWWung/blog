@@ -70,7 +70,6 @@ export default {
           this.dialog.show = true
           this.letDialogClear(this, 1000)
         }
-        console.log(this.$store.state.user)
       }).catch((err) => {
         console.log(err)
       })
