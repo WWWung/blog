@@ -4,16 +4,24 @@
       <router-view/>
       <Aside :show='asideShow' @showRain='stopRain'></Aside>
     </div>
-    <Rain ref='rain'
-          :mosPos='mosPos'
-          v-if='startRain'>
-          </Rain>
+    <transition name='weather'>
+      <Rain ref='rain'
+            :mosPos='mosPos'
+            v-if='startRain'>
+            </Rain>
+    </transition>
+    <transition name='weather'>
+      <Sunshine
+            v-if='!startRain'
+            ></Sunshine>
+    </transition>
   </div>
 </template>
 
 <script>
 import Aside from './components/aside'
 import Rain from './components/rain'
+import Sunshine from './components/sunshine'
 export default {
   name: 'App',
   data () {
@@ -25,7 +33,8 @@ export default {
   },
   components: {
     Aside,
-    Rain
+    Rain,
+    Sunshine
   },
   methods: {
     mouseMove (e) {
@@ -60,5 +69,11 @@ body {
   padding: 50px 30px;
   border-radius: 4px;
   box-shadow: 10px
+}
+.weather-enter-active, .weather-leave-active {
+  transition: opacity .7s;
+}
+.weather-enter, .weather-leave-to {
+  opacity: 0;
 }
 </style>

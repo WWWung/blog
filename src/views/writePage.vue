@@ -7,7 +7,7 @@
     <h2 class="write-title">
       {{article.title}}
     </h2>
-    <Editor v-model='editorHtml'></Editor>
+    <Editor v-model='editorHtml' @returnHtml='getHtml'></Editor>
     <div id="submit-article" @click='submitArticle'>
       <a href="#">提交</a>
     </div>
@@ -54,6 +54,9 @@ export default {
     }
   },
   methods: {
+    getHtml (html) {
+      this.editorHtml = html
+    },
     submitArticle () {
       if (!this.editorHtml) {
         this.dialog = {

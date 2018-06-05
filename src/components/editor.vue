@@ -2,7 +2,7 @@
   <div class="">
     <div id="show-wrap" v-html='editorHtml'>
     </div>
-    <Editor :init='init' v-model='editorHtml'></Editor>
+    <Editor :init='init' v-model='editorHtml' @input='returnHtml'></Editor>
   </div>
 </template>
 
@@ -51,6 +51,11 @@ export default {
   },
   mounted () {
     tinymce.init({})
+  },
+  methods: {
+    returnHtml () {
+      this.$emit('returnHtml', this.editorHtml)
+    }
   }
 }
 </script>

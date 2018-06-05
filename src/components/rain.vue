@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="back" ref='back'>
-    <canvas id="canvas" ref='canvas' :width="w" :height="h"></canvas>
+    <canvas id="rain-canvas" ref='canvas' :width="w" :height="h"></canvas>
   </div>
 </template>
 
@@ -26,6 +26,7 @@ export default {
     }
   },
   methods: {
+    //  获取rgba或者rgb颜色
     getColor (r, g, b, a) {
       return a ? 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')' : 'rgb(' + r + ',' + g + ',' + b + ')'
     },
@@ -142,17 +143,18 @@ export default {
   },
   watch: {
     mosPos () {
+      //  监听鼠标坐标移动改变风向
       const pw = this.$refs.back.offsetWidth
       this.radius = (this.mosPos[0] - pw / 2) / (pw / 2)
     }
   },
   mounted () {
     this.canvas = this.$refs.canvas
-    const _this = this
-    this.animate = window.requestAnimationFrame(_this.rainStart)
+    this.animate = window.requestAnimationFrame(this.rainStart)
+    //  在vue实例挂载的时候注册一个resize事件
     window.onresize = () => {
-      _this.h = document.documentElement.clientHeight
-      _this.w = document.documentElement.offsetWidth
+      this.h = document.documentElement.clientHeight
+      this.w = document.documentElement.offsetWidth
     }
   },
   beforeDestroy () {
@@ -171,7 +173,7 @@ export default {
   background-color: #424344;
   z-index: -100;
 }
-#canvas {
+#rain-canvas {
   position: absolute;
   top: 0;
   left: 0;
