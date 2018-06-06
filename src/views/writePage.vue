@@ -22,6 +22,7 @@ import Details from '../components/article_details'
 import Dialog from '../components/dialog'
 
 const url = 'http://127.0.0.8:3000/submitArticle'
+const editUrl = 'http://127.0.0.8:3000/edit?id='
 export default {
   components: {
     'Head-view': Head,
@@ -52,7 +53,6 @@ export default {
     getHtml (editorContent) {
       this.article.content = editorContent.htmlContent
       this.article.textContent = editorContent.textContent
-      console.log(this.article.textContent)
     },
     submitArticle () {
       if (!this.editorHtml) {
@@ -85,7 +85,7 @@ export default {
         })
       }
     },
-    // 获取子组件的数据
+    // 获取子组件里博客的标题类型...的详细信息
     getDetails (detail) {
       Object.assign(this.article, detail)
     },
@@ -98,7 +98,23 @@ export default {
           fun()
         }
       }, time)
+    },
+    getChangedBlog () {
+      console.log(this.$route.params.id)
+      if (this.$route.params.id === 'new') {
+        return false
+      }
+      this.$http.get(editUrl + this.$route.params.id).then((d) => {
+        console.log(d.data)
+        this.article.title = d.data.title
+        this.article.content = d.data.content
+        this.article.type = d.data.type
+        this.article.mode = d.data.mode
+      })
     }
+  },
+  created () {
+    this.getChangedBlog()
   }
 }
 </script>

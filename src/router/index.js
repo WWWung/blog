@@ -9,6 +9,7 @@ import SelfPage from '@/views/selfPage'
 
 Vue.use(Router)
 const router = new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -21,7 +22,7 @@ const router = new Router({
       component: BlogPage
     },
     {
-      path: '/write',
+      path: '/write/:id',
       name: 'WritePage',
       component: WritePage
     },

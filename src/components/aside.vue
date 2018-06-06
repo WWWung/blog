@@ -4,9 +4,9 @@
       <div id="page-aside" v-show='show'>
         <div id="blogger-info">
           <div class="">
-            <a href="http://localhost:8080/#/self?name=wwwung" class="blogger-portrait">
+            <router-link name='SelfPage' tag='a' to="/self/wwwung" class="blogger-portrait">
               <img :src="'../../../static/imgs/w.png'" alt="">
-            </a>
+            </router-link>
           </div>
           <div class="blogger-name">
             王建的博客
@@ -17,15 +17,25 @@
         </div>
         <ul id='page-aside-list'>
           <li>
-            <a href="http://localhost:8080/#/">首页</a>
+            <router-link name='Homepage' tag='a' to="/" class="blogger-portrait">
+              首页
+            </router-link>
           </li>
           <li>
+            <!-- <router-link tag='a' class="blogger-portrait">
+              日志
+            </router-link> -->
             <a href="javascript:;">日志</a>
           </li>
-          <li v-show='power'>
-            <a href="http://localhost:8080/#/write">写博客</a>
+          <li v-show='canWrite'>
+            <router-link name='WritePage' tag='a' to="/write/new" class="blogger-portrait">
+              写博客
+            </router-link>
           </li>
           <li>
+            <!-- <router-link tag='a' class="blogger-portrait">
+              留言板
+            </router-link> -->
             <a href="javascript:;">留言板</a>
           </li>
           <li>
@@ -63,21 +73,24 @@ export default {
   watch: {
     '$store.state.user' () {
       this.power = this.$store.state.user.power === '0'
-      // console.log('a')
+      console.log('a')
     }
   },
   mounted () {
-    const url = 'http://127.0.0.8:3000/isLogin'
-    this.$http.post(url).then((d) => {
-      if (d.data !== '未登录') {
-        this.power = this.$store.state.user.power === '0'
-      }
-    })
+    // const url = 'http://127.0.0.8:3000/isLogin'
+    // this.$http.post(url).then((d) => {
+    //   if (d.data !== '未登录') {
+    //     this.power = this.$store.state.user.power === '0'
+    //   }
+    // })
     // console.log(this.$store.state.user.power)
   },
   computed: {
     getRainHtml () {
       return this.showRain ? '雨停' : '下雨'
+    },
+    canWrite () {
+      return this.$store.state.user.power === '0'
     }
   }
 }
