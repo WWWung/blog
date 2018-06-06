@@ -5,9 +5,11 @@
         <h2 class="item-title">
           {{item.title}}
         </h2>
-        <p class="easy-content">
-          省略的博客内容
-        </p>
+        <div class="clearfix">
+          <p class="easy-content">
+            省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容......
+          </p>
+        </div>
         <div class="item-date">
           <time>
             {{timeFormater(item.time)}}
@@ -20,52 +22,52 @@
 </template>
 
 <script>
-let count = 5
-let start = 0
-let end = start + count
 
 export default {
   data () {
     return {
       articalMenu: [],
       url: 'http://127.0.0.8:3000/support?start=',
-      dataSwitch: true
+      dataSwitch: true,
+      start: 0,
+      end: 5,
+      count: 3
     }
   },
-  mounted () {
-    this.getData(this)
-    const _this = this
+  created () {
+    this.articalMenu.splice(0, this.articalMenu.length - 1)
+    this.getData()
     window.addEventListener('scroll', () => {
       const scrollTop = document.documentElement.scrollTop
       const clientHeight = document.documentElement.clientHeight
       const offsetHeight = document.body.offsetHeight
-      if (offsetHeight - clientHeight - scrollTop < 30 && _this.dataSwitch) {
-        _this.dataSwitch = false
-        _this.getData(_this)
+      if (offsetHeight - clientHeight - scrollTop < 30 && this.dataSwitch) {
+        this.dataSwitch = false
+        this.getData()
       }
     })
   },
   methods: {
     deliveryMsg (blog) {
-      this.$store.commit('getBlogInfo', blog)
-      this.$router.push({path: '/content?id=' + blog.id})
+      this.$router.push({path: '/content/' + blog.id})
     },
     // 此处因为要传参数所以不适合用计算属性
     timeFormater (t) {
       const time = new Date(t)
       return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()
     },
-    getData (_this) {
-      const url = _this.url + start + '&end=' + end
-      _this.$http.get(url).then((d) => {
-        console.log(url)
-        _this.articalMenu = _this.articalMenu.concat(d.data)
-        start += d.data.length
-        end = start + 3
-        _this.dataSwitch = true
+    getData () {
+      const url = this.url + this.start + '&end=' + this.end
+      this.$http.get(url).then((d) => {
+        this.articalMenu = this.articalMenu.concat(d.data)
+        this.start += d.data.length
+        this.end = this.start + this.count
+        if (d.data.length === this.count) {
+          this.dataSwitch = true
+        }
       }).catch((e) => {
         console.log(e)
-        _this.dataSwitch = true
+        this.dataSwitch = true
       })
     }
   }
@@ -106,6 +108,9 @@ export default {
     font-size: 15px;
     line-height: 24px;
     height: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 930px;
   }
   .item-date time{
     font-size: 12px;

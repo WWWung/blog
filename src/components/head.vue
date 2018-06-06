@@ -29,45 +29,28 @@
 </template>
 
 <script>
+import {mapState, mapMutations} from 'vuex'
 const loginOutUrl = 'http://127.0.0.8:3000/loginOut'
 export default {
-  data () {
-    return {
-      user: {
-        name: '',
-        description: '',
-        imageUrl: ''
-      },
-      isLogin: false
-    }
-  },
-  created () {
-    this.user.name = this.$store.state.user.name
-    this.user.description = this.$store.state.user.description
-    this.user.imageUrl = this.$store.state.user.imageUrl
-    this.isLogin = this.$store.state.isLogin
-  },
   methods: {
+    ...mapMutations(['setLoginState', 'clearUserInfo']),
     clickToLogin () {
       this.$router.push({path: '/login'})
     },
     clickToSelf () {
-      this.$router.push({path: '/self?name=' + this.user.name})
+      this.$router.push({path: '/self/' + this.user.name})
     },
     loginOut () {
       this.$http.get(loginOutUrl).then((d) => {
-        this.$store.commit('setLoginState', false)
-        this.$store.commit('clearUserInfo')
-        this.isLogin = false
+        this.setLoginState(false)
+        this.clearUserInfo()
       }).catch((err) => {
         console.log(err)
       })
     }
   },
-  watch: {
-    '$store.state.user' () {
-      console.log('a')
-    }
+  computed: {
+    ...mapState(['isLogin', 'user'])
   }
 }
 </script>

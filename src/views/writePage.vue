@@ -7,15 +7,11 @@
     <h2 class="write-title">
       {{article.title}}
     </h2>
-    <Editor v-model='editorHtml' @returnHtml='getHtml'></Editor>
+    <Editor @returnHtml='getHtml'></Editor>
     <div id="submit-article" @click='submitArticle'>
       <a href="#">提交</a>
     </div>
-    <Dialog :width='dialog.width'
-            :msg='dialog.msg'
-            :height='dialog.height'
-            :show-dialog='dialog.show'>
-          </Dialog>
+    <Dialog :dialog='dialog'></Dialog>
   </div>
 </template>
 
@@ -35,7 +31,6 @@ export default {
   },
   data () {
     return {
-      editorHtml: '',
       article: {
         title: '',
         time: '',
@@ -54,8 +49,10 @@ export default {
     }
   },
   methods: {
-    getHtml (html) {
-      this.editorHtml = html
+    getHtml (editorContent) {
+      this.article.content = editorContent.htmlContent
+      this.article.textContent = editorContent.textContent
+      console.log(this.article.textContent)
     },
     submitArticle () {
       if (!this.editorHtml) {

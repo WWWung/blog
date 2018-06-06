@@ -149,11 +149,7 @@
         </div>
       </div>
     </div>
-    <Dialog :width='dialog.width'
-            :msg='dialog.msg'
-            :height='dialog.height'
-            :show-dialog='dialog.show'>
-          </Dialog>
+    <Dialog :dialog='dialog'></Dialog>
   </div>
 </template>
 
@@ -276,7 +272,7 @@ export default {
         return false
       }
       let formData = new FormData()
-      formData.append('portrait', file)
+      formData.append('image', file)
       this.$http.post(poUrl, formData).then((d) => {
         //  返回图片名称
         this.user.imageUrl = imgUrl + d.data
@@ -304,21 +300,28 @@ export default {
       }
     },
     returnPrevPage () {
-      console.log(this.$router.history)
       this.$router.go(-1)
+    },
+    selfInfoInit () {
+      const name = this.$route.params.name
+      this.$http.get(selfUrl + name).then((d) => {
+        delete d.data.sessionId
+        delete d.data.pwd
+        this.isOwner = this.$store.state.user.name === d.data.name
+        Object.assign(this.user, d.data)
+        this.user.birthday = this.dateToSec(this.user.birthday)
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   },
   mounted () {
-    const name = this.$router.history.current.query.name
-    this.$http.get(selfUrl + name).then((d) => {
-      delete d.data.sessionId
-      delete d.data.pwd
-      this.isOwner = this.$store.state.user.name === d.data.name
-      Object.assign(this.user, d.data)
-      this.user.birthday = this.dateToSec(this.user.birthday)
-    }).catch((err) => {
-      console.log(err)
-    })
+    this.selfInfoInit()
+  },
+  watch: {
+    '$route' () {
+      this.selfInfoInit()
+    }
   }
 }
 </script>

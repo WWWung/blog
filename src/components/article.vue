@@ -46,11 +46,7 @@
         </div>
       </div>
     </div>
-    <Dialog :width='dialog.width'
-            :msg='dialog.msg'
-            :height='dialog.height'
-            :show-dialog='dialog.show'>
-          </Dialog>
+    <Dialog :dialog='dialog'></Dialog>
   </div>
 </template>
 
@@ -106,14 +102,13 @@ export default {
   },
   methods: {
     renderCommentList () {
-      const id = this.$router.history.current.query.id
+      const id = this.$route.params.id
       this.$http.get(url + id).then((d) => {
         Object.assign(this.blog, d.data.current)
         this.blog.prev.id = d.data.prev && d.data.prev.id
         this.blog.prev.title = d.data.prev && d.data.prev.title
         this.blog.next.id = d.data.next && d.data.next.id
         this.blog.next.title = d.data.next && d.data.next.title
-        console.log(this.blog.next)
       }).catch((err) => {
         console.log(err)
       })
@@ -125,7 +120,7 @@ export default {
     toSelfPage (index) {
       const name = this.blog.comments[index].username
       if (name.length >= 4) {
-        this.$router.push({path: '/self?name=' + name})
+        this.$router.push({path: '/self/' + name})
       }
     },
     userComment () {
@@ -183,14 +178,14 @@ export default {
     },
     toNextBlog () {
       if (this.blog.next.id) {
-        this.$router.push({path: '/content?id=' + this.blog.next.id})
+        this.$router.push({path: '/content/' + this.blog.next.id})
         //  同一个query只改变后面的参数页面不会刷新，用watch监视路由变化或者用a标签都没有效果，暂时先这样替代
         this.$router.go(0)
       }
     },
     toPrevBlog () {
       if (this.blog.prev.id) {
-        this.$router.push({path: '/content?id=' + this.blog.prev.id})
+        this.$router.push({path: '/content/' + this.blog.prev.id})
         this.$router.go(0)
       }
     }
@@ -204,7 +199,9 @@ export default {
     }
   },
   watch: {
-    // '$router':
+    '$route' () {
+      this.renderCommentList()
+    }
   }
 }
 </script>

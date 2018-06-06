@@ -1,8 +1,8 @@
 <template lang="html">
   <transition name='dialogTransition'>
-    <div id="dialog-layer" v-show='showDialog' :style="'top:' + t + 'px'">
-        <div id="dialog" :style="'width:' + width + 'px; height: ' + height + 'px; line-height: ' + height + 'px ' ">
-          {{msg}}
+    <div id="dialog-layer" v-if='dialog.show' :style="'top:' + t + 'px'">
+        <div id="dialog" :style="'width:' + dialog.width + 'px; height: ' + dialog.height + 'px; line-height: ' + dialog.height + 'px ' ">
+          {{dialog.msg}}
         </div>
     </div>
   </transition>
@@ -16,29 +16,20 @@ export default {
     }
   },
   props: {
-    width: {
-      type: Number,
-      default: 300
-    },
-    height: {
-      type: Number,
-      default: 60
-    },
-    msg: {
-      type: String,
-      default: '这里是弹窗内容'
-    },
-    showDialog: {
-      type: Boolean,
-      default: true
-    }
-  },
-  watch: {
-    showDialog (val) {
-      if (val) {
-        this.t = document.documentElement.scrollTop
+    dialog: {
+      type: Object,
+      default () {
+        return {
+          width: 300,
+          height: 60,
+          msg: '正在加载',
+          show: 'false'
+        }
       }
     }
+  },
+  created () {
+    console.log(this.dialog)
   }
 }
 </script>

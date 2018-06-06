@@ -57,11 +57,7 @@
         <a href="javascript:;" class="detail-name">返回</a>
       </div>
     </div>
-    <Dialog :width='dialog.width'
-            :msg='dialog.msg'
-            :height='dialog.height'
-            :show-dialog='dialog.show'>
-          </Dialog>
+    <Dialog :dialog='dialog'></Dialog>
   </div>
 </template>
 

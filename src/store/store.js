@@ -5,22 +5,11 @@ Vue.use(Vuex)
 
 const state = {
   user: {},
-  blogInfo: {},
-  isLogin: false,
-  mark: {
-    time: null,
-    random: null
-  }
+  isLogin: false
 }
 
 const mutations = {
-  getBlogInfo (state, blog) {
-    state.blogInfo.id = blog.id
-    state.blogInfo.title = blog.title
-    state.blogInfo.content = blog.content
-    state.blogInfo.time = blog.time
-  },
-  getUserInfo (state, user) {
+  setUserInfo (state, user) {
     Object.assign(state.user, user)
   },
   setLoginState (state, statu) {
@@ -28,17 +17,12 @@ const mutations = {
   },
   clearUserInfo (state) {
     state.user = {}
-  },
-  markVuex (state) {
-    state.mark.time = Date.now().valueOf()
-    state.mark.random = Math.random()
-    console.log(state.mark.time)
   }
 }
 
 const actions = {
-  getUserInfo (context, user) {
-    context.commit('getUserInfo', user)
+  setUserInfo (context, user) {
+    context.commit('setUserInfo', user)
   },
   setLoginState (context, statu) {
     context.commit('setLoginState', statu)

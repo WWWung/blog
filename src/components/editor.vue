@@ -30,6 +30,7 @@ export default {
     return {
       editorHtml: '',
       init: {
+        width: 980,
         language_url: '/static/tinymce/zh_CN.js',
         skin_url: '/static/tinymce/skins/lightgray',
         language: 'zh_CN',
@@ -38,14 +39,30 @@ export default {
         toolbar: 'bold italic underline strikethrough | fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | undo redo | link unlink image | removeformat',
         fontsize_formats: '10px 11px 12px 14px 16px 18px 20px 24px',
         // 最上层工具栏
-        menubar: 'edit, format, insert'
+        menubar: 'edit, format, insert',
         //  上传图片
-        // image_upload_handler: (blobInfo, success, failuer) => {
-        //   let formData = new FormData()
-        //   formData.set('upload_file', blobInfo.blob())
-        //   console.log('a')
-        //   // this.
-        // }
+        images_upload_handler: (blobInfo, success, failure) => {
+          // let formData = new FormData()
+          // formData.set('upload_file', blobInfo.blob())
+          // this.
+          if (blobInfo.blob().size > 3148576) {
+            failure('文件体积过大')
+          }
+          // if (self.accept.indexOf(blobInfo.blob().type) <= 0) {
+          //   failure('文件格式错误')
+          // }
+          let formData = new FormData()
+          formData.append('image', blobInfo.blob(), blobInfo.filename())
+          console.log(blobInfo.filename())
+          this.$http.post('http://127.0.0.8:3000/portrait', formData).then((d) => {
+            console.log(d.data)
+            success('http://127.0.0.8:3000/imgs/' + d.data)
+          }).catch((err) => {
+            console.log(err)
+            failure('上传失败')
+            // console.log()
+          })
+        }
       }
     }
   },
@@ -54,7 +71,15 @@ export default {
   },
   methods: {
     returnHtml () {
-      this.$emit('returnHtml', this.editorHtml)
+      //  获取纯文本内容
+      // console.log(tinymce.editors[0].getContent({format: 'text'}))
+      let editorContent = {
+        htmlContent: this.editorHtml
+      }
+      if (tinymce.editors[0]) {
+        editorContent.textContent = tinymce.editors[0].getContent({format: 'text'})
+      }
+      this.$emit('returnHtml', editorContent)
     }
   }
 }

@@ -17,15 +17,12 @@
         <a href="javascript:;" @click='regUser' ref='loginBtn' class="reg-btn">注册</a>
       </div>
     </div>
-    <Dialog :width='dialog.width'
-            :msg='dialog.msg'
-            :height='dialog.height'
-            :show-dialog='dialog.show'>
-          </Dialog>
+    <Dialog :dialog='dialog'></Dialog>
   </div>
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 import Dialog from '../components/dialog'
 const url = 'http://127.0.0.8:3000/register'
 export default {
@@ -46,6 +43,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setUserInfo', 'setLoginState']),
     regUser () {
       if (!this.name) {
         this.dialog.msg = '请输入名称'
@@ -85,8 +83,8 @@ export default {
         imageUrl: '../../../static/imgs/portrait.png'
       }
       this.$http.post(url, JSON.stringify(user)).then((d) => {
-        this.$store.commit('getUserInfo', user)
-        this.$store.commit('setLoginState', true)
+        this.setUserInfo(user)
+        this.setLoginState(true)
         this.$router.push({path: '/'})
       }).catch((err) => {
         console.log(err)

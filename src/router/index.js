@@ -16,7 +16,7 @@ const router = new Router({
       component: MainPage
     },
     {
-      path: '/content',
+      path: '/content/:id',
       name: 'BlogPage',
       component: BlogPage
     },
@@ -36,7 +36,7 @@ const router = new Router({
       component: RegisterPage
     },
     {
-      path: '/self',
+      path: '/self/:name',
       name: 'SelfPage',
       component: SelfPage,
       meta: {
