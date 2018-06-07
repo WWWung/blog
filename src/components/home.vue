@@ -59,6 +59,8 @@ export default {
     getData () {
       const url = this.url + this.start + '&end=' + this.end
       this.$http.get(url).then((d) => {
+        console.log(url)
+        console.log(d.data)
         this.articalMenu = this.articalMenu.concat(d.data)
         this.start += d.data.length
         this.end = this.start + this.count

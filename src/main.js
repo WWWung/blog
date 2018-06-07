@@ -15,29 +15,75 @@ Vue.config.productionTip = false
 
 const url = 'http://127.0.0.8:3000/isLogin'
 
+// router.beforeEach((to, from, next) => {
+//   axios.post(url).then((d) => {
+//     if (d.data !== '未登录') {
+//       store.dispatch('setUserInfo', d.data)
+//       store.dispatch('setLoginState', true)
+//     } else {
+//       // store.dispatch('setLoginState', false)
+//       // store.dispatch('clearUserInfo')
+//     }
+//     // next()
+//   }).catch((err) => {
+//     console.log(err)
+//     // next()
+//   })
+//   if (to.meta.isBloger) {
+//     // console.log(1)
+//     if (store.state.user.power === '0') {
+//       next()
+//     } else {
+//       next('/login')
+//     }
+//   } else {
+//     next()
+//   }
+// })
+
+/*
+*@  采取的判断是否登录方法：登陆过后会在服务端把用户信息存在session里，同时生成一个sessionID并通过cookie保存在浏览器上，下次打开页面的时候，向服务端发送一个请求，服务端判断请求的cookie里包含的sessionID
+*@  如果cookie不存在或者sessionID不存在，则返回一条信息‘未登录’，否则去session里根绝sessionID取得对应的用户信息然后返回到前端
+*@  判断store里是否有已登录的状态，如果有，则不需要从服务端获取用户信息，直接判断要去的页面是否需要博主权限，如果是博主，则直接跳转，否则回到首页
+*@  如果store里面没有已登录的状态，通过ajax到服务端判断是否有cookie，如果有，根据cookie取session里获取用户信息并返回，在store里设置状态已登录，并且存下用户信息，然后在需要权限判断的页面前判断，如果满足权限，跳转，否则回到首页
+*@  如果store里面没有已登录的状态，也没有cookie，则说明没有登录，此时去任何需要权限的页面都直接重定向到登录页面
+*/
 router.beforeEach((to, from, next) => {
-  axios.post(url).then((d) => {
-    if (d.data !== '未登录') {
-      store.dispatch('setUserInfo', d.data)
-      store.dispatch('setLoginState', true)
+  if (store.state.isLogin) {
+    if (to.meta.isBloger) {
+      if (store.state.user.power === '0') {
+        next()
+      } else {
+        next('/')
+      }
     } else {
-      // store.dispatch('setLoginState', false)
-      // store.dispatch('clearUserInfo')
-    }
-    // next()
-  }).catch((err) => {
-    console.log(err)
-    // next()
-  })
-  if (to.meta.isBloger) {
-    // console.log(1)
-    if (store.state.user.power === '0') {
       next()
-    } else {
-      next('/login')
     }
   } else {
-    next()
+    axios.post(url).then((d) => {
+      if (d.data === '未登录') {
+        if (to.meta.isBloger) {
+          next('/login')
+        } else {
+          next()
+        }
+      } else {
+        store.dispatch('setUserInfo', d.data)
+        store.dispatch('setLoginState', true)
+        if (to.meta.isBloger) {
+          if (d.data.power === '0') {
+            next()
+          } else {
+            next('/')
+          }
+        } else {
+          next()
+        }
+      }
+    }).catch(err => {
+      console.log(err)
+      next()
+    })
   }
 })
 
