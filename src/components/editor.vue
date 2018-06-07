@@ -66,6 +66,12 @@ export default {
       }
     }
   },
+  props: {
+    htmlContent: {
+      type: String,
+      default: ''
+    }
+  },
   mounted () {
     tinymce.init({})
   },
@@ -80,6 +86,11 @@ export default {
         editorContent.textContent = tinymce.editors[0].getContent({format: 'text'})
       }
       this.$emit('returnHtml', editorContent)
+    }
+  },
+  watch: {
+    'htmlContent' () {
+      this.editorHtml = this.htmlContent
     }
   }
 }

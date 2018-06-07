@@ -45,9 +45,9 @@
         </div>
         <div class="details-row-right">
           <span class="checkbox-wrap">
-            <input type="radio" name="" value=1 v-model='details.up'>
+            <input type="radio" name="" value=1 v-model='article.up'>
             <label for="">是</label>
-            <input type="radio" name="" value=0 v-model='details.up'>
+            <input type="radio" name="" value=0 v-model='article.up'>
             <label for="">否</label>
           </span>
         </div>
@@ -62,6 +62,13 @@
 </template>
 
 <script>
+/*
+*@  逻辑:
+*@    1.用watch监控article的变化，如果article改变，则把article里面的属性赋值给details
+*@    2.将编辑好的details信息通过@emit的方式按照子组件 ==> 父组件的方向通信
+*@    3.不可以直接把dialog对象作为props属性接收父组件的信息，因为
+*/
+
 import Dialog from './dialog'
 export default {
   components: {
@@ -76,10 +83,10 @@ export default {
         show: false
       },
       details: {
-        type: 1,
-        up: 0,
-        title: '',
-        mode: 0
+        type: this.article.type,
+        up: this.article.up,
+        title: this.article.title,
+        mold: this.article.mold
       },
       isShow: this.showDetails
     }
@@ -88,6 +95,17 @@ export default {
     showDetails: {
       type: Boolean,
       default: false
+    },
+    article: {
+      type: Object,
+      default () {
+        return {
+          type: 1,
+          up: 0,
+          title: '',
+          mold: 0
+        }
+      }
     }
   },
   methods: {
@@ -105,6 +123,15 @@ export default {
       } else {
         this.isShow = false
       }
+    }
+  },
+  watch: {
+    //  article下面的title属性默认为空，如果发生变化则
+    'article.title' () {
+      this.details.type = this.article.type
+      this.details.title = this.article.title
+      this.details.up = this.article.up
+      this.details.mold = this.article.mold
     }
   }
 }
