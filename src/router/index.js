@@ -24,7 +24,10 @@ const router = new Router({
     {
       path: '/write/:id',
       name: 'WritePage',
-      component: WritePage
+      component: WritePage,
+      meta: {
+        isBloger: true
+      }
     },
     {
       path: '/login',

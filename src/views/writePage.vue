@@ -1,15 +1,12 @@
 <template lang="html" >
   <div id="write-page">
     <Head-view></Head-view>
-    <Details @submitClick='getDetails'
-              :showDetails='showDetails'
-              :article='article'>
+    <Details  :showDetails='showDetails' :details='article'>
             </Details>
     <h2 class="write-title">
       {{article.title}}
     </h2>
-    <Editor @returnHtml='getHtml'
-            :htmlContent='article.content'></Editor>
+    <Editor :editorContent='editorContent'></Editor>
     <div id="submit-article" @click='submitArticle'>
       <a href="#">提交</a>
     </div>
@@ -56,16 +53,16 @@ export default {
         msg: '正在上传...',
         show: false
       },
-      showDetails: true
+      showDetails: true,
+      editorContent: {
+        htmlContent: '',
+        textContent: ''
+      }
     }
   },
   methods: {
-    getHtml (editorContent) {
-      this.article.content = editorContent.htmlContent
-      this.article.textContent = editorContent.textContent
-    },
     submitArticle () {
-      if (!this.article.content) {
+      if (!this.editorContent.htmlContent) {
         this.dialog = {
           width: 300,
           height: 100,
@@ -81,6 +78,7 @@ export default {
           show: true
         }
         this.article.time = (new Date()).getTime()
+        this.article.content = this.editorContent.htmlContent
         // 把数据转换成JSON格式，否则浏览器会先发送options请求，等服务器成功响应成功之后再发送post，原因在于跨域，具体机制不明白...待学习
         if (this.$route.params.id !== 'new') {
           //  如果id存在且不等于new 则给artilce添加id属性

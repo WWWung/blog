@@ -1,8 +1,8 @@
 <template lang="html">
   <div class="">
-    <div id="show-wrap" v-html='editorHtml'>
+    <div id="show-wrap" v-html='editorContent.htmlContent'>
     </div>
-    <Editor :init='init' v-model='editorHtml' @input='returnHtml'></Editor>
+    <Editor :init='init' v-model='editorContent.htmlContent' @input='returnHtml'></Editor>
   </div>
 </template>
 
@@ -28,7 +28,6 @@ export default {
   },
   data () {
     return {
-      editorHtml: '',
       init: {
         width: 980,
         language_url: '/static/tinymce/zh_CN.js',
@@ -67,9 +66,14 @@ export default {
     }
   },
   props: {
-    htmlContent: {
-      type: String,
-      default: ''
+    editorContent: {
+      type: Object,
+      default () {
+        return {
+          htmlContent: '',
+          textContent: ''
+        }
+      }
     }
   },
   mounted () {
@@ -79,18 +83,9 @@ export default {
     returnHtml () {
       //  获取纯文本内容
       // console.log(tinymce.editors[0].getContent({format: 'text'}))
-      let editorContent = {
-        htmlContent: this.editorHtml
-      }
       if (tinymce.editors[0]) {
-        editorContent.textContent = tinymce.editors[0].getContent({format: 'text'})
+        this.editorContent.textContent = tinymce.editors[0].getContent({format: 'text'})
       }
-      this.$emit('returnHtml', editorContent)
-    }
-  },
-  watch: {
-    'htmlContent' () {
-      this.editorHtml = this.htmlContent
     }
   }
 }

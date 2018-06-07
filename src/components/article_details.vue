@@ -15,12 +15,12 @@
         </div>
         <div class="details-row-right">
           <span class="checkbox-wrap">
-            <input type="radio" name="" value=0 v-model='details.mode'>
-            <label for="">学习</label>
-            <input type="radio" name="" value=2 v-model='details.mode' >
-            <label for="">日记</label>
-            <input type="radio" name="" value=1 v-model='details.mode' >
-            <label for="">随笔</label>
+            <input type="radio" name="mold1" value=0 v-model='details.mold'>
+            <label for="mold1">学习</label>
+            <input type="radio" name="mold2" value=2 v-model='details.mold' >
+            <label for="mold2">日记</label>
+            <input type="radio" name="mold3" value=1 v-model='details.mold' >
+            <label for="mold3">随笔</label>
           </span>
         </div>
       </div>
@@ -30,12 +30,12 @@
         </div>
         <div class="details-row-right">
           <span class="checkbox-wrap">
-            <input type="radio" name="" value=0 v-model='details.type'>
-            <label for="">私人</label>
-            <input type="radio" name="" value=2 v-model='details.type' >
-            <label for="">好友</label>
-            <input type="radio" name="" value=1 v-model='details.type' >
-            <label for="">公开</label>
+            <input type="radio" name="type1" value=0 v-model='details.type'>
+            <label for="type1">私人</label>
+            <input type="radio" name="type2" value=2 v-model='details.type' >
+            <label for="type2">好友</label>
+            <input type="radio" name="type3" value=1 v-model='details.type' >
+            <label for="type3">公开</label>
           </span>
         </div>
       </div>
@@ -45,10 +45,10 @@
         </div>
         <div class="details-row-right">
           <span class="checkbox-wrap">
-            <input type="radio" name="" value=1 v-model='article.up'>
-            <label for="">是</label>
-            <input type="radio" name="" value=0 v-model='article.up'>
-            <label for="">否</label>
+            <input type="radio" name="up1" value=1 v-model='details.up'>
+            <label for="up1">是</label>
+            <input type="radio" name="up2" value=0 v-model='details.up'>
+            <label for="up2">否</label>
           </span>
         </div>
       </div>
@@ -64,9 +64,11 @@
 <script>
 /*
 *@  逻辑:
-*@    1.用watch监控article的变化，如果article改变，则把article里面的属性赋值给details
-*@    2.将编辑好的details信息通过@emit的方式按照子组件 ==> 父组件的方向通信
-*@    3.不可以直接把dialog对象作为props属性接收父组件的信息，因为
+*@    1.从父组件获取details信息(如果是新建博客，里面的信息为空，如果是编辑博客，则会根据id从服务端获取已有的博客信息)
+*@  疑问:
+*@    2.vue是单向数据流，从父组件传来放在props中的数据，如果是数组或者对象以外的格式，在子组件内直接修改vue会提示warn：不建议直接修改这个数据，因为一旦父组件重新渲染，这个数据也会重新改变
+*@      但是，如果这个数据格式是数组或者对象，在子组件里更改这个数据，父组件里相应的数据也会更改，不需要用@emit去实现子组件 ===> 父组件方向的通信。
+*@      (通过数组或者对象可以打到双向数据流的效果？这样做的副作用是什么？待续...)
 */
 
 import Dialog from './dialog'
@@ -82,13 +84,7 @@ export default {
         msg: '正在上传...',
         show: false
       },
-      details: {
-        type: this.article.type,
-        up: this.article.up,
-        title: this.article.title,
-        mold: this.article.mold
-      },
-      isShow: this.showDetails
+      isShow: true
     }
   },
   props: {
@@ -96,7 +92,7 @@ export default {
       type: Boolean,
       default: false
     },
-    article: {
+    details: {
       type: Object,
       default () {
         return {
@@ -110,8 +106,7 @@ export default {
   },
   methods: {
     submitClick () {
-      // 把数据传递给父组件
-      this.$emit('submitClick', this.details)
+      // 把数据传递给父组件 (存疑)
       if (!this.details.title) {
         this.dialog.msg = '请输入文章标题'
         this.dialog.show = true
@@ -123,15 +118,6 @@ export default {
       } else {
         this.isShow = false
       }
-    }
-  },
-  watch: {
-    //  article下面的title属性默认为空，如果发生变化则
-    'article.title' () {
-      this.details.type = this.article.type
-      this.details.title = this.article.title
-      this.details.up = this.article.up
-      this.details.mold = this.article.mold
     }
   }
 }

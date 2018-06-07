@@ -17,7 +17,7 @@
         </div>
         <ul id='page-aside-list'>
           <li>
-            <router-link name='Homepage' tag='a' to="/" class="blogger-portrait">
+            <router-link name='Homepage' tag='a' to="/">
               首页
             </router-link>
           </li>
@@ -28,7 +28,7 @@
             <a href="javascript:;">日志</a>
           </li>
           <li v-show='canWrite'>
-            <router-link name='WritePage' tag='a' to="/write/new" class="blogger-portrait">
+            <router-link name='WritePage' tag='a' to="/write/new">
               写博客
             </router-link>
           </li>
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
   props: {
     show: {
@@ -86,11 +87,13 @@ export default {
     // console.log(this.$store.state.user.power)
   },
   computed: {
+    ...mapState(['user']),
     getRainHtml () {
       return this.showRain ? '雨停' : '下雨'
     },
     canWrite () {
-      return this.$store.state.user.power === '0'
+      // console.log()
+      return this.user.power === '0'
     }
   }
 }
