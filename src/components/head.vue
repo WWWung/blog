@@ -15,6 +15,11 @@
       <div id="login-out-wrap">
         <a href="javascript:;" id="about-self" @click='clickToSelf'>个人中心</a>
         <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
+        <div class="to-write">
+          <router-link to="/write/new" name='WritePage' tag='a'>
+            写博客
+          </router-link>
+        </div>
       </div>
     </div>
     <div v-else id="login-tip-wrap">
@@ -50,7 +55,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isLogin', 'user'])
+    ...mapState(['isLogin', 'user']),
+    canWrite () {
+      return this.user.power === '0'
+    }
   }
 }
 </script>
@@ -109,7 +117,7 @@ export default {
     text-indent: 20px;
   }
 
-  #login-tip-wrap a:hover, #search-keyword:hover {
+  #login-tip-wrap a:hover, #search-keyword:hover, .to-write a:hover {
     color: #54cbed;
   }
 
@@ -157,5 +165,13 @@ export default {
   #search-wrap {
     float: right;
     margin-top: 20px;
+  }
+
+  .to-write a{
+    font-size: 15px;
+    line-height: 30px;
+  }
+  .to-write {
+    text-align: left;
   }
 </style>

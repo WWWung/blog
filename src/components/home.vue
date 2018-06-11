@@ -57,13 +57,10 @@ export default {
       return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()
     },
     getData () {
-      const url = this.url + this.start + '&end=' + this.end
+      const url = this.url + this.start + '&end=' + this.count
       this.$http.get(url).then((d) => {
-        console.log(url)
-        console.log(d.data)
         this.articalMenu = this.articalMenu.concat(d.data)
         this.start += d.data.length
-        this.end = this.start + this.count
         if (d.data.length === this.count) {
           this.dataSwitch = true
         }

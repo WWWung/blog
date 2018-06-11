@@ -27,9 +27,9 @@
             </router-link> -->
             <a href="javascript:;">日志</a>
           </li>
-          <li v-show='canWrite'>
+          <li>
             <router-link name='WritePage' tag='a' to="/write/new">
-              写博客
+              随笔
             </router-link>
           </li>
           <li>
@@ -51,7 +51,6 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
 export default {
   props: {
     show: {
@@ -71,29 +70,9 @@ export default {
       this.$emit('showRain', this.showRain)
     }
   },
-  watch: {
-    '$store.state.user' () {
-      this.power = this.$store.state.user.power === '0'
-      console.log('a')
-    }
-  },
-  mounted () {
-    // const url = 'http://127.0.0.8:3000/isLogin'
-    // this.$http.post(url).then((d) => {
-    //   if (d.data !== '未登录') {
-    //     this.power = this.$store.state.user.power === '0'
-    //   }
-    // })
-    // console.log(this.$store.state.user.power)
-  },
   computed: {
-    ...mapState(['user']),
     getRainHtml () {
       return this.showRain ? '雨停' : '下雨'
-    },
-    canWrite () {
-      // console.log()
-      return this.user.power === '0'
     }
   }
 }
