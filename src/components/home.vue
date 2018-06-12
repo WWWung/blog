@@ -5,9 +5,12 @@
         <h2 class="item-title">
           {{item.title}}
         </h2>
-        <div class="clearfix">
+        <div class="clearfix blog-content">
+          <p class='easy-img' v-if='item.thumbnail'>
+            <img :src="item.thumbnail.src" :alt="item.thumbnail.alt">
+          </p>
           <p class="easy-content">
-            省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容省略的博客内容......
+            {{item.textContent}}
           </p>
         </div>
         <div class="item-date">
@@ -94,6 +97,7 @@ export default {
     box-shadow: 1px 1px 1px 0 rgba(31, 35, 46, 0.25);
     padding: 15px;
     transition: all .2s ease;
+    cursor: pointer;
   }
   #date-menu li:hover {
     box-shadow: 15px 15px 45px -10px rgba(10, 16, 34, 0.3);
@@ -103,13 +107,30 @@ export default {
     font-style: 32px;
     line-height: 34px;
   }
+  .blog-content {
+    display: flex;
+  }
+  .easy-img {
+    height: 130px;
+    width: 300px;
+    overflow: hidden;
+    position: relative;
+  }
+  .easy-img img {
+    max-width: 300px;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    position: absolute;
+  }
   .easy-content {
     font-size: 15px;
     line-height: 24px;
     height: 130px;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 930px;
   }
   .item-date time{
     font-size: 12px;

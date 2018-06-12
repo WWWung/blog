@@ -84,7 +84,7 @@ export default {
       //  获取纯文本内容
       // console.log(tinymce.editors[0].getContent({format: 'text'}))
       if (tinymce.editors[0]) {
-        this.editorContent.textContent = tinymce.editors[0].getContent({format: 'text'})
+        this.editorContent.textContent = tinymce.editors[0].getContent({format: 'text'}).substring(0, 200) + '......'
       }
     }
   }

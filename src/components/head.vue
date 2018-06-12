@@ -20,6 +20,11 @@
             写博客
           </router-link>
         </div>
+        <div class="to-write">
+          <router-link :to="toMsgPage" name='WritePage' tag='a'>
+            私信列表
+          </router-link>
+        </div>
       </div>
     </div>
     <div v-else id="login-tip-wrap">
@@ -58,6 +63,9 @@ export default {
     ...mapState(['isLogin', 'user']),
     canWrite () {
       return this.user.power === '0'
+    },
+    toMsgPage () {
+      return '/message/' + this.user.name
     }
   }
 }
@@ -119,6 +127,7 @@ export default {
 
   #login-tip-wrap a:hover, #search-keyword:hover, .to-write a:hover {
     color: #54cbed;
+    text-decoration: underline;
   }
 
   #user-img-wrap {

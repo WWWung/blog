@@ -150,11 +150,13 @@
       </div>
     </div>
     <Dialog :dialog='dialog'></Dialog>
+    <SendMsg></SendMsg>
   </div>
 </template>
 
 <script>
 import Dialog from '../components/dialog'
+import SendMsg from '../components/sendMsg'
 //  注册请求地址
 const url = 'http://127.0.0.8:3000/editInfo'
 //  上传头像请求地址
@@ -165,7 +167,8 @@ const imgUrl = 'http://127.0.0.8:3000/imgs/'
 const selfUrl = 'http://127.0.0.8:3000/self?name='
 export default {
   components: {
-    Dialog
+    Dialog,
+    SendMsg
   },
   data () {
     return {

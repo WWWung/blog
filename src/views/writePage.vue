@@ -45,7 +45,8 @@ export default {
         type: 1,
         content: '',
         mold: 0,
-        up: 0
+        up: 0,
+        textContent: null
       },
       dialog: {
         width: 600,
@@ -79,6 +80,7 @@ export default {
         }
         this.article.time = (new Date()).getTime()
         this.article.content = this.editorContent.htmlContent
+        this.article.textContent = this.editorContent.textContent
         // 把数据转换成JSON格式，否则浏览器会先发送options请求，等服务器成功响应成功之后再发送post，原因在于跨域，具体机制不明白...待学习
         if (this.$route.params.id !== 'new') {
           //  如果id存在且不等于new 则给artilce添加id属性

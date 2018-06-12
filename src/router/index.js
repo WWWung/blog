@@ -6,6 +6,7 @@ import WritePage from '@/views/writePage'
 import LoginPage from '@/views/loginPage'
 import RegisterPage from '@/views/regPage'
 import SelfPage from '@/views/selfPage'
+import MsgPage from '@/views/msgPage'
 
 Vue.use(Router)
 const router = new Router({
@@ -43,6 +44,14 @@ const router = new Router({
       path: '/self/:name',
       name: 'SelfPage',
       component: SelfPage,
+      meta: {
+        isLogin: true
+      }
+    },
+    {
+      path: '/message/:name',
+      name: 'MsgPage',
+      component: MsgPage,
       meta: {
         isLogin: true
       }
