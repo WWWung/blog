@@ -34,7 +34,7 @@ export default {
       dataSwitch: true,
       start: 0,
       end: 5,
-      count: 3
+      count: 5
     }
   },
   created () {

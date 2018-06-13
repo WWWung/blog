@@ -15,7 +15,7 @@
       <div id="login-out-wrap">
         <router-link :to="toMsgPage" name='WritePage' tag='a' class="msg-tip">
           私信列表
-          <span>2</span>
+          <span>10</span>
         </router-link>
         <a href="javascript:;" id="about-self" @click='clickToSelf'>个人中心</a>
         <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
@@ -68,7 +68,7 @@ export default {
   },
   created() {
     const url = msgUrl + this.user.id
-    
+
   }
 }
 </script>
