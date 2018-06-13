@@ -66,7 +66,7 @@ body {
   width: 1000px;
   margin: 20px auto;
   background-color: #fdfdfd;
-  padding: 50px 30px;
+  /* padding: 50px 30px; */
   border-radius: 4px;
   box-shadow: 10px
 }

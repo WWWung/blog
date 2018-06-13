@@ -13,18 +13,15 @@
         </div>
       </div>
       <div id="login-out-wrap">
+        <router-link :to="toMsgPage" name='WritePage' tag='a' class="msg-tip">
+          私信列表
+          <span>2</span>
+        </router-link>
         <a href="javascript:;" id="about-self" @click='clickToSelf'>个人中心</a>
         <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
-        <div class="to-write">
-          <router-link to="/write/new" name='WritePage' tag='a'>
-            写博客
-          </router-link>
-        </div>
-        <div class="to-write">
-          <router-link :to="toMsgPage" name='WritePage' tag='a'>
-            私信列表
-          </router-link>
-        </div>
+        <router-link to="/write/new" name='WritePage' tag='a'>
+          写博客
+        </router-link>
       </div>
     </div>
     <div v-else id="login-tip-wrap">
@@ -41,6 +38,7 @@
 <script>
 import {mapState, mapMutations} from 'vuex'
 const loginOutUrl = 'http://127.0.0.8:3000/loginOut'
+const msgUrl = 'http://127.0.0.8:3000/unreadmsg?receiveId='
 export default {
   methods: {
     ...mapMutations(['setLoginState', 'clearUserInfo']),
@@ -67,6 +65,10 @@ export default {
     toMsgPage () {
       return '/message/' + this.user.name
     }
+  },
+  created() {
+    const url = msgUrl + this.user.id
+    
   }
 }
 </script>
@@ -101,11 +103,32 @@ export default {
     vertical-align: middle;
   }
 
+  .msg-tip {
+    position: relative;
+  }
+
+  .msg-tip span {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: -18px;
+    top: 1px;
+    border-radius: 50%;
+    background: red;
+    color: #fff;
+    line-height: 16px;
+    text-align: center;
+  }
+
   #login-out-wrap {
     position: absolute;
     top: 10px;
     right: 10px;
     padding-right: 30px;
+  }
+
+  #login-out-wrap a {
+    font-size: 14px;
   }
 
   #login-out {

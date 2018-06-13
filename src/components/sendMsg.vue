@@ -6,18 +6,85 @@
         <div id="msg-record">
           <a href="javascript:;">对话记录</a>
         </div>
-        <textarea name="sendMsg" id="send-wrap-input"></textarea>
+        <textarea name="sendMsg" id="send-wrap-input" v-model='content'></textarea>
+      </div>
+      <div class="failed-msg">
+        {{failedMsg}}
       </div>
       <div id="send-btns">
-        <a href="javascript:;" id='send-msg-btn'>发送</a>
-        <a href="javascript:;" id='cancle-send-msg'>取消</a>
+        <a href="javascript:;" id='send-msg-btn' @click='sendSecretMessage'>发送</a>
+        <a href="javascript:;" id='cancle-send-msg' @click='cancelSendMsg'>取消</a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+const url = 'http://127.0.0.8:3000/message'
 export default {
+  data () {
+    return {
+      content: '',
+      failedMsg: ''
+    }
+  },
+  props: {
+    userId: {
+      type: Number,
+      default: null
+    }
+  },
+  methods: {
+    cancelSendMsg () {
+      const dialog = {
+        show: false
+      }
+      this.failedMsg = ''
+      this.$emit('sendMsgTip', dialog)
+    },
+    sendSecretMessage () {
+      this.failedMsg = ''
+      if (this.userId === this.$store.state.user.id) {
+        this.failedMsg = '请勿给自己发送私信'
+        return false
+      }
+      if (typeof this.userId !== 'number' || typeof this.$store.state.user.id !== 'number') {
+        this.failedMsg = '发送者id或者接收者id错误'
+        return false
+      }
+      if (!this.content) {
+        this.failedMsg = '请输入私信内容'
+        return false
+      }
+      const message = {
+        sendId: this.$store.state.user.id,
+        receiveId: this.userId,
+        content: this.content,
+        time: Date.now(),
+        status: 0
+      }
+      this.$http.post(url, JSON.stringify(message)).then(() => {
+        const dialog = {
+          width: 300,
+          height: 100,
+          msg: '私信发送成功',
+          show: true
+        }
+        this.failedMsg = ''
+        this.$emit('sendMsgTip', dialog)
+      }).catch(err => {
+        const dialog = {
+          width: 300,
+          height: 100,
+          msg: '私信发送失败',
+          show: true
+        }
+        this.failedMsg = ''
+        this.$emit('sendMsgTip', dialog)
+        console.log(err)
+      })
+    }
+  }
 }
 </script>
 
@@ -35,7 +102,7 @@ export default {
 }
 #send-wrap {
   width: 400px;
-  height: 430px;
+  height: 420px;
   background: #fff;
   border-radius: 4px;
   box-sizing: border-box;
@@ -63,6 +130,13 @@ export default {
   margin-top: 40px;
   display: flex;
   justify-content: center;
+}
+.failed-msg {
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  color: #eb1d1d;
+  font-size: 12px;
 }
 #send-btns a {
   padding: 0 15px;

@@ -7,10 +7,10 @@
         <input type="file" name="portrait" value="" ref="portrait" accept="image/gif,image/jpeg,image/jpg,image/png" @change='changeFile($event)'>
       </div>
       <div class="head-welcome-msg">
-        <h1 class="register-title">
-          欢迎加入!
-        </h1>
-        <span class="register-tip">
+        <a href="javascript:;" class="message-btn" v-if='!isOwner' @click='sendMsgBox'>
+          私信TA
+        </a>
+        <span class="register-tip" v-else>
         您填写的个人信息我们不会主动公开
         </span>
       </div>
@@ -56,7 +56,7 @@
           <input type="radio" name="" value=1 id="rg-woman" v-model='user.sex'>
         </div>
         <div class="show-info" @mouseenter='showBtn("sex")' @mouseleave='showBtn(false)' v-show='infoList.sex.show'>
-          <span>{{user.sex}}</span>
+          <span>{{sexHandler(user.sex)}}</span>
           <a href="javascript:;" class="edit-btn" v-show='infoList.sex.edit&&isOwner' @click='toggleEdit("sex")'>编辑</a>
         </div>
         <div class="edit-btns" v-show='!infoList.sex.show'>
@@ -112,7 +112,7 @@
           <input type="date" name="" value="" id="rg-birthday" class=""  v-model='user.birthday'>
         </div>
         <div class="show-info" @mouseenter='showBtn("birthday")' @mouseleave='showBtn(false)' v-show='infoList.birthday.show'>
-          <span>{{user.birthday}}</span>
+          <span>{{dateHandler(user.birthday)}}</span>
           <a href="javascript:;" class="edit-btn" v-show='infoList.birthday.edit&&isOwner' @click='toggleEdit("birthday")'>编辑</a>
         </div>
         <div class="edit-btns" v-show='!infoList.birthday.show'>
@@ -150,14 +150,18 @@
       </div>
     </div>
     <Dialog :dialog='dialog'></Dialog>
-    <SendMsg></SendMsg>
+    <SendMsg
+          v-if='sendMsgToggle'
+          :userId='user.id'
+          @sendMsgTip='sendMsgTip'>
+          </SendMsg>
   </div>
 </template>
 
 <script>
 import Dialog from '../components/dialog'
 import SendMsg from '../components/sendMsg'
-//  注册请求地址
+//  编辑个人信息请求地址
 const url = 'http://127.0.0.8:3000/editInfo'
 //  上传头像请求地址
 const poUrl = 'http://127.0.0.8:3000/portrait'
@@ -165,6 +169,7 @@ const poUrl = 'http://127.0.0.8:3000/portrait'
 const imgUrl = 'http://127.0.0.8:3000/imgs/'
 //  判断是否登录地址
 const selfUrl = 'http://127.0.0.8:3000/self?name='
+
 export default {
   components: {
     Dialog,
@@ -174,7 +179,7 @@ export default {
     return {
       user: {
         id: null,
-        sex: 0,
+        sex: '',
         description: null,
         phone: null,
         qq: null,
@@ -231,10 +236,20 @@ export default {
         }
       },
       //  查看的信息页面是否是当前登录账号
-      isOwner: true
+      isOwner: true,
+      sendMsgToggle: false
     }
   },
   methods: {
+    sendMsgBox () {
+      this.sendMsgToggle = true
+    },
+    sendMsgTip (dialog) {
+      this.sendMsgToggle = false
+      this.dialog.msg = dialog.msg
+      this.dialog.show = dialog.show
+      this.letDialogClear(this, 1000)
+    },
     toggleEdit (name) {
       this.infoList[name].show = !this.infoList[name].show
     },
@@ -286,9 +301,14 @@ export default {
     toLoginPage () {
       this.$router.push({path: '/login'})
     },
-    dateToSec (date) {
-      const time = new Date(date)
-      return time.getFullYear() + '-' + this.add0(time.getMonth() + 1) + '-' + this.add0(time.getDate())
+    dateHandler (date) {
+      if (typeof date === 'string') {
+        return new Date(date).getTime()
+      } else if (typeof date === 'number') {
+        const time = new Date(date)
+        return time.getFullYear() + '-' + this.add0(time.getMonth() + 1) + '-' + this.add0(time.getDate())
+      }
+      return null
     },
     add0 (num) {
       num = Number.parseInt(num)
@@ -312,13 +332,21 @@ export default {
         delete d.data.pwd
         this.isOwner = this.$store.state.user.name === d.data.name
         Object.assign(this.user, d.data)
-        this.user.birthday = this.dateToSec(this.user.birthday)
       }).catch((err) => {
         console.log(err)
       })
+    },
+    sexHandler (sex) {
+      if (sex === null) {
+        return null
+      } else if (typeof sex === 'number') {
+        return sex === 0 ? '男' : '女'
+      } else if (typeof sex === 'string') {
+        return sex === '男' ? 0 : 1
+      }
     }
   },
-  mounted () {
+  created () {
     this.selfInfoInit()
   },
   watch: {
@@ -344,6 +372,10 @@ export default {
 .return-page a {
   font-size: 14px;
   color: #1a1a1a;
+}
+.self-main {
+  padding: 0 30px;
+  box-sizing: border-box;
 }
 .return-page a:hover {
   text-decoration: underline;
@@ -384,6 +416,18 @@ export default {
   height: 50px;
   border-bottom: 1px solid #ebebeb;
   padding: 30px;
+}
+.message-btn {
+  display: inline-block;
+  text-align: center;
+  font-size: 14px;
+  line-height: 30px;
+  width: 70px;
+  border-radius: 3px;
+  border: 1px solid #c6c6c6;
+}
+.message-btn:hover {
+  border-color: #db9a6a;
 }
 .register-row input {
   text-align: left;
@@ -451,7 +495,8 @@ export default {
   height: 168px;
   border-radius: 4px;
   overflow: hidden;
-  left: 20px;
+  left: 50px;
+  top: 30px;
 }
 .head-portrait {
   width: 168px;
@@ -471,8 +516,8 @@ export default {
 }
 .head-welcome-msg {
   position: absolute;
-  left: 230px;
-  top: 20px;
+  left: 240px;
+  top: 60px;
 }
 .register-title {
   margin: 10px 0;
