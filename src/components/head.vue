@@ -15,7 +15,7 @@
       <div id="login-out-wrap">
         <router-link :to="toMsgPage" name='WritePage' tag='a' class="msg-tip">
           私信列表
-          <span>10</span>
+          <span v-if='showUnreadMsgTip'>{{handleUnreadMsgCount}}</span>
         </router-link>
         <a href="javascript:;" id="about-self" @click='clickToSelf'>个人中心</a>
         <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
@@ -40,6 +40,11 @@ import {mapState, mapMutations} from 'vuex'
 const loginOutUrl = 'http://127.0.0.8:3000/loginOut'
 const msgUrl = 'http://127.0.0.8:3000/unreadmsg?receiveId='
 export default {
+  data () {
+    return {
+      unreadMsgCount: 0
+    }
+  },
   methods: {
     ...mapMutations(['setLoginState', 'clearUserInfo']),
     clickToLogin () {
@@ -64,11 +69,23 @@ export default {
     },
     toMsgPage () {
       return '/message/' + this.user.name
+    },
+    //  处理未读消息，如果没有未读消息，显示为空，如果未读消息大于99条，还是显示99，否则正常显示
+    handleUnreadMsgCount () {
+      return this.unreadMsgCount === 0 ? '' : this.unreadMsgCount >= 99 ? 99 : this.unreadMsgCount
+    },
+    //  如果没有未读消息，则不显示未读消息提示
+    showUnreadMsgTip () {
+      return this.unreadMsgCount !== 0
     }
   },
-  created() {
+  created () {
     const url = msgUrl + this.user.id
-
+    this.$http.get(url).then(d => {
+      console.log(url)
+      console.log(d)
+      this.unreadMsgCount = d.data.length
+    })
   }
 }
 </script>
@@ -79,13 +96,14 @@ export default {
     /* height: 135px; */
     text-align: center;
     border-bottom: 1px solid #ddd;
-    padding-bottom: 20px;
+    padding: 30px 30px 30px 30px;
     position: relative;
+    box-sizing: border-box;
   }
 
   #search-wrap {
     position: absolute;
-    bottom: 30px;
+    bottom: 40px;
     right: 20px;
   }
 
@@ -122,7 +140,7 @@ export default {
 
   #login-out-wrap {
     position: absolute;
-    top: 10px;
+    top: 18px;
     right: 10px;
     padding-right: 30px;
   }
@@ -192,11 +210,6 @@ export default {
     font-size: 14px;
     line-height: 18px;
     color: #646464;
-  }
-
-  #search-wrap {
-    float: right;
-    margin-top: 20px;
   }
 
   .to-write a{
