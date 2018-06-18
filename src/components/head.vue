@@ -80,12 +80,12 @@ export default {
     }
   },
   created () {
-    const url = msgUrl + this.user.id
-    this.$http.get(url).then(d => {
-      console.log(url)
-      console.log(d)
-      this.unreadMsgCount = d.data.length
-    })
+    if (this.$store.state.isLogin) {
+      const url = msgUrl + this.user.id
+      this.$http.get(url).then(d => {
+        this.unreadMsgCount = d.data.length
+      })
+    }
   }
 }
 </script>
