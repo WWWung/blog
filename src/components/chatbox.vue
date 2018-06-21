@@ -6,11 +6,22 @@
       </div>
       <div id="history-chat">
         <div class="chat-item clearfix">
+          <div class="chat-time">
+            <time>2018年6月18日</time>
+          </div>
           <div class="chat-avatar">
             <img src="http://127.0.0.8:3000/imgs/blog.png" alt="">
           </div>
-          <div class="chat-content">
-            <p></p>
+          <div class="chat-main">
+            <div class="chat-content">
+              <p>
+                1
+                <br>
+                2
+                <br>
+                3
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -56,9 +67,22 @@ export default {
 .chat-avatar {
   float: left;
 }
+.chat-main {
+  float: left;
+  margin-left: 25px;
+  width: 300px;
+}
 .chat-avatar img{
   width: 50px;
   height: 50px;
   border-radius: 50%;
+}
+.chat-content {
+  background-color: #fff;
+}
+.chat-time {
+  text-align: center;
+  font-size: 12px;
+  color: #d0d0d0;
 }
 </style>
