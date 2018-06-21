@@ -39,7 +39,6 @@
 import {mapState, mapMutations} from 'vuex'
 const loginOutUrl = 'http://127.0.0.8:3000/loginOut'
 const msgUrl = 'http://127.0.0.8:3000/unreadmsg?receiveId='
-const msgListUrl = 'http://127.0.0.8:3000/messagelist?id='
 export default {
   data () {
     return {

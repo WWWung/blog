@@ -7,6 +7,10 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import store from './store/store'
 import './assets/css/clear.css'
+import VueSocketio from 'vue-socket.io'
+import socketio from 'socket.io-client'
+
+Vue.use(VueSocketio, socketio('http://127.0.0.8:3000/'), store)
 
 axios.defaults.withCredentials = true
 Vue.use(VueAxios, axios)

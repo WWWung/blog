@@ -62,8 +62,8 @@ export default {
         return false
       }
       const message = {
-        sendId: this.$store.state.user.id,
-        receiveId: this.userId,
+        userId: this.$store.state.user.id,
+        friendId: this.userId,
         content: this.content,
         time: Date.now(),
         status: 0

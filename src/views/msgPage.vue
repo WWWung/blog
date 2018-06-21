@@ -1,41 +1,69 @@
 <template lang="html">
   <div id="msg-wrap">
+    <div class="msg-title">
+      <h2 class="title-text">私信列表</h2>
+      <a href="javascript:;" class="all-readed">全部标记为已读</a>
+    </div>
     <div id="msg-box">
-      <ul class="msg-list">
-        <li class="clearfix">
+      <ul class="msg-list" v-if='haveMsg'>
+        <li class="" v-for='item in data' :key='item.id'>
           <div class="msg-avatar-box">
-            <img :src="'../../../static/imgs/portrait.png'" alt="" class="msg-avatar">
+            <img :src="item.friendInfo.imageUrl" alt="" class="msg-avatar">
           </div>
           <div class="msg-main">
-            <h3 class="msg-author">wwwung</h3>
-            <p class="msg-content">这是我发送的私信这是我发送的私信这是我发送的私信这是我发送的私信这是我发送的私信这是我发送的私信这是我发送的私信这是我发送的私信</p>
+            <h3 class="msg-author">{{item.friendInfo.name}}</h3>
+            <p class="msg-content">{{item.content}}</p>
           </div>
           <div class="msg-time">
-            <span>5天前</span>
+            <span>{{getTimeDistance(item.time)}}</span>
           </div>
         </li>
       </ul>
+      <div class="no-msg" v-else>
+        您暂时没有私信消息哦!
+      </div>
     </div>
+    <Chatbox></Chatbox>
   </div>
 </template>
 
 <script>
+import Chatbox from '@/components/chatbox'
+const msgListUrl = 'http://127.0.0.8:3000/messagelist?id='
 export default {
+  components: {
+    Chatbox
+  },
   data () {
     return {
-      data: {
-        length: 0,
-        list: []
-      }
+      data: []
     }
+  },
+  created () {
+    this.getMessageList()
   },
   methods: {
     getMessageList () {
-      this.$http.get(msgListUrl + this.user.id).then(d => {
-        console.log(d)
+      this.$http.get(msgListUrl + this.$store.state.user.id).then(d => {
+        console.log(d.data)
+        this.data = d.data
       }).catch(err => {
         console.log(err)
       })
+    },
+    getTimeDistance (time) {
+      const now = Date.now()
+      const dis = now - time
+      if (dis / (24 * 60 * 60 * 60 * 1000) > 10) {
+        return '十天前'
+      }
+      const date = new Date(time)
+      return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
+    }
+  },
+  computed: {
+    haveMsg () {
+      return !!this.data.length
     }
   }
 }
@@ -53,14 +81,26 @@ export default {
   padding: 20px;
   border-bottom: 1px solid #777;
   position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  height: 140px;
 }
-.msg-list li::before {
+.msg-list li::after {
   position: absolute;
-  height: 2px;
+  height: 3px;
   left: 0;
+  bottom: 0px;
   right: 0;
-  bottom: 0;
-  background-color: orange;
+  background-color: #ff8900;
+  content: '';
+  transform: translateX(101%);
+  transition: transform .2s
+}
+.msg-list li:hover::after {
+  transform: translateX(0);
+}
+.msg-list li:hover {
+  border-bottom: none;
 }
 .msg-avatar {
   width: 100px;
@@ -90,5 +130,20 @@ export default {
   float: right;
   font-size: 14px;
   color: #999;
+}
+.title-text {
+  font-size: 22px;
+  line-height: 48px;
+  color: #222;
+  /* margin-left: 20px; */
+  /* text-align: center; */
+}
+.msg-title {
+  padding-left: 20px;
+}
+.all-readed {
+  font-size: 12px;
+  color: #333;
+  line-height: 24px;
 }
 </style>
