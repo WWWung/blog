@@ -5,7 +5,7 @@
         <strong>用户A用户</strong>
       </div>
       <div id="history-chat">
-        <div class="history-box" ref='historyBox' :style='{bottom: chatBox.bottom}'>
+        <div class="history-box" ref='historyBox' :style='{bottom: chatBox.bottom}' @mousewheel='wheel'>
           <div class="chat-item clearfix">
             <div class="chat-time">
               <time>2018年6月18日</time>
@@ -171,6 +171,30 @@ export default {
         document.onmousemove = null
         document.onmouseup = null
       }
+    },
+    wheel (ev) {
+      const detail = ev.wheelDelta || ev.detail
+      let h = 0
+      if (detail > 0) {
+        h = 20
+      } else if (detail < 0) {
+        h = -20
+      }
+      let b = Number.parseInt(this.scrollBox.bottom) + h
+      if (b <= 4) {
+        b = 4
+      } else if (b >= 446 - Number.parseInt(this.scrollBox.height)) {
+        b = 446 - Number.parseInt(this.scrollBox.height)
+      }
+      this.scrollBox.bottom = b + 'px'
+      const bH = Math.round(this.chatBox.height * h / (446 - Number.parseInt(this.scrollBox.height)))
+      let bB = Number.parseInt(this.chatBox.bottom) - bH
+      if (bB >= 0) {
+        bB = 0
+      } else if (bB <= -this.chatBox.height) {
+        bB = -this.chatBox.height
+      }
+      this.chatBox.bottom = bB + 'px'
     }
   }
 }

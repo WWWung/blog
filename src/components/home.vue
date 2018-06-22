@@ -40,7 +40,14 @@ export default {
   created () {
     this.articalMenu.splice(0, this.articalMenu.length - 1)
     this.getData()
-    window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', this.scrollLoad)
+  },
+  destroyed () {
+    window.removeEventListener('scroll', this.scrollLoad)
+  },
+  methods: {
+    scrollLoad () {
+      console.log('a')
       const scrollTop = document.documentElement.scrollTop
       const clientHeight = document.documentElement.clientHeight
       const offsetHeight = document.body.offsetHeight
@@ -48,9 +55,7 @@ export default {
         this.dataSwitch = false
         this.getData()
       }
-    })
-  },
-  methods: {
+    },
     deliveryMsg (blog) {
       this.$router.push({path: '/content/' + blog.id})
     },
