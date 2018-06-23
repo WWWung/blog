@@ -6,7 +6,7 @@
     </div>
     <div id="msg-box">
       <ul class="msg-list" v-if='haveMsg'>
-        <li class="" v-for='item in data' :key='item.id'>
+        <li class="" v-for='item in data' :key='item.id' @click='showChatBox($event, item.friendInfo)'>
           <div class="msg-avatar-box">
             <img :src="item.friendInfo.imageUrl" alt="" class="msg-avatar">
           </div>
@@ -23,7 +23,7 @@
         您暂时没有私信消息哦!
       </div>
     </div>
-    <Chatbox></Chatbox>
+    <Chatbox :friendInfo='friendInfo' v-if='isShow' @showChatBox='closeChatBox'></Chatbox>
   </div>
 </template>
 
@@ -36,7 +36,9 @@ export default {
   },
   data () {
     return {
-      data: []
+      data: [],
+      friendInfo: null,
+      isShow: false
     }
   },
   created () {
@@ -51,6 +53,9 @@ export default {
         console.log(err)
       })
     },
+    closeChatBox (flag) {
+      this.isShow = flag
+    },
     getTimeDistance (time) {
       const now = Date.now()
       const dis = now - time
@@ -59,6 +64,10 @@ export default {
       }
       const date = new Date(time)
       return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
+    },
+    showChatBox (e, friendInfo) {
+      this.friendInfo = friendInfo
+      this.isShow = true
     }
   },
   computed: {

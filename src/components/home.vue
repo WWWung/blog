@@ -47,7 +47,6 @@ export default {
   },
   methods: {
     scrollLoad () {
-      console.log('a')
       const scrollTop = document.documentElement.scrollTop
       const clientHeight = document.documentElement.clientHeight
       const offsetHeight = document.body.offsetHeight
