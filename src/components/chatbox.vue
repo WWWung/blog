@@ -86,16 +86,20 @@ export default {
     // console.log('dom刷新了')
   },
   methods: {
+    //  聊天流程：
+    //    1.  当客户端连接的时候，服务端全局声明一个对象保存客户端的socketid和客户端的用户id
+    //    2.  客户端B给客户端A发送消息的时候向服务器post一条带有客户端Aid的数据，服务端根据客户端Aid在全局对象里找到Aid对应的socketid
+    //    3.  向客户端A推送消息
     sendChat () {
       // console.log(this.$socket)
-      this.$socket.on('test', data => {
-        console.log(data)
-        this.$socket.emit('my other event', {data: '我是客户端发给服务器的'})
+      this.$socket.emit('my other event', {
+        data: this.content,
+        id: this.$socket.id
       })
-      this.$socket.emit('my other event', {data: '我是客户端发给服务器的'})
       if (!this.content) {
         return false
       }
+      /*
       if (!this.$store.state.isLogin || this.friendInfo.id === null) {
         return false
       }
@@ -111,7 +115,7 @@ export default {
       }).catch(err => {
         console.log(err)
         console.log('发送失败')
-      })
+      })*/
     },
     scroll (ev) {
       //  记录鼠标点下去的时候的鼠标位置已经滚动条位置以及
