@@ -5,7 +5,7 @@
         <strong>{{friendInfo.name}}</strong>
       </div>
       <div id="history-chat">
-        <div class="history-box" ref='historyBox' @mousewheel='wheel'>
+        <div class="history-box" ref='historyBox' @scroll='wheel'>
           <div class="chat-item clearfix" v-for='item in chatList' :key='item.id'>
             <div class="chat-time">
               <time>{{handleTime(item.time)}}</time>
@@ -34,7 +34,7 @@
         </div>
         <div id="send-btn">
           <a href="javascript:;" class="cancle-chat" @click='closeChatBox'>关闭</a>
-          <a href="javascript:;" class="send-chat">发送</a>
+          <a href="javascript:;" class="send-chat" @click='sendChat'>发送</a>
         </div>
       </div>
     </div>
@@ -43,6 +43,7 @@
 
 <script>
 const url = 'http://127.0.0.8:3000/chat?userId='
+const msgUrl = 'http://127.0.0.8:3000/message'
 export default {
   props: {
     friendInfo: {
@@ -82,21 +83,50 @@ export default {
     // this.chatBox.height = this.$refs.historyBox.scrollHeight - 450
     // this.$refs.historyBox.scrollTop = this.chatBox.height
     // this.scrollBox.height = Math.round(442 * 442 / this.$refs.historyBox.scrollHeight) + 'px'
+    // console.log('dom刷新了')
   },
   methods: {
+    sendChat () {
+      // console.log(this.$socket)
+      this.$socket.on('test', data => {
+        console.log(data)
+        this.$socket.emit('my other event', {data: '我是客户端发给服务器的'})
+      })
+      this.$socket.emit('my other event', {data: '我是客户端发给服务器的'})
+      if (!this.content) {
+        return false
+      }
+      if (!this.$store.state.isLogin || this.friendInfo.id === null) {
+        return false
+      }
+      const msg = {
+        content: this.content,
+        time: Date.now(),
+        status: 0,
+        userId: this.$store.state.user.id,
+        friendId: this.friendInfo.id
+      }
+      this.$http.post(msgUrl, JSON.stringify(msg)).then(() => {
+        console.log('发送成功')
+      }).catch(err => {
+        console.log(err)
+        console.log('发送失败')
+      })
+    },
     scroll (ev) {
       //  记录鼠标点下去的时候的鼠标位置已经滚动条位置以及
       const y = ev.pageY
       const b = Number.parseInt(this.scrollBox.bottom)
+      //  记录表鼠标点下去时候的真实滚动条位置
+      const top = this.$refs.historyBox.scrollTop
       document.onmousemove = e => {
         e.preventDefault()
-        //  dis为鼠标移动的距离
+        //  dis为鼠标移动的距离,也是模拟滚动条应该移动的距离
         const dis = y - e.pageY
         //  h为滚动条应该移动的距离
         const h = this.chatBox.height * dis / (446 - Number.parseInt(this.scrollBox.height))
-        this.$refs.historyBox.scrollTop = this.chatBox.height - h
-        // this.scrollBox.bottom = b + dis + 'px'
-        console.log(this.chatBox.height, h)
+        this.$refs.historyBox.scrollTop = top - h
+        this.scrollBox.bottom = (b + dis <= 2 ? 2 : b + dis >= 448 - Number.parseInt(this.scrollBox.height) ? 448 - Number.parseInt(this.scrollBox.height) : b + dis) + 'px'
       }
       document.onmouseup = e => {
         document.onmousemove = null
@@ -104,32 +134,11 @@ export default {
       }
     },
     wheel (ev) {
-      console.log(this.$refs.historyBox.scrollHeight)
       if (this.chatBox.height <= 0) {
         return false
       }
-      const detail = ev.wheelDelta || ev.detail
-      let h = 0
-      if (detail > 0) {
-        h = 20
-      } else if (detail < 0) {
-        h = -20
-      }
-      let b = Number.parseInt(this.scrollBox.bottom) + h
-      if (b <= 4) {
-        b = 4
-      } else if (b >= 446 - Number.parseInt(this.scrollBox.height)) {
-        b = 446 - Number.parseInt(this.scrollBox.height)
-      }
-      this.scrollBox.bottom = b + 'px'
-      const bH = Math.round(this.chatBox.height * h / (446 - Number.parseInt(this.scrollBox.height)))
-      let bB = Number.parseInt(this.chatBox.bottom) - bH
-      if (bB >= 0) {
-        bB = 0
-      } else if (bB <= -this.chatBox.height) {
-        bB = -this.chatBox.height
-      }
-      // this.chatBox.bottom = bB + 'px'
+      const top = this.$refs.historyBox.scrollTop
+      this.scrollBox.bottom = (this.chatBox.height - top) / this.chatBox.height * (448 - Number.parseInt(this.scrollBox.height)) + 'px'
     },
     getChatList (start) {
       //  如果没有登录或者从父组件传来的friendid不存在，则无法请求
@@ -140,8 +149,8 @@ export default {
       const count = 10
       const chatUrl = url + this.$store.state.user.id + '&friendId=' + this.friendInfo.id + '&start=' + start + '&count=' + count
       this.$http.get(chatUrl).then(d => {
-        this.chatList = d.data
-        this.$nexttick(() => {
+        this.chatList = d.data.data
+        this.$nextTick(() => {
           this.chatBox.height = this.$refs.historyBox.scrollHeight - 450
           this.$refs.historyBox.scrollTop = this.chatBox.height
           this.scrollBox.height = Math.round(442 * 442 / this.$refs.historyBox.scrollHeight) + 'px'
@@ -168,7 +177,7 @@ export default {
       }
     },
     handleContetn (content) {
-      //  处理<>字符，避免被恶意插入标签
+      //  处理<>字符，避免被恶意插入标签,把\n用br替换
       return content.replace(/</ig, '&lt').replace(/>/ig, '&gt').replace(/\n/ig, '<br/>')
     },
     getImg (type) {
