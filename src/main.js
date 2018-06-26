@@ -10,7 +10,8 @@ import './assets/css/clear.css'
 import VueSocketio from 'vue-socket.io'
 import socketio from 'socket.io-client'
 
-Vue.use(VueSocketio, socketio('http://127.0.0.8:3000/'), store)
+const io = socketio('http://127.0.0.8:3000/')
+Vue.use(VueSocketio, io)
 
 axios.defaults.withCredentials = true
 Vue.use(VueAxios, axios)
@@ -54,6 +55,10 @@ const url = 'http://127.0.0.8:3000/isLogin'
 */
 router.beforeEach((to, from, next) => {
   if (store.state.isLogin) {
+    io.emit('login', {
+      ioId: io.id,
+      userId: store.state.user.id
+    })
     if (to.meta.isBloger) {
       if (store.state.user.power === '0') {
         next()
@@ -66,12 +71,20 @@ router.beforeEach((to, from, next) => {
   } else {
     axios.post(url).then((d) => {
       if (d.data === '未登录') {
+        io.emit('login', {
+          ioId: io.id,
+          userId: 0
+        })
         if (to.meta.isBloger) {
           next('/login')
         } else {
           next()
         }
       } else {
+        io.emit('login', {
+          ioId: io.id,
+          userId: d.data.id
+        })
         store.dispatch('setUserInfo', d.data)
         store.dispatch('setLoginState', true)
         if (to.meta.isBloger) {

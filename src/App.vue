@@ -52,7 +52,13 @@ export default {
     }
   },
   created () {
-    console.log('app加载完成')
+    console.log('进入app')
+  },
+  destroyed () {
+    alert('退出app')
+    this.$socket.emit('loginout', {
+      id: this.$socket.id
+    })
   }
 }
 </script>
