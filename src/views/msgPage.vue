@@ -17,6 +17,9 @@
           <div class="msg-time">
             <span>{{getTimeDistance(item.time)}}</span>
           </div>
+          <div class="unread-tip" v-if='isUnread'>
+            未读
+          </div>
         </li>
       </ul>
       <div class="no-msg" v-else>
@@ -47,7 +50,6 @@ export default {
   methods: {
     getMessageList () {
       this.$http.get(msgListUrl + this.$store.state.user.id).then(d => {
-        console.log(d.data)
         this.data = d.data
       }).catch(err => {
         console.log(err)
@@ -68,6 +70,9 @@ export default {
     showChatBox (e, friendInfo) {
       this.friendInfo = friendInfo
       this.isShow = true
+    },
+    isUnread (type, status) {
+      return type === 1 && status === 0
     }
   },
   computed: {
@@ -110,6 +115,15 @@ export default {
 }
 .msg-list li:hover {
   border-bottom: none;
+}
+.msg-list li:hover .unread-tip {
+  height: 30px;
+  width: 60px;
+  background-color: inherit;
+  box-sizing: border-box;
+  border: 1px solid red;
+  border-radius: 4px;
+  color: #f70;
 }
 .msg-avatar {
   width: 100px;
@@ -154,5 +168,19 @@ export default {
   font-size: 12px;
   color: #333;
   line-height: 24px;
+}
+.unread-tip {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background: red;
+  color: rgba(255, 0, 0, 0);
+  transition: width .2s ease;
+  text-align: center;
+  line-height: 30px;
+  font-size: 13px;
 }
 </style>

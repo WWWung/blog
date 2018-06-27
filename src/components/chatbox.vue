@@ -80,7 +80,7 @@ export default {
         chatList: [], //  聊天记录
         start: 0, //  聊天记录的起始
         count: 0, //  本次获取聊天记录的数量
-        total: 0  //  数据库里储存的聊天记录总量
+        total: 0 //  数据库里储存的聊天记录总量
       },
       content: ''
     }
