@@ -6,7 +6,10 @@
       </div>
       <div id="history-chat">
         <div class="history-box" ref='historyBox' @scroll='wheel'>
-          <div class="chat-item clearfix" v-for='item in chatList' :key='item.id'>
+          <div :class="hasMoreChat ? 'load-more-chat load-chat-active' : 'load-more-chat'">
+            滚动加载更多消息
+          </div>
+          <div class="chat-item clearfix" v-for='item in data.chatList' :key='item.id'>
             <div class="chat-time">
               <time>{{handleTime(item.time)}}</time>
             </div>
@@ -42,6 +45,12 @@
 </template>
 
 <script>
+//  io发射事件命名：
+//    chat with friend (from server to target): 从服务端发送聊天的信息到接收信息的客户端
+//    chat with friend (from server to author): 从服务端发送聊天的信息到发送信息的客户端
+//    chat with friend (from client)： 从客户端发送聊天信息到服务端
+//    login:  客户端连入
+
 const url = 'http://127.0.0.8:3000/chat?userId='
 // const msgUrl = 'http://127.0.0.8:3000/message'
 export default {
@@ -67,25 +76,42 @@ export default {
         height: 0,
         bottom: 0
       },
-      chatList: [],
+      data: {
+        chatList: [], //  聊天记录
+        start: 0, //  聊天记录的起始
+        count: 0, //  本次获取聊天记录的数量
+        total: 0  //  数据库里储存的聊天记录总量
+      },
       content: ''
     }
   },
   computed: {
     showScroll () {
       return this.chatBox.height > 0
+    },
+    hasMoreChat () {
+      return this.data.total >= this.data.start + this.data.count
     }
   },
   created () {
     this.getChatList(0)
-    this.$socket.on('chat with friend (from server)', data => {
-      console.log(data)
+    this.$socket.on('chat with friend (from server to target)', data => {
+      this.data.chatList.push(data)
+      this.$nextTick(() => {
+        this.initScroll()
+      })
+    })
+    this.$socket.on('chat with friend (from server to author)', data => {
+      this.data.chatList.push(data)
+      this.$nextTick(() => {
+        this.initScroll()
+        this.content = ''
+      })
     })
   },
-  sockets: {
-    connect: function () {
-      console.log('lianjie')
-    }
+  destroyed () {
+    this.$socket.off('chat with friend (from server to target)')
+    this.$socket.off('chat with friend (from server to author)')
   },
   methods: {
     //  聊天流程：
@@ -147,18 +173,25 @@ export default {
         return false
       }
       //  每次只请求五条消息记录
-      const count = 10
+      const count = 5
       const chatUrl = url + this.$store.state.user.id + '&friendId=' + this.friendInfo.id + '&start=' + start + '&count=' + count
       this.$http.get(chatUrl).then(d => {
-        this.chatList = d.data.data
+        d.data.data.reverse()
+        this.data.chatList = this.data.chatList.concat(d.data.data)
+        this.data.total = d.data.total
+        this.data.count = d.data.count
+        this.data.start = d.data.start
         this.$nextTick(() => {
-          this.chatBox.height = this.$refs.historyBox.scrollHeight - 450
-          this.$refs.historyBox.scrollTop = this.chatBox.height
-          this.scrollBox.height = Math.round(442 * 442 / this.$refs.historyBox.scrollHeight) + 'px'
+          this.initScroll()
         })
       }).catch(err => {
         console.log(err)
       })
+    },
+    initScroll () {
+      this.chatBox.height = this.$refs.historyBox.scrollHeight - 450
+      this.$refs.historyBox.scrollTop = this.chatBox.height
+      this.scrollBox.height = Math.round(442 * 442 / this.$refs.historyBox.scrollHeight) + 'px'
     },
     handleTime (time) {
       const now = new Date()
@@ -235,7 +268,7 @@ export default {
   left: 0;
   right: 0;
   /* width: 560px; */
-  padding: 20px 20px 0;
+  padding: 0px 20px 20px;
   height: 450px;
   overflow-y: scroll;
   margin-right: -17px;
@@ -317,6 +350,7 @@ export default {
   line-height: 22px;
   min-height: 22px;
   position: relative;
+  font-size: 14px;
 }
 .chat-time {
   text-align: center;
@@ -347,5 +381,18 @@ export default {
 #send-btn a {
   margin-right: 20px;
   font-size: 13px;
+}
+.load-more-chat {
+  font-size: 12px;
+  line-height: 30px;
+  text-align: center;
+  color: #8e8e8e;
+}
+.load-chat-active {
+  color: #f70;
+  cursor: pointer;
+}
+.load-chat-active:hover {
+  text-decoration: underline;
 }
 </style>
