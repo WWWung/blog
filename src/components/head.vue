@@ -1,38 +1,49 @@
 <template lang="html">
-  <header id="app-head">
-    <div v-if='isLogin' class="clearfix">
-      <div id="user-img-wrap">
-        <img :src="user.imageUrl" alt="个人头像" id='user-img'/>
-      </div>
-      <div id="user-info-wrap">
-        <div id="user-name">
-          <h1>{{user.name}}</h1>
+  <div id="page-head-wrap">
+    <header id="app-head">
+      <div v-if='isLogin' class="clearfix">
+        <div class="user-title"  @mouseover='showNav' @mouseout='disShowNav'>
+          <div id="user-img-wrap">
+            <img :src="user.imageUrl" alt="个人头像" id='user-img'/>
+          </div>
+          <div id="user-info-wrap">
+            <div id="user-name">
+              <h1>{{user.name}}</h1>
+            </div>
+          </div>
+          <div id='self-menu' v-show='showHeadNav'>
+            <ul id='self-list'>
+              <li>
+                <router-link :to="toMsgPage" name='WritePage' tag='a' class="msg-tip">
+                  私信列表
+                  <span v-if='showUnreadMsgTip'>{{handleUnreadMsgCount}}</span>
+                </router-link>
+              </li>
+              <li>
+                <a href="javascript:;" id="about-self" @click='clickToSelf'>个人中心</a>
+              </li>
+              <li>
+                <router-link to="/write/new" name='WritePage' tag='a'>
+                  写博客
+                </router-link>
+              </li>
+              <li>
+                <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div id="user-introduce">
-          {{user.description}}
+        <div id="search-wrap">
+          <input type="text" name="" value="" id="search-box">
+          <a href="javascript:;" id="search-keyword">搜索</a>
         </div>
       </div>
-      <div id="login-out-wrap">
-        <router-link :to="toMsgPage" name='WritePage' tag='a' class="msg-tip">
-          私信列表
-          <span v-if='showUnreadMsgTip'>{{handleUnreadMsgCount}}</span>
-        </router-link>
-        <a href="javascript:;" id="about-self" @click='clickToSelf'>个人中心</a>
-        <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
-        <router-link to="/write/new" name='WritePage' tag='a'>
-          写博客
-        </router-link>
+      <div v-else id="login-tip-wrap">
+        <span>您还未登录，请</span>
+        <a href="javascript:;" @click='clickToLogin'>登录</a>
       </div>
-    </div>
-    <div v-else id="login-tip-wrap">
-      <span>您还未登录，请</span>
-      <a href="javascript:;" @click='clickToLogin'>登录</a>
-    </div>
-    <div id="search-wrap">
-      <input type="text" name="" value="" id="search-box">
-      <a href="javascript:;" id="search-keyword">搜索</a>
-    </div>
-  </header>
+    </header>
+  </div>
 </template>
 
 <script>
@@ -42,11 +53,19 @@ const msgUrl = 'http://127.0.0.8:3000/unreadmsg?receiveId='
 export default {
   data () {
     return {
-      unreadMsgCount: 0
+      unreadMsgCount: 0,
+      showHeadNav: false
     }
   },
   methods: {
     ...mapMutations(['setLoginState', 'clearUserInfo']),
+    showNav () {
+      this.showHeadNav = true
+      console.log('a')
+    },
+    disShowNav () {
+      this.showHeadNav = false
+    },
     clickToLogin () {
       this.$router.push({path: '/login'})
     },
@@ -98,20 +117,64 @@ export default {
 </script>
 
 <style lang="css">
+  .head-nav-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  #self-menu {
+    position: absolute;
+    top: 100%;
+    background: #fff;
+    border-left: 1px solid #bebebe;
+    border-right: 1px solid #bebebe;
+    box-shadow: 0 5px 20px rgba(26,26,26,.1);
+    border-radius: 4px;
+    z-index: 999;
+  }
+
+  #page-head-wrap {
+    top: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    background-color: rgba(57, 61, 73, 0.75);
+  }
+
+  .user-title {
+    float: right;
+    position: relative;
+    padding: 10px 0;
+  }
+  .user-title:hover #user-info-wrap h1 {
+    color: #fff;
+  }
+
+  #self-list li {
+    border-bottom: 1px solid #bebebe;
+    text-align: center;
+    width: 100px;
+  }
+
+  #self-list li a {
+    font-size: 13px;
+    line-height: 30px;
+  }
+
   #app-head {
     width: 1000px;
-    /* height: 135px; */
+    height: 60px;
     text-align: center;
-    border-bottom: 1px solid #ddd;
-    padding: 30px 30px 30px 30px;
     position: relative;
     box-sizing: border-box;
+    margin: 0 auto;
   }
 
   #search-wrap {
-    position: absolute;
-    bottom: 40px;
-    right: 20px;
+    float: left;
   }
 
   #search-box {
@@ -126,6 +189,7 @@ export default {
     font-size: 16px;
     display: inline-block;
     vertical-align: middle;
+    color: #fff;
   }
 
   .msg-tip {
@@ -146,9 +210,8 @@ export default {
   }
 
   #login-out-wrap {
-    position: absolute;
+    float: left;
     top: 18px;
-    right: 10px;
     padding-right: 30px;
   }
 
@@ -184,8 +247,9 @@ export default {
 
   #user-img , #user-img-wrap {
     float: left;
-    width: 135px;
-    height: 135px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
   }
 
   #user-img {
@@ -196,7 +260,6 @@ export default {
   #user-info-wrap {
     float: left;
     margin-left: 30px;
-    padding-top: 18px;
   }
 
   #user-name , #user-introduce {
@@ -209,8 +272,10 @@ export default {
   }
 
   #user-name h1 {
-    font-size: 32px;
-    line-height: 42px;
+    font-size: 24px;
+    line-height: 28px;
+    color: rgba(255, 255, 255, .7);
+    cursor: pointer;
   }
 
   #user-introduce {

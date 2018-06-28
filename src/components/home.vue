@@ -92,6 +92,7 @@ export default {
   }
   #date-menu-wrap {
     padding-top: 50px;
+    margin-top: 60px;
   }
   #date-menu li {
     height: 220px;
