@@ -11,27 +11,29 @@
               <h1>{{user.name}}</h1>
             </div>
           </div>
-          <div id='self-menu' v-show='showHeadNav'>
-            <ul id='self-list'>
-              <li>
-                <router-link :to="toMsgPage" name='WritePage' tag='a' class="msg-tip">
-                  私信列表
-                  <span v-if='showUnreadMsgTip'>{{handleUnreadMsgCount}}</span>
-                </router-link>
-              </li>
-              <li>
-                <a href="javascript:;" id="about-self" @click='clickToSelf'>个人中心</a>
-              </li>
-              <li>
-                <router-link to="/write/new" name='WritePage' tag='a'>
-                  写博客
-                </router-link>
-              </li>
-              <li>
-                <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
-              </li>
-            </ul>
-          </div>
+          <transition name='selfListTransition'>
+            <div id='self-menu' v-show='showHeadNav'>
+              <ul id='self-list'>
+                <li>
+                  <router-link :to="toMsgPage" name='WritePage' tag='a' class="msg-tip">
+                    私信列表
+                    <span v-if='showUnreadMsgTip'>{{handleUnreadMsgCount}}</span>
+                  </router-link>
+                </li>
+                <li>
+                  <a href="javascript:;" id="about-self" @click='clickToSelf'>个人中心</a>
+                </li>
+                <li>
+                  <router-link to="/write/new" name='WritePage' tag='a'>
+                    写博客
+                  </router-link>
+                </li>
+                <li>
+                  <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
+                </li>
+              </ul>
+            </div>
+          </transition>
         </div>
         <div id="search-wrap">
           <input type="text" name="" value="" id="search-box">
@@ -61,7 +63,6 @@ export default {
     ...mapMutations(['setLoginState', 'clearUserInfo']),
     showNav () {
       this.showHeadNav = true
-      console.log('a')
     },
     disShowNav () {
       this.showHeadNav = false
@@ -117,12 +118,12 @@ export default {
 </script>
 
 <style lang="css">
-  .head-nav-mask {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  .selfListTransition-enter-active, .selfListTransition-leave-active {
+    transition: opacity .5s ease;
+  }
+
+  .selfListTransition-enter, .selfListTransition-leave-to {
+    opacity: 0;
   }
 
   #self-menu {
@@ -134,6 +135,7 @@ export default {
     box-shadow: 0 5px 20px rgba(26,26,26,.1);
     border-radius: 4px;
     z-index: 999;
+    left: 40px;
   }
 
   #page-head-wrap {
@@ -156,12 +158,17 @@ export default {
   #self-list li {
     border-bottom: 1px solid #bebebe;
     text-align: center;
-    width: 100px;
+    width: 120px;
+  }
+
+  #self-list li:hover {
+    background-color: #ddd;
+    font-weight: 600;
   }
 
   #self-list li a {
     font-size: 13px;
-    line-height: 30px;
+    line-height: 40px;
   }
 
   #app-head {
@@ -175,6 +182,7 @@ export default {
 
   #search-wrap {
     float: left;
+    margin-top: 14px;
   }
 
   #search-box {
@@ -186,7 +194,7 @@ export default {
   }
 
   #search-keyword {
-    font-size: 16px;
+    font-size: 15px;
     display: inline-block;
     vertical-align: middle;
     color: #fff;
