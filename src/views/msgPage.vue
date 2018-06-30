@@ -2,7 +2,7 @@
   <div id="msg-wrap">
     <div class="msg-title">
       <h2 class="title-text">私信列表</h2>
-      <a href="javascript:;" class="all-readed">全部标记为已读</a>
+      <a href="javascript:;" class="all-readed" @click='readAllMsg'>全部标记为已读</a>
     </div>
     <div id="msg-box">
       <ul class="msg-list" v-if='haveMsg'>
@@ -17,7 +17,7 @@
           <div class="msg-time">
             <span>{{getTimeDistance(item.time)}}</span>
           </div>
-          <div class="unread-tip" v-if='isUnread'>
+          <div class="unread-tip" v-if='isUnread(item.type, item.status)'>
             未读
           </div>
         </li>
@@ -73,6 +73,15 @@ export default {
     },
     isUnread (type, status) {
       return type === 1 && status === 0
+    },
+    readAllMsg () {
+      const url = 'http://127.0.0.8:3000/readAll?userId=' + this.$store.state.user.id
+      this.$http.post(url).then(d => {
+        console.log(d)
+        this.getMessageList()
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   computed: {

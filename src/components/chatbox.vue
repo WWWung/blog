@@ -6,7 +6,7 @@
       </div>
       <div id="history-chat">
         <div class="history-box" ref='historyBox' @scroll='wheel'>
-          <div :class="hasMoreChat ? 'load-more-chat load-chat-active' : 'load-more-chat'">
+          <div :class="hasMoreChat ? 'load-more-chat load-chat-active' : 'load-more-chat'" @click='loadMoreMsg'>
             滚动加载更多消息
           </div>
           <div class="chat-item clearfix" v-for='item in data.chatList' :key='item.id'>
@@ -165,6 +165,7 @@ export default {
         return false
       }
       const top = this.$refs.historyBox.scrollTop
+      console.log(top)
       this.scrollBox.bottom = (this.chatBox.height - top) / this.chatBox.height * (448 - Number.parseInt(this.scrollBox.height)) + 'px'
     },
     getChatList (start) {
@@ -176,22 +177,23 @@ export default {
       const count = 5
       const chatUrl = url + this.$store.state.user.id + '&friendId=' + this.friendInfo.id + '&start=' + start + '&count=' + count
       this.$http.get(chatUrl).then(d => {
-        d.data.data.reverse()
         this.data.chatList = this.data.chatList.concat(d.data.data)
         this.data.total = d.data.total
         this.data.count = d.data.count
         this.data.start = d.data.start
+        this.data.chatList.sort((a, b) => a.time - b.time)
         this.$nextTick(() => {
-          this.initScroll()
+          this.initScroll(!start)
         })
       }).catch(err => {
         console.log(err)
       })
     },
-    initScroll () {
+    initScroll (init) {
       this.chatBox.height = this.$refs.historyBox.scrollHeight - 450
-      this.$refs.historyBox.scrollTop = this.chatBox.height
-      this.scrollBox.height = Math.round(442 * 442 / this.$refs.historyBox.scrollHeight) + 'px'
+      this.scrollBox.height = Math.round(442 * 450 / this.$refs.historyBox.scrollHeight) + 'px'
+      this.$refs.historyBox.scrollTop = this.chatBox.height * (1 - Number.parseInt(this.scrollBox.bottom) / (442 - Number.parseInt(this.scrollBox.height)))
+      console.log(this.$refs.historyBox.scrollHeight)
     },
     handleTime (time) {
       const now = new Date()
@@ -223,6 +225,11 @@ export default {
     },
     closeChatBox () {
       this.$emit('showChatBox', false)
+    },
+    loadMoreMsg () {
+      if (this.hasMoreChat) {
+        this.getChatList(this.data.start + this.data.count)
+      }
     }
   }
 }
