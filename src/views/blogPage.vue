@@ -17,5 +17,7 @@ export default {
 </script>
 
 <style lang="css">
-
+#blog {
+  margin-top: 60px;
+}
 </style>

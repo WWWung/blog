@@ -36,7 +36,7 @@
           </transition>
         </div>
         <div id="search-wrap">
-          <input type="text" name="" value="" id="search-box">
+          <input type="text" name="" value="" id="search-box" placeholder="在这里输入您要搜索的内容">
           <a href="javascript:;" id="search-keyword">搜索</a>
         </div>
       </div>

@@ -258,8 +258,7 @@ export default {
 }
 #comments li {
   border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
-  padding-top: 20px;
+  padding: 20px 25px 10px;
 }
 .comment-portrait {
   float: left;

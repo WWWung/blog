@@ -36,7 +36,9 @@
             <!-- <router-link tag='a' class="blogger-portrait">
               留言板
             </router-link> -->
-            <a href="javascript:;">留言板</a>
+            <router-link name='WordsPage' tag='a' to="/words">
+              留言板
+            </router-link>
           </li>
           <li>
             <a href="javascript:;" @click='stopRain'>{{getRainHtml}}</a>
@@ -82,6 +84,8 @@ export default {
 #blogger-info {
   height: 35vh;
   min-height: 200px;
+  position: relative;
+  z-index: 50;
 }
 #page-aside-list {
   height: 50vh;

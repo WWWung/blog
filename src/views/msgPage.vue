@@ -50,12 +50,14 @@ export default {
   methods: {
     getMessageList () {
       this.$http.get(msgListUrl + this.$store.state.user.id).then(d => {
+        console.log(d.data)
         this.data = d.data
       }).catch(err => {
         console.log(err)
       })
     },
     closeChatBox (flag) {
+      this.getMessageList()
       this.isShow = flag
     },
     getTimeDistance (time) {
@@ -77,7 +79,6 @@ export default {
     readAllMsg () {
       const url = 'http://127.0.0.8:3000/readAll?userId=' + this.$store.state.user.id
       this.$http.post(url).then(d => {
-        console.log(d)
         this.getMessageList()
       }).catch(err => {
         console.log(err)

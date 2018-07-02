@@ -7,6 +7,8 @@ import LoginPage from '@/views/loginPage'
 import RegisterPage from '@/views/regPage'
 import SelfPage from '@/views/selfPage'
 import MsgPage from '@/views/msgPage'
+import AdminPage from '@/views/adminPage'
+import WordsPage from '@/views/WordsPage'
 
 Vue.use(Router)
 const router = new Router({
@@ -55,6 +57,16 @@ const router = new Router({
       meta: {
         isLogin: true
       }
+    },
+    {
+      path: '/admin',
+      name: 'AdminPage',
+      component: AdminPage
+    },
+    {
+      path: '/words',
+      name: 'WordsPage',
+      component: WordsPage
     }
   ]
 })
