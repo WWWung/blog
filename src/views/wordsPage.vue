@@ -60,9 +60,12 @@
     </div>
     <div class="leave-msg">
       <div class="leave-msg-input-box">
-        <textarea name="leave-msg"></textarea>
+        <textarea name="leave-msg" class="leave-msg-input"></textarea>
       </div>
       <div class="leave-msg-btn">
+        <span>
+          注:请确保已登录，未登录直接评论则视为游客模式评论！
+        </span>
         <a href="javascript:;">发表留言</a>
         <a href="javascript:;">匿名留言</a>
       </div>
@@ -87,13 +90,13 @@ export default {
   padding: 10px;
 }
 .words-list li {
-  border-bottom: 1px solid gray;
+  border-bottom: 1px dashed gray;
 }
 .word-avatar {
   float: left;
   width: 50px;
   height: 50px;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   overflow: hidden;
 }
 .word-avatar img {
@@ -141,5 +144,38 @@ export default {
 .words-page-num-list li a {
   font-size: 12px;
   line-height: 20px;
+}
+.leave-msg-input {
+  width: 600px;
+  height: 200px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin: 20px 0 0 10px;
+  padding: 5px;
+  font-size: 14px;
+  line-height: 22px;
+}
+.leave-msg-btn {
+  display: flex;
+  justify-content: flex-end;
+  width: 610px;
+  margin-left: 10px;
+}
+.leave-msg-btn a {
+  background-color: #0084ff;
+  color: #fff;
+  font-size: 14px;
+  line-height: 30px;
+  padding: 0 30px;
+  display: block;
+  margin: 10px;
+  width: 76px;
+  text-align: center;
+  border-radius: 4px;
+}
+.leave-msg-btn span {
+  font-size: 12px;
+  color: #d2d2d2;
+  line-height: 22px;
 }
 </style>

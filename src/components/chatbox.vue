@@ -6,8 +6,8 @@
       </div>
       <div id="history-chat">
         <div class="history-box" ref='historyBox' @scroll='wheel'>
-          <div :class="hasMoreChat ? 'load-more-chat load-chat-active' : 'load-more-chat'" @click='loadMoreMsg'>
-            滚动加载更多消息
+          <div :class="hasMoreChat ? ' load-chat-active' : ''" class="load-more-chat" @click='loadMoreMsg'>
+            {{hasMoreChatTip}}
           </div>
           <div class="chat-item clearfix" v-for='item in data.chatList' :key='item.id'>
             <div class="chat-time">
@@ -90,7 +90,10 @@ export default {
       return this.chatBox.height > 0
     },
     hasMoreChat () {
-      return this.data.total >= this.data.start + this.data.count
+      return this.data.total > this.data.start + this.data.count
+    },
+    hasMoreChatTip () {
+      return this.hasMoreChat ? '滚动加载更多消息' : '没有更多消息了'
     }
   },
   created () {
@@ -165,7 +168,6 @@ export default {
         return false
       }
       const top = this.$refs.historyBox.scrollTop
-      console.log(top)
       this.scrollBox.bottom = (this.chatBox.height - top) / this.chatBox.height * (448 - Number.parseInt(this.scrollBox.height)) + 'px'
     },
     getChatList (start) {
@@ -178,7 +180,7 @@ export default {
       const chatUrl = url + this.$store.state.user.id + '&friendId=' + this.friendInfo.id + '&start=' + start + '&count=' + count
       this.$http.get(chatUrl).then(d => {
         this.data.chatList = this.data.chatList.concat(d.data.data)
-        this.data.total = d.data.total
+        this.data.total = d.data.total[0].total
         this.data.count = d.data.count
         this.data.start = d.data.start
         this.data.chatList.sort((a, b) => a.time - b.time)
@@ -193,7 +195,6 @@ export default {
       this.chatBox.height = this.$refs.historyBox.scrollHeight - 450
       this.scrollBox.height = Math.round(442 * 450 / this.$refs.historyBox.scrollHeight) + 'px'
       this.$refs.historyBox.scrollTop = this.chatBox.height * (1 - Number.parseInt(this.scrollBox.bottom) / (442 - Number.parseInt(this.scrollBox.height)))
-      console.log(this.$refs.historyBox.scrollHeight)
     },
     handleTime (time) {
       const now = new Date()
