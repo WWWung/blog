@@ -8,25 +8,25 @@
     </div>
     <div class="words-box">
       <ul class="words-list">
-        <li>
+        <li v-for='item in data.wordlist' :key='item.id'>
           <div class="word-author clearfix">
             <div class="word-avatar">
-              <img src="http://127.0.0.8:3000/imgs/true.jpg" alt="">
+              <img :src="item.imageUrl" alt="">
             </div>
             <div class="word-author-name">
               <a href="javascript:;">
-                留言的主人
+                {{item.name}}
               </a>
             </div>
           </div>
           <div class="word-content">
             <p>
-              我是留言的内容
+              {{handleContent(item.content)}}
             </p>
           </div>
           <div class="word-tip">
             <time>
-              2018-07-02 16:59
+              {{handleTime(item.time)}}
             </time>
             <a href="javascript:;">回复</a>
           </div>
@@ -60,24 +60,98 @@
     </div>
     <div class="leave-msg">
       <div class="leave-msg-input-box">
-        <textarea name="leave-msg" class="leave-msg-input"></textarea>
+        <textarea name="leave-msg" class="leave-msg-input" v-model='content'></textarea>
       </div>
       <div class="leave-msg-btn">
         <span>
           注:请确保已登录，未登录直接评论则视为游客模式评论！
         </span>
-        <a href="javascript:;">发表留言</a>
+        <a href="javascript:;" @click='leaveWord'>发表留言</a>
         <a href="javascript:;">匿名留言</a>
       </div>
     </div>
+    <Dialog :dialog='dialog'></Dialog>
   </div>
 </template>
 
 <script>
 import Head from '../components/head.vue'
+import Dialog from '../components/dialog'
 export default {
   components: {
-    'Head-view': Head
+    'Head-view': Head,
+    Dialog
+  },
+  data () {
+    return {
+      data: {
+        wordlist: [],
+        page: 1,
+        pageCount: 20,
+        total: 0
+      },
+      replyId: null,
+      content: '',
+      dialog: {
+        width: 300,
+        height: 100,
+        msg: '正在上传...',
+        show: false
+      }
+    }
+  },
+  methods: {
+    getWordList () {
+      const url = 'http://127.0.0.8:3000/getwords?page=' + this.data.page + '&pageCount=' + this.data.pageCount
+      this.$http.get(url).then(d => {
+        this.data.wordlist = d.data.data
+        this.data.total = d.data.total
+      })
+    },
+    leaveWord () {
+      if (!this.$store.state.isLogin) {
+        this.$router.push({path: '/login'})
+        return false
+      }
+      if (!this.content) {
+        this.letDialogClear(this, 1000, '请输入内容')
+        return false
+      }
+      const url = 'http://127.0.0.8:3000/leaveword'
+      const words = {
+        content: this.content,
+        time: Date.now(),
+        userId: this.$store.state.user.id,
+        reply: this.reply
+      }
+      this.$http.post(url, JSON.stringify(words)).then(d => {
+        console.log(d)
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    handleContent (content) {
+      return content.replace(/</ig, '&lt').replace(/>/ig, '&gt').replace(/\n/ig, '<br/>')
+    },
+    handleTime (time) {
+      const date = new Date(time)
+      const y = date.getFullYear()
+      const m = date.getMonth()
+      const d = date.getDate()
+      return y + '年' + (m + 1) + '月' + d + '日' + ' ' + date.getHours() + ':' + date.getMinutes()
+    },
+    letDialogClear (_this, time, msg, fun) {
+      _this.dialog.msg = msg
+      _this.dialog.show = true
+      let timer = setTimeout(() => {
+        _this.dialog.show = false
+        clearTimeout(timer)
+        typeof fun === 'function' && fun()
+      }, time)
+    }
+  },
+  created () {
+    this.getWordList(0)
   }
 }
 </script>

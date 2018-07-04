@@ -7,7 +7,8 @@
       <div id="history-chat">
         <div class="history-box" ref='historyBox' @scroll='wheel'>
           <div :class="hasMoreChat ? ' load-chat-active' : ''" class="load-more-chat" @click='loadMoreMsg'>
-            {{hasMoreChatTip}}
+            <span v-if='!onLoading'>{{hasMoreChatTip}}</span>
+            <img src="../assets/imgs/oval.svg" alt="" v-else>
           </div>
           <div class="chat-item clearfix" v-for='item in data.chatList' :key='item.id'>
             <div class="chat-time">
@@ -18,7 +19,10 @@
                 <img :src="getImg(item.type)" alt="">
               </div>
               <div class="chat-content">
-                <p v-html='handleContetn(item.content)'></p>
+                <i class="sending-icon">
+                  <img src="../assets/imgs/spinning-circles.svg" alt="" v-if='onSending'>
+                </i>
+                <p v-html='handleContent(item.content)'></p>
               </div>
             </div>
           </div>
@@ -82,7 +86,9 @@ export default {
         count: 0, //  本次获取聊天记录的数量
         total: 0 //  数据库里储存的聊天记录总量
       },
-      content: ''
+      content: '',
+      onLoading: false, //  是否正在加载数据
+      onSending: false //  是否正在发送消息
     }
   },
   computed: {
@@ -100,12 +106,16 @@ export default {
     this.getChatList(0)
     this.$socket.on('chat with friend (from server to target)', data => {
       this.data.chatList.push(data)
+      this.data.start++
+      this.data.total++
       this.$nextTick(() => {
         this.initScroll()
       })
     })
     this.$socket.on('chat with friend (from server to author)', data => {
       this.data.chatList.push(data)
+      this.data.start++
+      this.data.total++
       this.$nextTick(() => {
         this.initScroll()
         this.content = ''
@@ -117,10 +127,6 @@ export default {
     this.$socket.off('chat with friend (from server to author)')
   },
   methods: {
-    //  聊天流程：
-    //    1.  当客户端连接的时候，服务端全局声明一个对象保存客户端的socketid和客户端的用户id
-    //    2.  客户端B给客户端A发送消息的时候向服务器post一条带有客户端Aid的数据，服务端根据客户端Aid在全局对象里找到Aid对应的socketid
-    //    3.  向客户端A推送消息
     sendChat () {
       if (!this.content) {
         return false
@@ -176,9 +182,11 @@ export default {
         return false
       }
       //  每次只请求五条消息记录
+      this.onLoading = true
       const count = 5
       const chatUrl = url + this.$store.state.user.id + '&friendId=' + this.friendInfo.id + '&start=' + start + '&count=' + count
       this.$http.get(chatUrl).then(d => {
+        console.log(d)
         this.data.chatList = this.data.chatList.concat(d.data.data)
         this.data.total = d.data.total[0].total
         this.data.count = d.data.count
@@ -186,6 +194,7 @@ export default {
         this.data.chatList.sort((a, b) => a.time - b.time)
         this.$nextTick(() => {
           this.initScroll(!start)
+          this.onLoading = false
         })
       }).catch(err => {
         console.log(err)
@@ -213,7 +222,7 @@ export default {
         return y + '年' + (m + 1) + '月' + d + '日' + ' ' + date.getHours() + ':' + date.getMinutes()
       }
     },
-    handleContetn (content) {
+    handleContent (content) {
       //  处理<>字符，避免被恶意插入标签,把\n用br替换
       return content.replace(/</ig, '&lt').replace(/>/ig, '&gt').replace(/\n/ig, '<br/>')
     },
@@ -323,6 +332,20 @@ export default {
   float: right;
   background-color: #ffd7b6;
 }
+.sending-icon {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  top: 5px;
+  left: -30px;
+}
+.receive-msg .sending-icon {
+  display: none;
+}
+.sending-icon img {
+  width: 100%;
+  height: 100%;
+}
 .send-msg .chat-content::after {
   position: absolute;
   top: 8px;
@@ -395,6 +418,11 @@ export default {
   line-height: 30px;
   text-align: center;
   color: #8e8e8e;
+}
+.load-more-chat img {
+  width: 20px;
+  height: 20px;
+  margin-top: 5px;
 }
 .load-chat-active {
   color: #f70;

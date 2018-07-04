@@ -6,12 +6,12 @@
     </div>
     <div id="msg-box">
       <ul class="msg-list" v-if='haveMsg'>
-        <li class="" v-for='item in data' :key='item.id' @click='showChatBox($event, item.friendInfo)'>
+        <li class="" v-for='item in data' :key='item.id' @click='showChatBox($event, item)'>
           <div class="msg-avatar-box">
-            <img :src="item.friendInfo.imageUrl" alt="" class="msg-avatar">
+            <img :src="item.imageUrl" alt="" class="msg-avatar">
           </div>
           <div class="msg-main">
-            <h3 class="msg-author">{{item.friendInfo.name}}</h3>
+            <h3 class="msg-author">{{item.name}}</h3>
             <p class="msg-content">{{item.content}}</p>
           </div>
           <div class="msg-time">
@@ -50,6 +50,7 @@ export default {
   methods: {
     getMessageList () {
       this.$http.get(msgListUrl + this.$store.state.user.id).then(d => {
+        console.log(d.data)
         this.data = d.data
       }).catch(err => {
         console.log(err)
@@ -68,8 +69,12 @@ export default {
       const date = new Date(time)
       return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
     },
-    showChatBox (e, friendInfo) {
-      this.friendInfo = friendInfo
+    showChatBox (e, {friendId, imageUrl, name}) {
+      this.friendInfo = {
+        id: friendId,
+        imageUrl,
+        name
+      }
       this.isShow = true
     },
     isUnread (type, status) {

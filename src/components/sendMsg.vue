@@ -16,17 +16,12 @@
         <a href="javascript:;" id='cancle-send-msg' @click='cancelSendMsg'>取消</a>
       </div>
     </div>
-    <Loading v-if='false'></Loading>
   </div>
 </template>
 
 <script>
-import Loading from './loading'
 const url = 'http://127.0.0.8:3000/message'
 export default {
-  components: {
-    Loading
-  },
   data () {
     return {
       content: '',
