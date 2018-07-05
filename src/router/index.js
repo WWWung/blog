@@ -13,6 +13,14 @@ import WordsPage from '@/views/WordsPage'
 Vue.use(Router)
 const router = new Router({
   mode: 'history',
+  scrollBehavior (to, from, savedPosition) {
+    console.log('to', to)
+    if (to.hash) {
+      return {
+        selector: to.hash
+      }
+    }
+  },
   routes: [
     {
       path: '/',

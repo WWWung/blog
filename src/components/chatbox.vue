@@ -99,7 +99,7 @@ export default {
       return this.data.total > this.data.start + this.data.count
     },
     hasMoreChatTip () {
-      return this.hasMoreChat ? '滚动加载更多消息' : '没有更多消息了'
+      return this.hasMoreChat ? '点击加载更多消息' : '没有更多消息了'
     }
   },
   created () {

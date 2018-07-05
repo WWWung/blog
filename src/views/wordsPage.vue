@@ -19,16 +19,13 @@
               </a>
             </div>
           </div>
-          <div class="word-content">
-            <p>
-              {{handleContent(item.content)}}
-            </p>
-          </div>
+          <div class="word-content" v-html='item.content'></div>
           <div class="word-tip">
             <time>
               {{handleTime(item.time)}}
             </time>
-            <a href="javascript:;">回复</a>
+            <a :href="'#leaveMsgInputBox'" @click='replyWord(item)'>回复</a>
+            <a href="javascript:;" v-show='hasReply(item.reply)'>查看回复</a>
           </div>
         </li>
       </ul>
@@ -38,20 +35,8 @@
         <li>
           <a href="javascript:;">首页</a>
         </li>
-        <li>
-          <a href="javascript:;">1</a>
-        </li>
-        <li>
-          <a href="javascript:;">2</a>
-        </li>
-        <li>
-          <a href="javascript:;">3</a>
-        </li>
-        <li>
-          <a href="javascript:;">4</a>
-        </li>
-        <li>
-          <a href="javascript:;">5</a>
+        <li v-for='item in page.pagelist' :key='item' @click='turnPage(item)'>
+          <a href="javascript:;">{{item}}</a>
         </li>
         <li>
           <a href="javascript:;">尾页</a>
@@ -59,15 +44,31 @@
       </ol>
     </div>
     <div class="leave-msg">
-      <div class="leave-msg-input-box">
-        <textarea name="leave-msg" class="leave-msg-input" v-model='content'></textarea>
+      <div class="leave-msg-input-box" id='leaveMsgInputBox'>
+        <div class="reply-word clearfix" v-if='!!replyinfo.name'>
+          <div class="reply-info">
+            回复
+            <span class="reply-name">{{replyinfo.name}}</span>
+            :
+          </div>
+          <a href="javascript:;" class="cancle-reply" @click='cancleReply'>取消回复</a>
+        </div>
+        <textarea name="leave-msg"
+                  class="leave-msg-input"
+                  v-model='content'
+                  spellcheck="false"
+                  autocapitalize="off"
+                  autocomplete="off"
+                  autocorrect="off"
+                  ref='wordsInput'
+                  v-focus='focusStatus'></textarea>
       </div>
       <div class="leave-msg-btn">
         <span>
-          注:请确保已登录，未登录直接评论则视为游客模式评论！
+          注:请确保已登录，未登录直接评论则视为游客模式留言！
         </span>
         <a href="javascript:;" @click='leaveWord'>发表留言</a>
-        <a href="javascript:;">匿名留言</a>
+        <a href="javascript:;">游客留言</a>
       </div>
     </div>
     <Dialog :dialog='dialog'></Dialog>
@@ -86,26 +87,34 @@ export default {
     return {
       data: {
         wordlist: [],
-        page: 1,
-        pageCount: 20,
+        pageCount: 1,
         total: 0
       },
-      replyId: null,
+      replyinfo: {
+        id: null,
+        name: ''
+      },
       content: '',
       dialog: {
         width: 300,
         height: 100,
         msg: '正在上传...',
         show: false
+      },
+      focusStatus: false,
+      page: {
+        pagelist: [],
+        currentPage: 1
       }
     }
   },
   methods: {
     getWordList () {
-      const url = 'http://127.0.0.8:3000/getwords?page=' + this.data.page + '&pageCount=' + this.data.pageCount
+      const url = 'http://127.0.0.8:3000/getwords?page=' + this.page.currentPage + '&pageCount=' + this.data.pageCount
       this.$http.get(url).then(d => {
         this.data.wordlist = d.data.data
         this.data.total = d.data.total
+        this.page.pagelist = this.getPageArr()
       })
     },
     leaveWord () {
@@ -118,16 +127,24 @@ export default {
         return false
       }
       const url = 'http://127.0.0.8:3000/leaveword'
+      let content = '<p class="reply-real-content">' + this.handleContent(this.content) + '</p>'
+      if (this.replyinfo.name) {
+        const name = '<p class="reply-title">回复 <span class="reply-name">' + this.replyinfo.name + '</span> :</p>'
+        content = name + content
+      }
       const words = {
-        content: this.content,
+        content,
         time: Date.now(),
         userId: this.$store.state.user.id,
-        reply: this.reply
+        reply: this.replyinfo.id
       }
       this.$http.post(url, JSON.stringify(words)).then(d => {
-        console.log(d)
+        this.cancleReply()
+        this.getWordList()
+        this.content = ''
       }).catch(err => {
         console.log(err)
+        this.cancleReply()
       })
     },
     handleContent (content) {
@@ -148,10 +165,54 @@ export default {
         clearTimeout(timer)
         typeof fun === 'function' && fun()
       }, time)
+    },
+    replyWord ({name, userId}) {
+      this.focusStatus = true
+      this.replyinfo.id = userId
+      this.replyinfo.name = name
+    },
+    cancleReply () {
+      this.replyinfo.id = null
+      this.replyinfo.name = ''
+    },
+    hasReply (reply) {
+      return reply !== null
+    },
+    turnPage (page) {
+      this.$router.push({path: '/words?page=' + page})
+      this.page.currentPage = this.$route.query.page
+      this.getWordList()
+    },
+    getPageArr () {
+      if (this.data.total <= this.data.pageCount) {
+        return []
+      }
+      const page = Math.ceil(this.data.total / this.data.pageCount)
+      let pageArr = []
+      if (page <= 5) {
+        for (let i = 1; i <= page; i++) {
+          pageArr.push(i)
+        }
+      } else {
+        for (let i = this.page.currentPage; i <= Math.min(page, Number.parseInt(this.page.currentPage) + 5); i++) {
+          pageArr.push(i)
+        }
+      }
+      return pageArr
     }
   },
   created () {
-    this.getWordList(0)
+    this.page.currentPage = this.$route.query.page || 1
+    this.getWordList()
+  },
+  directives: {
+    focus: {
+      update: (el, {value}) => {
+        if (value) {
+          el.focus()
+        }
+      }
+    }
   }
 }
 </script>
@@ -207,6 +268,7 @@ export default {
 .word-tip a {
   color: #26709A;
   font-size: 12px;
+  margin: 0 5px;
 }
 .words-page-num-list {
   display: flex;
@@ -251,5 +313,25 @@ export default {
   font-size: 12px;
   color: #d2d2d2;
   line-height: 22px;
+}
+.reply-word {
+  padding-left: 10px;
+}
+.reply-info {
+  float: left;
+  font-size: 14px;
+  line-height: 22px;
+}
+.reply-name {
+  color: #26709A;
+}
+.cancle-reply {
+  float: left;
+  margin-left: 400px;
+  font-size: 14px;
+  line-height: 22px;
+}
+.reply-real-content {
+  text-indent: 10px;
 }
 </style>
