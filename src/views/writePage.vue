@@ -132,6 +132,10 @@ export default {
 </script>
 
 <style lang="css" scoped>
+#write-page {
+  padding: 0 20px 10px;
+  margin-top: 60px;
+}
 #submit-article {
   margin-top: 15px;
 }

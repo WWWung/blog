@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="">
+  <div class="editor-wrap">
     <div id="show-wrap" v-html='editorContent.htmlContent'>
     </div>
     <Editor :init='init' v-model='editorContent.htmlContent' @input='returnHtml'></Editor>
@@ -21,6 +21,7 @@ import 'tinymce/plugins/colorpicker'
 import 'tinymce/plugins/textcolor'
 import 'tinymce/plugins/wordcount'
 import 'tinymce/plugins/contextmenu'
+import 'tinymce/plugins/code'
 
 export default {
   components: {
@@ -29,16 +30,19 @@ export default {
   data () {
     return {
       init: {
-        width: 980,
+        width: 958,
         language_url: '/static/tinymce/zh_CN.js',
         skin_url: '/static/tinymce/skins/lightgray',
         language: 'zh_CN',
-        plugins: 'link lists image table colorpicker textcolor wordcount contextmenu', //  wordcount,
+        plugins: 'link lists image table colorpicker textcolor wordcount contextmenu code', //  wordcount,
         // 工具栏
-        toolbar: 'bold italic underline strikethrough | fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | undo redo | link unlink image | removeformat',
+        toolbar: 'bold italic underline strikethrough | fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | undo redo | link unlink image | removeformat | code',
         fontsize_formats: '10px 11px 12px 14px 16px 18px 20px 24px',
         // 最上层工具栏
         menubar: 'edit, format, insert',
+        content_style: `
+          img {  max-width: 100%; display: block; height: auto; }
+        `,
         //  上传图片
         images_upload_handler: (blobInfo, success, failure) => {
           // let formData = new FormData()
@@ -52,9 +56,7 @@ export default {
           // }
           let formData = new FormData()
           formData.append('image', blobInfo.blob(), blobInfo.filename())
-          console.log(blobInfo.filename())
           this.$http.post('http://127.0.0.8:3000/portrait', formData).then((d) => {
-            console.log(d.data)
             success('http://127.0.0.8:3000/imgs/' + d.data)
           }).catch((err) => {
             console.log(err)
@@ -97,5 +99,4 @@ export default {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd;
 }
-
 </style>

@@ -54,7 +54,7 @@
       </div>
       <div class="details-row">
         <a href="javascript:;" class="detail-name" @click='submitClick'>确定</a>
-        <a href="javascript:;" class="detail-name">返回</a>
+        <a href="javascript:;" class="detail-name" @click='closeWritePage'>返回</a>
       </div>
     </div>
     <Dialog :dialog='dialog'></Dialog>
@@ -118,6 +118,9 @@ export default {
       } else {
         this.isShow = false
       }
+    },
+    closeWritePage () {
+      this.$router.push({path: '/'})
     }
   }
 }

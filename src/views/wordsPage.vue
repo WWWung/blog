@@ -35,7 +35,7 @@
         <li>
           <a href="javascript:;">首页</a>
         </li>
-        <li v-for='item in page.pagelist' :key='item' @click='turnPage(item)'>
+        <li v-for='item in page.pagelist' :key='item' @click='turnPage(item)' :class="getPageActive(item) ? 'page-active' : ''">
           <a href="javascript:;">{{item}}</a>
         </li>
         <li>
@@ -68,7 +68,6 @@
           注:请确保已登录，未登录直接评论则视为游客模式留言！
         </span>
         <a href="javascript:;" @click='leaveWord'>发表留言</a>
-        <a href="javascript:;">游客留言</a>
       </div>
     </div>
     <Dialog :dialog='dialog'></Dialog>
@@ -127,15 +126,11 @@ export default {
         return false
       }
       const url = 'http://127.0.0.8:3000/leaveword'
-      let content = '<p class="reply-real-content">' + this.handleContent(this.content) + '</p>'
-      if (this.replyinfo.name) {
-        const name = '<p class="reply-title">回复 <span class="reply-name">' + this.replyinfo.name + '</span> :</p>'
-        content = name + content
-      }
+      let content = this.joinContent(this.content)
       const words = {
         content,
         time: Date.now(),
-        userId: this.$store.state.user.id,
+        userId: this.$store.isLogin ? this.$store.state.user.id : 0,
         reply: this.replyinfo.id
       }
       this.$http.post(url, JSON.stringify(words)).then(d => {
@@ -149,6 +144,14 @@ export default {
     },
     handleContent (content) {
       return content.replace(/</ig, '&lt').replace(/>/ig, '&gt').replace(/\n/ig, '<br/>')
+    },
+    joinContent (content) {
+      let rsl = '<p class="reply-real-content">' + this.handleContent(content) + '</p>'
+      if (this.replyinfo.name) {
+        const name = '<p class="reply-title">回复 <span class="reply-name">' + this.replyinfo.name + '</span> :</p>'
+        rsl = name + rsl
+      }
+      return rsl
     },
     handleTime (time) {
       const date = new Date(time)
@@ -167,6 +170,10 @@ export default {
       }, time)
     },
     replyWord ({name, userId}) {
+      if (!this.$store.state.isLogin) {
+        this.letDialogClear(this, 1000, '只有登录状态才能回复他人留言')
+        return false
+      }
       this.focusStatus = true
       this.replyinfo.id = userId
       this.replyinfo.name = name
@@ -184,9 +191,6 @@ export default {
       this.getWordList()
     },
     getPageArr () {
-      if (this.data.total <= this.data.pageCount) {
-        return []
-      }
       const page = Math.ceil(this.data.total / this.data.pageCount)
       let pageArr = []
       if (page <= 5) {
@@ -194,11 +198,20 @@ export default {
           pageArr.push(i)
         }
       } else {
-        for (let i = this.page.currentPage; i <= Math.min(page, Number.parseInt(this.page.currentPage) + 5); i++) {
-          pageArr.push(i)
+        if (this.page.currentPage > 3) {
+          const max = Math.min(this.page.currentPage + 2, page)
+          const min = max - 4
+          for (let i = min; i <= max; i++) {
+            pageArr.push(i)
+          }
+        } else {
+          pageArr = [1, 2, 3, 4, 5]
         }
       }
       return pageArr
+    },
+    getPageActive (page) {
+      return Number.parseInt(page) === Number.parseInt(this.page.currentPage)
     }
   },
   created () {
@@ -281,6 +294,9 @@ export default {
   font-size: 12px;
   line-height: 20px;
 }
+.words-page-num-list .page-active a {
+  color: #f0882b;
+}
 .leave-msg-input {
   width: 600px;
   height: 200px;
@@ -312,7 +328,7 @@ export default {
 .leave-msg-btn span {
   font-size: 12px;
   color: #d2d2d2;
-  line-height: 22px;
+  line-height: 36px;
 }
 .reply-word {
   padding-left: 10px;
