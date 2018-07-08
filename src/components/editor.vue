@@ -22,6 +22,8 @@ import 'tinymce/plugins/textcolor'
 import 'tinymce/plugins/wordcount'
 import 'tinymce/plugins/contextmenu'
 import 'tinymce/plugins/code'
+import 'tinymce/plugins/codesample'
+// import 'tinymce/plugins/codesample/Prism/prism.js'
 
 export default {
   components: {
@@ -34,9 +36,9 @@ export default {
         language_url: '/static/tinymce/zh_CN.js',
         skin_url: '/static/tinymce/skins/lightgray',
         language: 'zh_CN',
-        plugins: 'link lists image table colorpicker textcolor wordcount contextmenu code', //  wordcount,
+        plugins: 'link lists image table colorpicker textcolor wordcount contextmenu codesample', //  wordcount,
         // 工具栏
-        toolbar: 'bold italic underline strikethrough | fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | undo redo | link unlink image | removeformat | code',
+        toolbar: 'bold italic underline strikethrough | fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | undo redo | link unlink image | removeformat | codesample',
         fontsize_formats: '10px 11px 12px 14px 16px 18px 20px 24px',
         // 最上层工具栏
         menubar: 'edit, format, insert',

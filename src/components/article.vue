@@ -52,6 +52,7 @@
 
 <script>
 import Dialog from './dialog'
+
 const url = 'http://127.0.0.8:3000/article?id='
 const commentUrl = 'http://127.0.0.8:3000/subComent'
 export default {
@@ -109,6 +110,9 @@ export default {
         this.blog.prev.title = d.data.prev && d.data.prev.title
         this.blog.next.id = d.data.next && d.data.next.id
         this.blog.next.title = d.data.next && d.data.next.title
+        this.$nextTick(() => {
+          this.Prism.prism()
+        })
       }).catch((err) => {
         console.log(err)
       })

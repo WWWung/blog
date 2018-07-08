@@ -55,7 +55,6 @@ export default {
     console.log('进入app')
   },
   destroyed () {
-    alert('退出app')
     this.$socket.emit('loginout', {
       id: this.$socket.id
     })

@@ -33,13 +33,13 @@
     <div class="words-page-num">
       <ol class="words-page-num-list">
         <li>
-          <a href="javascript:;">首页</a>
+          <a href="javascript:;" v-show='moreThenFive' @click='toFirstPage'>首页</a>
         </li>
         <li v-for='item in page.pagelist' :key='item' @click='turnPage(item)' :class="getPageActive(item) ? 'page-active' : ''">
           <a href="javascript:;">{{item}}</a>
         </li>
         <li>
-          <a href="javascript:;">尾页</a>
+          <a href="javascript:;" v-show='moreThenFive' @click='toFinalPage'>尾页</a>
         </li>
       </ol>
     </div>
@@ -70,6 +70,7 @@
         <a href="javascript:;" @click='leaveWord'>发表留言</a>
       </div>
     </div>
+    <Reply></Reply>
     <Dialog :dialog='dialog'></Dialog>
   </div>
 </template>
@@ -77,16 +78,18 @@
 <script>
 import Head from '../components/head.vue'
 import Dialog from '../components/dialog'
+import Reply from '../components/reply'
 export default {
   components: {
     'Head-view': Head,
-    Dialog
+    Dialog,
+    Reply
   },
   data () {
     return {
       data: {
         wordlist: [],
-        pageCount: 1,
+        pageCount: 20,
         total: 0
       },
       replyinfo: {
@@ -107,7 +110,19 @@ export default {
       }
     }
   },
+  computed: {
+    moreThenFive () {
+      return this.total / this.pageCount > 5
+    }
+  },
   methods: {
+    toFirstPage () {
+      this.$router.push({path: '/words?page=1'})
+    },
+    toFinalPage () {
+      const p = Math.ceil(this.total / this.pageCount)
+      this.$router.push({path: '/words?page=' + p})
+    },
     getWordList () {
       const url = 'http://127.0.0.8:3000/getwords?page=' + this.page.currentPage + '&pageCount=' + this.data.pageCount
       this.$http.get(url).then(d => {
