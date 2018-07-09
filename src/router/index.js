@@ -9,12 +9,12 @@ import SelfPage from '@/views/selfPage'
 import MsgPage from '@/views/msgPage'
 import AdminPage from '@/views/adminPage'
 import WordsPage from '@/views/WordsPage'
+import LoadingPage from '@/views/loadingPage'
 
 Vue.use(Router)
 const router = new Router({
   mode: 'history',
   scrollBehavior (to, from, savedPosition) {
-    console.log('to', to)
     if (to.hash) {
       return {
         selector: to.hash
@@ -75,6 +75,11 @@ const router = new Router({
       path: '/words',
       name: 'WordsPage',
       component: WordsPage
+    },
+    {
+      path: '/loading',
+      name: 'LoadingPage',
+      component: LoadingPage
     }
   ]
 })

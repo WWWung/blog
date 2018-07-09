@@ -19,13 +19,13 @@
               </a>
             </div>
           </div>
-          <div class="word-content" v-html='item.content'></div>
+          <div class="word-content" v-html='joinContent(item)'></div>
           <div class="word-tip">
             <time>
               {{handleTime(item.time)}}
             </time>
             <a :href="'#leaveMsgInputBox'" @click='replyWord(item)'>回复</a>
-            <a href="javascript:;" v-show='hasReply(item.reply)'>查看回复</a>
+            <a href="javascript:;" v-show='hasReply(item.reply)' @click='openReplyBox(item)'>查看对话</a>
           </div>
         </li>
       </ul>
@@ -70,7 +70,6 @@
         <a href="javascript:;" @click='leaveWord'>发表留言</a>
       </div>
     </div>
-    <Reply></Reply>
     <Dialog :dialog='dialog'></Dialog>
   </div>
 </template>
@@ -78,12 +77,10 @@
 <script>
 import Head from '../components/head.vue'
 import Dialog from '../components/dialog'
-import Reply from '../components/reply'
 export default {
   components: {
     'Head-view': Head,
-    Dialog,
-    Reply
+    Dialog
   },
   data () {
     return {
@@ -107,7 +104,13 @@ export default {
       page: {
         pagelist: [],
         currentPage: 1
-      }
+      },
+      replyInfo: {
+        id: 0,
+        userId: 0,
+        reply: 0
+      },
+      showReplyBox: false
     }
   },
   computed: {
@@ -116,6 +119,12 @@ export default {
     }
   },
   methods: {
+    openReplyBox ({id, userId, reply}) {
+      this.replyInfo.id = id
+      this.replyInfo.userId = userId
+      this.replyInfo.reply = reply
+      this.showReplyBox = true
+    },
     toFirstPage () {
       this.$router.push({path: '/words?page=1'})
     },
@@ -132,20 +141,15 @@ export default {
       })
     },
     leaveWord () {
-      if (!this.$store.state.isLogin) {
-        this.$router.push({path: '/login'})
-        return false
-      }
       if (!this.content) {
         this.letDialogClear(this, 1000, '请输入内容')
         return false
       }
       const url = 'http://127.0.0.8:3000/leaveword'
-      let content = this.joinContent(this.content)
       const words = {
-        content,
+        content: this.content,
         time: Date.now(),
-        userId: this.$store.isLogin ? this.$store.state.user.id : 0,
+        userId: this.$store.state.isLogin ? this.$store.state.user.id : 0,
         reply: this.replyinfo.id
       }
       this.$http.post(url, JSON.stringify(words)).then(d => {
@@ -158,13 +162,14 @@ export default {
       })
     },
     handleContent (content) {
-      return content.replace(/</ig, '&lt').replace(/>/ig, '&gt').replace(/\n/ig, '<br/>')
+      return content.replace(/</ig, '&lt').replace(/>/ig, '&gt').replace(/\n/ig, '</p><p class="reply-real-content">')
     },
-    joinContent (content) {
+    joinContent ({content, targetName, replyContent}) {
       let rsl = '<p class="reply-real-content">' + this.handleContent(content) + '</p>'
-      if (this.replyinfo.name) {
-        const name = '<p class="reply-title">回复 <span class="reply-name">' + this.replyinfo.name + '</span> :</p>'
-        rsl = name + rsl
+      if (replyContent !== null) {
+        const name = '<p class="reply-title">回复 <span class="reply-name">' + targetName + '</span> :</p>'
+        const reply = '<p class="quote-reply">' + replyContent + '</p>'
+        rsl = name + reply + rsl
       }
       return rsl
     },
@@ -184,13 +189,13 @@ export default {
         typeof fun === 'function' && fun()
       }, time)
     },
-    replyWord ({name, userId}) {
+    replyWord ({id, name}) {
       if (!this.$store.state.isLogin) {
         this.letDialogClear(this, 1000, '只有登录状态才能回复他人留言')
         return false
       }
       this.focusStatus = true
-      this.replyinfo.id = userId
+      this.replyinfo.id = id
       this.replyinfo.name = name
     },
     cancleReply () {
@@ -364,5 +369,8 @@ export default {
 }
 .reply-real-content {
   text-indent: 10px;
+}
+.quote-reply {
+  background-color: #bbb;
 }
 </style>

@@ -6,25 +6,36 @@
       </header>
       <div class="reply-main">
         <ul class="reply-list">
-          <li>
+          <li v-for="item in data.replylist" :key='item.id'>
             <div class="reply-detail-author clearfix">
               <div class="reply-avatar">
-                <img src="../assets/imgs/portrait.png" alt="">
+                <img :src="item.imageUrl" alt="">
               </div>
               <div class="reply-detail-name">
-                伞兵一号
+                {{item.authorName}}
               </div>
             </div>
-            <div class="reply-content">
-              这么说吧 常凯申以后的历史地位 上限宋高宗 下限石敬瑭 也就这样了
-            </div>
+            <div class="reply-content" v-html='handleContent(item.content)'></div>
             <div class="reply-detail-time">
               <time>
-                2018-07-08 17:29
+                {{handleTime(item.time)}}
               </time>
             </div>
           </li>
         </ul>
+      </div>
+      <div class="words-page-num">
+        <ol class="words-page-num-list">
+          <li>
+            <a href="javascript:;" v-show='moreThenFive' @click='toFirstPage'>首页</a>
+          </li>
+          <li v-for='item in page.pagelist' :key='item' @click='turnPage(item)' :class="getPageActive(item) ? 'page-active' : ''">
+            <a href="javascript:;">{{item}}</a>
+          </li>
+          <li>
+            <a href="javascript:;" v-show='moreThenFive' @click='toFinalPage'>尾页</a>
+          </li>
+        </ol>
       </div>
     </div>
   </div>
@@ -32,9 +43,99 @@
 
 <script>
 export default {
+  props: {
+    replyAuthorId: {
+      type: Number,
+      default: 0
+    },
+    userId: {
+      type: Number,
+      default: 0
+    },
+    id: {
+      type: Number,
+      default: 0
+    }
+  },
   data () {
     return {
-      show: false
+      page: {
+        pagelist: [],
+        currentPage: 1
+      },
+      data: {
+        replylist: [],
+        pageCount: 20,
+        total: 0
+      }
+    }
+  },
+  computed: {
+    moreThenFive () {
+      return this.total / this.pageCount > 5
+    }
+  },
+  created () {
+    this.getReplyList()
+  },
+  watch: {
+    'this.page.currentPage' () {
+      this.getReplyList()
+    }
+  },
+  methods: {
+    toFirstPage () {
+      this.page.currentPage = 1
+    },
+    toFinalPage () {
+      this.page.currentPage = Math.ceil(this.data.total / this.data.pageCount)
+    },
+    turnPage (item) {
+      this.page.currentPage = item
+    },
+    getReplyList () {
+      const url = 'http://127.0.0.8:3000/readreply?authorId=' + this.replyAuthorId + '&userId=' + this.userId + '&id=' + this.id + '&page=' + this.page.currentPage + '&pageCount=' + this.data.pageCount
+      this.$http.get(url).then(d => {
+        console.log(d)
+        this.data.replylist = d.data.data
+        this.data.total = d.data.total
+        this.page.pagelist = this.getPageArr()
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    getPageArr () {
+      const page = Math.ceil(this.data.total / this.data.pageCount)
+      let pageArr = []
+      if (page <= 5) {
+        for (let i = 1; i <= page; i++) {
+          pageArr.push(i)
+        }
+      } else {
+        if (this.page.currentPage > 3) {
+          const max = Math.min(this.page.currentPage + 2, page)
+          const min = max - 4
+          for (let i = min; i <= max; i++) {
+            pageArr.push(i)
+          }
+        } else {
+          pageArr = [1, 2, 3, 4, 5]
+        }
+      }
+      return pageArr
+    },
+    getPageActive (page) {
+      return Number.parseInt(page) === Number.parseInt(this.page.currentPage)
+    },
+    handleTime (time) {
+      const date = new Date(time)
+      const y = date.getFullYear()
+      const m = date.getMonth()
+      const d = date.getDate()
+      return y + '年' + (m + 1) + '月' + d + '日' + ' ' + date.getHours() + ':' + date.getMinutes()
+    },
+    handleContent (content) {
+      return content.replace(/</ig, '&lt').replace(/>/ig, '&gt').replace(/\n/ig, '<br/>')
     }
   }
 }

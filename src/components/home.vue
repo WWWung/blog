@@ -1,5 +1,5 @@
 <template lang="html">
-  <div id="date-menu-wrap" ref='list'>
+  <div id="date-menu-wrap" ref='list' @scroll='scrollLoad'>
     <ul id='date-menu' class="clearfix">
       <li v-for='item in articalMenu' :key='item.index' @click='deliveryMsg(item)'>
         <h2 class="item-title">
