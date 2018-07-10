@@ -62,7 +62,7 @@ export default {
         if (d.data.name) {
           this.setUserInfo(d.data)
           this.setLoginState(true)
-          this.$router.push({path: '/'})
+          this.$router.go(-1)
         } else {
           this.dialog.msg = d.data
           this.dialog.show = true

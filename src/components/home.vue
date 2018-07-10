@@ -17,6 +17,15 @@
           <time>
             {{timeFormater(item.time)}}
           </time>
+          <span>
+            <img src="../assets/imgs/read.svg" alt="" class="svg-icon-home">
+            {{item.clickNumber}}
+          </span>
+          <span>
+            <img src="../assets/imgs/comment.svg" alt="" class="svg-icon-home">
+            <!-- {{item.commen}} -->
+            5
+          </span>
         </div>
       </li>
     </ul>
@@ -92,6 +101,12 @@ export default {
     padding: 0;
     margin: 0;
   }
+  .svg-icon-home {
+    width: 14px;
+    height: 14px;
+    vertical-align: text-top;
+    margin-top: 1px;
+  }
   #date-menu {
     width: 1000px;
     margin: 0 auto;
@@ -143,7 +158,10 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .item-date time{
+  .item-date span {
+    margin-left: 20px;
+  }
+  .item-date {
     font-size: 12px;
     line-height: 24px;
     display: inline-block;

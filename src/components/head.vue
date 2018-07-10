@@ -16,20 +16,28 @@
               <ul id='self-list'>
                 <li>
                   <router-link :to="toMsgPage" name='WritePage' tag='a' class="msg-tip">
+                    <img src="../assets/imgs/message.svg" alt="" class="svg-icon">
                     私信列表
                     <span v-if='showUnreadMsgTip'>{{handleUnreadMsgCount}}</span>
                   </router-link>
                 </li>
                 <li>
-                  <a href="javascript:;" id="about-self" @click='clickToSelf'>个人中心</a>
+                  <router-link to="toSelfPage" name='SelfPage' tag='a'>
+                    <img src="../assets/imgs/self.svg" alt="" class="svg-icon">
+                    个人中心
+                  </router-link>
                 </li>
                 <li v-if='isBloger'>
                   <router-link to="/write/new" name='WritePage' tag='a'>
+                    <img src="../assets/imgs/write.svg" alt="" class="svg-icon">
                     写博客
                   </router-link>
                 </li>
                 <li>
-                  <a href="javascript:;" id="login-out" @click='loginOut'>退出登录</a>
+                  <a href="javascript:;" id="login-out" @click='loginOut'>
+                    <img src="../assets/imgs/quit.svg" alt="" class="svg-icon">
+                    退出登录
+                  </a>
                 </li>
               </ul>
             </div>
@@ -97,6 +105,9 @@ export default {
     toMsgPage () {
       return '/message/' + this.user.name
     },
+    toSelfPage () {
+      return '/self/' + this.user.name
+    },
     //  处理未读消息，如果没有未读消息，显示为空，如果未读消息大于99条，还是显示99，否则正常显示
     handleUnreadMsgCount () {
       return this.unreadMsgCount === 0 ? '' : this.unreadMsgCount >= 99 ? 99 : this.unreadMsgCount
@@ -121,6 +132,11 @@ export default {
 </script>
 
 <style lang="css">
+  .svg-icon {
+    width: 14px;
+    height: 14px;
+    margin-top: 12px;
+  }
   .selfListTransition-enter-active, .selfListTransition-leave-active {
     transition: opacity .5s ease;
   }
@@ -170,6 +186,7 @@ export default {
   }
 
   #self-list li a {
+    display: block;
     font-size: 13px;
     line-height: 40px;
   }
@@ -211,8 +228,8 @@ export default {
     position: absolute;
     width: 16px;
     height: 16px;
-    left: -18px;
-    top: 1px;
+    right: 6px;
+    top: 12px;
     border-radius: 50%;
     background: red;
     color: #fff;

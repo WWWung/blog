@@ -11,7 +11,7 @@
           私信TA
         </a>
         <span class="register-tip" v-else>
-        您填写的个人信息我们不会主动公开
+        不会公开您的私人信息
         </span>
       </div>
       <div class="return-page">

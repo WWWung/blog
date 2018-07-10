@@ -104,7 +104,7 @@ export default {
       this.$http.get(url + id).then((d) => {
         this.blog = d.data
         this.$nextTick(() => {
-          this.Prism.prism()
+          // this.Prism.prism()
         })
       }).catch((err) => {
         console.log(err)

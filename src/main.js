@@ -12,8 +12,8 @@ import './assets/css/clear.css'
 import VueSocketio from 'vue-socket.io'
 import socketio from 'socket.io-client'
 
-import Prism from 'tinymce/plugins/codesample/Prism/prism.js'
-Vue.prototype.Prism = Prism
+// import Prism from 'tinymce/plugins/codesample/Prism/prism.js'
+// Vue.prototype.Prism = Prism
 
 const io = socketio('http://127.0.0.8:3000/')
 Vue.use(VueSocketio, io)
