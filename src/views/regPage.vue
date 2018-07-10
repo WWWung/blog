@@ -46,34 +46,24 @@ export default {
     ...mapMutations(['setUserInfo', 'setLoginState']),
     regUser () {
       if (!this.name) {
-        this.dialog.msg = '请输入名称'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
+        this.letDialogClear(this, '请输入名称', 1000)
         return
       }
-      if (this.name < 4) {
-        this.dialog.msg = '名称不能少于四位'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
+      if (this.getStrLength(this.name) < 4) {
+        this.letDialogClear(this, '名称长度不能少于四位', 1000)
         return
       }
       if (!this.pwd) {
-        this.dialog.msg = '请输入密码'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
+        this.letDialogClear(this, '请输入密码', 1000)
         return
       }
       const pwdReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/
       if (!pwdReg.test(this.pwd)) {
-        this.dialog.msg = '密码必须是8-20位数字和字母的组合'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
+        this.letDialogClear(this, '密码必须是8-20位数字和字母的组合', 1000)
         return false
       }
       if (this.pwd !== this.rePwd) {
-        this.dialog.msg = '重复密码需与密码一致'
-        this.dialog.show = true
-        this.letDialogClear(this, 1000)
+        this.letDialogClear(this, '重复密码需与密码一致', 1000)
         return
       }
       const user = {
@@ -83,9 +73,15 @@ export default {
         imageUrl: '../../../static/imgs/portrait.png'
       }
       this.$http.post(url, JSON.stringify(user)).then((d) => {
-        this.setUserInfo(user)
-        this.setLoginState(true)
-        this.$router.push({path: '/'})
+        if (d.data === '账号已存在') {
+          this.letDialogClear(this, '账号已存在', 1000)
+        }
+        if (d.data.msg === '账号注册成功') {
+          user.id = d.data.id
+          this.setUserInfo(user)
+          this.setLoginState(true)
+          this.$router.push({path: '/'})
+        }
       }).catch((err) => {
         console.log(err)
       })
@@ -98,7 +94,9 @@ export default {
         this.$refs.loginBtn.click()
       }
     },
-    letDialogClear (_this, time, fun) {
+    letDialogClear (_this, time, msg, fun) {
+      this.dialog.msg = msg
+      this.dialog.show = true
       let timer = setTimeout(() => {
         _this.dialog.show = false
         clearTimeout(timer)
@@ -106,6 +104,17 @@ export default {
           fun()
         }
       }, time)
+    },
+    getStrLength (str) {
+      let len = 0
+      for (let i = 0; i < str.length; i++) {
+        if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {
+          len += 2
+        } else {
+          len++
+        }
+      }
+      return len
     }
   }
 }

@@ -25,7 +25,7 @@
               {{handleTime(item.time)}}
             </time>
             <a :href="'#leaveMsgInputBox'" @click='replyWord(item)'>回复</a>
-            <a href="javascript:;" v-show='hasReply(item.reply)' @click='openReplyBox(item)'>查看对话</a>
+            <!-- <a href="javascript:;" v-show='hasReply(item.reply)' @click='openReplyBox(item)'>查看对话</a> -->
           </div>
         </li>
       </ul>
@@ -168,7 +168,8 @@ export default {
       let rsl = '<p class="reply-real-content">' + this.handleContent(content) + '</p>'
       if (replyContent !== null) {
         const name = '<p class="reply-title">回复 <span class="reply-name">' + targetName + '</span> :</p>'
-        const reply = '<p class="quote-reply">' + replyContent + '</p>'
+        replyContent = replyContent.replace(/\n/ig, '</p><p>')
+        const reply = '<div class="quote-reply"><p>' + replyContent + '</p></div>'
         rsl = name + reply + rsl
       }
       return rsl
@@ -372,5 +373,7 @@ export default {
 }
 .quote-reply {
   background-color: #bbb;
+  margin: 5px 10px;
+  padding: 0 10px;
 }
 </style>

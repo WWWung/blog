@@ -23,7 +23,7 @@
                 <li>
                   <a href="javascript:;" id="about-self" @click='clickToSelf'>个人中心</a>
                 </li>
-                <li>
+                <li v-if='isBloger'>
                   <router-link to="/write/new" name='WritePage' tag='a'>
                     写博客
                   </router-link>
@@ -104,6 +104,9 @@ export default {
     //  如果没有未读消息，则不显示未读消息提示
     showUnreadMsgTip () {
       return this.unreadMsgCount !== 0
+    },
+    isBloger () {
+      return this.$store.state.user.power === '0'
     }
   },
   created () {

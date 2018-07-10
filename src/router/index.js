@@ -28,6 +28,11 @@ const router = new Router({
       component: MainPage
     },
     {
+      path: '/blog/:type',
+      name: 'ArticlePage',
+      component: MainPage
+    },
+    {
       path: '/content/:id',
       name: 'BlogPage',
       component: BlogPage

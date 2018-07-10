@@ -17,7 +17,6 @@
           <time>
             {{timeFormater(item.time)}}
           </time>
-          <i class='support-icon'></i>
         </div>
       </li>
     </ul>
@@ -30,7 +29,7 @@ export default {
   data () {
     return {
       articalMenu: [],
-      url: 'http://127.0.0.8:3000/support?start=',
+      url: 'http://127.0.0.8:3000/blogs?mold=',
       dataSwitch: true,
       start: 0,
       end: 5,
@@ -58,13 +57,13 @@ export default {
     deliveryMsg (blog) {
       this.$router.push({path: '/content/' + blog.id})
     },
-    // 此处因为要传参数所以不适合用计算属性
     timeFormater (t) {
       const time = new Date(t)
       return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()
     },
     getData () {
-      const url = this.url + this.start + '&end=' + this.count
+      const mold = this.$route.params.type === 'essay' ? 2 : this.$route.params.type === 'thought' ? 1 : 0
+      const url = this.url + mold + '&start=' + this.start + '&end=' + this.count
       this.$http.get(url).then((d) => {
         this.articalMenu = this.articalMenu.concat(d.data)
         this.start += d.data.length
@@ -75,6 +74,13 @@ export default {
         console.log(e)
         this.dataSwitch = true
       })
+    }
+  },
+  watch: {
+    '$route' () {
+      this.articalMenu = []
+      this.start = 0
+      this.getData()
     }
   }
 }

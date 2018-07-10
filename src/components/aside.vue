@@ -5,7 +5,7 @@
         <div id="blogger-info">
           <div class="">
             <router-link name='SelfPage' tag='a' to="/self/wwwung" class="blogger-portrait">
-              <img :src="'../../../static/imgs/w.png'" alt="">
+              <img src="../assets/imgs/w.png" alt="">
             </router-link>
           </div>
           <div class="blogger-name">
@@ -18,17 +18,16 @@
         <ul id='page-aside-list'>
           <li>
             <router-link name='Homepage' tag='a' to="/">
-              首页
+              技术
             </router-link>
           </li>
           <li>
-            <!-- <router-link tag='a' class="blogger-portrait">
-              日志
-            </router-link> -->
-            <a href="javascript:;">日志</a>
+            <router-link name='ArticlePage' tag='a' to="/blog/thought">
+              阅读
+            </router-link>
           </li>
           <li>
-            <router-link name='WritePage' tag='a' to="/write/new">
+            <router-link name='ArticlePage' tag='a' to="/blog/essay">
               随笔
             </router-link>
           </li>
@@ -74,7 +73,7 @@ export default {
   },
   computed: {
     getRainHtml () {
-      return this.showRain ? '雨停' : '下雨'
+      return this.showRain ? '天晴' : '下雨'
     }
   }
 }

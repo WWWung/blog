@@ -73,14 +73,11 @@ export default {
         support: null,
         star: null,
         comments: [],
-        prev: {
-          id: null,
-          title: null
-        },
-        next: {
-          id: null,
-          title: null
-        }
+        prevId: null,
+        prevTitle: null,
+        nextId: null,
+        nextTitle: null,
+        commentNumber: 0
       },
       comment: {
         userId: null,
@@ -105,11 +102,7 @@ export default {
     renderCommentList () {
       const id = this.$route.params.id
       this.$http.get(url + id).then((d) => {
-        Object.assign(this.blog, d.data.current)
-        this.blog.prev.id = d.data.prev && d.data.prev.id
-        this.blog.prev.title = d.data.prev && d.data.prev.title
-        this.blog.next.id = d.data.next && d.data.next.id
-        this.blog.next.title = d.data.next && d.data.next.title
+        this.blog = d.data
         this.$nextTick(() => {
           this.Prism.prism()
         })
@@ -123,7 +116,7 @@ export default {
     },
     toSelfPage (index) {
       const name = this.blog.comments[index].username
-      if (name.length >= 4) {
+      if (name !== '游客') {
         this.$router.push({path: '/self/' + name})
       }
     },
@@ -139,8 +132,6 @@ export default {
         return false
       }
       this.comment.userId = this.$store.state.user.id
-      this.comment.username = this.$store.state.user.name
-      this.comment.imgUrl = this.$store.state.user.imageUrl
       this.comment.time = new Date().getTime()
       this.comment.blogId = this.blog.id
       const data = JSON.stringify(this.comment)
@@ -158,11 +149,9 @@ export default {
         this.letDialogClear(this, 1000)
         return false
       }
-      this.comment.userId = 0
-      this.comment.username = '游客'
+      this.comment.userId = 11111
       this.comment.time = new Date().getTime()
       this.comment.blogId = this.blog.id
-      this.comment.imgUrl = '../../../static/imgs/portrait.png'
       const data = JSON.stringify(this.comment)
       this.$http.post(commentUrl, data).then((d) => {
         this.renderCommentList()
@@ -181,22 +170,22 @@ export default {
       }, time)
     },
     toNextBlog () {
-      if (this.blog.next.id) {
-        this.$router.push({path: '/content/' + this.blog.next.id})
+      if (this.blog.nextId) {
+        this.$router.push({path: '/content/' + this.blog.nextId})
       }
     },
     toPrevBlog () {
-      if (this.blog.prev.id) {
-        this.$router.push({path: '/content/' + this.blog.prev.id})
+      if (this.blog.prevId) {
+        this.$router.push({path: '/content/' + this.blog.prevId})
       }
     }
   },
   computed: {
     getNextBlog () {
-      return this.blog.next.title ? '下一篇:' + this.blog.next.title : '暂时没有下一篇'
+      return this.blog.nextTitle ? '下一篇:' + this.blog.nextTitle : '暂时没有下一篇'
     },
     getPrevBlog () {
-      return this.blog.prev.title ? '上一篇:' + this.blog.prev.title : '这是第一篇博客'
+      return this.blog.prevTitle ? '上一篇:' + this.blog.prevTitle : '这是第一篇博客'
     }
   },
   watch: {
@@ -216,6 +205,8 @@ export default {
 }
 .no-comment {
   margin-top: 40px;
+  margin-left: 20px;
+  font-size: 14px;
 }
 .blog-btns {
   border-bottom: 1px solid #ddd;
