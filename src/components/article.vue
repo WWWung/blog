@@ -12,14 +12,14 @@
       <a href="javascript:;" @click='toNextBlog'>{{getNextBlog}}</a>
     </div>
     <div id="comment-wrap">
-      <div class="no-comment" v-if='!blog.comments.length'>
+      <div class="no-comment" v-if='!commentslist.data.length'>
         这篇文章暂时还没有评论，来写下第一个评论吧！
       </div>
       <div id="comment-list">
         <ul id="comments">
-          <li v-for='(item, index) in blog.comments' :key='item.id'>
+          <li v-for='(item, index) in commentslist.data' :key='item.id'>
             <div class="comment-info clearfix">
-              <img :src='item.imgUrl' alt="" class="comment-portrait" @click='toSelfPage(index)'>
+              <img :src='item.imageUrl' alt="" class="comment-portrait" @click='toSelfPage(index)'>
               <a class="comment-auther" href="javascript:;" @click='toSelfPage(index)'>
                 {{item.username}}
               </a>
@@ -32,6 +32,19 @@
             </p>
           </li>
         </ul>
+        <div class="blog-page-num">
+          <ol class="blog-page-num-list">
+            <li>
+              <a href="javascript:;" v-show='moreThenFive' @click='toFirstPage'>首页</a>
+            </li>
+            <li v-for='item in page.pagelist' :key='item' @click='turnPage(item)' :class="getPageActive(item) ? 'page-active' : ''">
+              <a href="javascript:;">{{item}}</a>
+            </li>
+            <li>
+              <a href="javascript:;" v-show='moreThenFive' @click='toFinalPage'>尾页</a>
+            </li>
+          </ol>
+        </div>
       </div>
       <div id="input-wrap" class="clearfix">
         <div class="textarea-wrap">
@@ -72,42 +85,56 @@ export default {
         up: null,
         support: null,
         star: null,
-        comments: [],
         prevId: null,
         prevTitle: null,
         nextId: null,
         nextTitle: null,
         commentNumber: 0
       },
+      pageCount: 10,
       comment: {
         userId: null,
         blogId: null,
         content: '',
-        time: null,
-        username: null,
-        imgUrl: null
+        time: null
       },
       dialog: {
         width: 300,
         height: 100,
         msg: '正在上传...',
         show: false
+      },
+      page: {
+        currentPage: 1,
+        pagelist: []
+      },
+      commentslist: {
+        count: 0,
+        data: []
       }
     }
   },
-  mounted () {
-    this.renderCommentList()
+  created () {
+    this.renderArticle()
+    this.getBlogComments()
   },
   methods: {
-    renderCommentList () {
+    renderArticle () {
       const id = this.$route.params.id
-      this.$http.get(url + id).then((d) => {
+      this.$http.get(url + id).then(d => {
         this.blog = d.data
         this.$nextTick(() => {
-          // this.Prism.prism()
+          this.Prism.highlightAll()
         })
       }).catch((err) => {
         console.log(err)
+      })
+    },
+    getBlogComments () {
+      const url = 'http://127.0.0.8:3000/comments?page=' + this.page.currentPage + '&pageCount=' + this.pageCount + '&blogId=' + this.$route.params.id
+      this.$http.get(url).then(d => {
+        this.commentslist = d.data
+        this.page.pagelist = this.getPageArr()
       })
     },
     getTime (t) {
@@ -136,7 +163,7 @@ export default {
       this.comment.blogId = this.blog.id
       const data = JSON.stringify(this.comment)
       this.$http.post(commentUrl, data).then((d) => {
-        this.renderCommentList()
+        this.getBlogComments()
         this.comment.content = ''
       }).catch((err) => {
         console.log(err)
@@ -154,7 +181,7 @@ export default {
       this.comment.blogId = this.blog.id
       const data = JSON.stringify(this.comment)
       this.$http.post(commentUrl, data).then((d) => {
-        this.renderCommentList()
+        this.getBlogComments()
         this.comment.content = ''
       }).catch((err) => {
         console.log(err)
@@ -178,6 +205,39 @@ export default {
       if (this.blog.prevId) {
         this.$router.push({path: '/content/' + this.blog.prevId})
       }
+    },
+    turnPage (page) {
+      this.page.currentPage = page
+    },
+    getPageArr () {
+      const page = Math.ceil(this.commentslist.count / this.pageCount)
+      let pageArr = []
+      if (page <= 5) {
+        for (let i = 1; i <= page; i++) {
+          pageArr.push(i)
+        }
+      } else {
+        if (this.page.currentPage > 3) {
+          const max = Math.min(this.page.currentPage + 2, page)
+          const min = max - 4
+          for (let i = min; i <= max; i++) {
+            pageArr.push(i)
+          }
+        } else {
+          pageArr = [1, 2, 3, 4, 5]
+        }
+      }
+      return pageArr
+    },
+    getPageActive (page) {
+      return Number.parseInt(page) === Number.parseInt(this.page.currentPage)
+    },
+    toFirstPage () {
+      this.page.currentPage = 1
+    },
+    toFinalPage () {
+      const p = Math.ceil(this.total / this.pageCount)
+      this.page.currentPage = p
     }
   },
   computed: {
@@ -186,11 +246,17 @@ export default {
     },
     getPrevBlog () {
       return this.blog.prevTitle ? '上一篇:' + this.blog.prevTitle : '这是第一篇博客'
+    },
+    moreThenFive () {
+      return this.commentslist.countr / this.pageCount
     }
   },
   watch: {
     '$route' () {
-      this.renderCommentList()
+      this.renderArticle()
+    },
+    'page.currentPage' () {
+      this.getBlogComments()
     }
   }
 }
@@ -315,5 +381,20 @@ export default {
   padding: 20px;
   font-size: 12px;
   color: #d2d2d2;
+}
+.blog-page-num-list {
+  display: flex;
+  justify-content: center;
+}
+.blog-page-num-list li {
+  margin: 0 15px;
+}
+.blog-page-num-list li a {
+  font-size: 14px;
+  line-height: 26px;
+  font-weight: 600;
+}
+.blog-page-num-list .page-active a {
+  color: #f0882b;
 }
 </style>

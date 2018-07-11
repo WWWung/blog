@@ -186,7 +186,6 @@ export default {
       const count = 5
       const chatUrl = url + this.$store.state.user.id + '&friendId=' + this.friendInfo.id + '&start=' + start + '&count=' + count
       this.$http.get(chatUrl).then(d => {
-        console.log(d)
         this.data.chatList = this.data.chatList.concat(d.data.data)
         this.data.total = d.data.total[0].total
         this.data.count = d.data.count
@@ -211,9 +210,9 @@ export default {
       const y = date.getFullYear()
       const m = date.getMonth()
       const d = date.getDate()
-      //  如果消息时间和现在时间的年月日一样 则消息格式为 20:00
+      // 如果消息时间和现在时间的年月日一样 则消息格式为 20:00
       // 如果年一样，月或者日不一样，则消息格式为 6月20日 20:00
-      //  如果年不一样 则消息格式为 2018年6月20日 20:00
+      // 如果年不一样 则消息格式为 2018年6月20日 20:00
       if (now.getFullYear() === y && now.getMonth() === m && now.getDate() === d) {
         return date.getHours() + ':' + date.getMinutes()
       } else if (now.getFullYear() === y && (now.getMonth() !== m || now.getDate() !== d)) {

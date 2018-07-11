@@ -23,8 +23,7 @@
           </span>
           <span>
             <img src="../assets/imgs/comment.svg" alt="" class="svg-icon-home">
-            <!-- {{item.commen}} -->
-            5
+            {{getCommentNumber(item.commentNumber)}}
           </span>
         </div>
       </li>
@@ -83,6 +82,9 @@ export default {
         console.log(e)
         this.dataSwitch = true
       })
+    },
+    getCommentNumber (val) {
+      return val === null ? 0 : val
     }
   },
   watch: {

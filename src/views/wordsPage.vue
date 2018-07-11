@@ -312,8 +312,9 @@ export default {
   margin: 0 15px;
 }
 .words-page-num-list li a {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 20px;
+  font-weight: 600;
 }
 .words-page-num-list .page-active a {
   color: #f0882b;

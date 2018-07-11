@@ -3,7 +3,9 @@
     <header class="register-head">
       <div class="head-portrait-wrap">
         <img :src="user.imageUrl" alt="个人头像" class="head-portrait">
-        <a href="javascript:;" class="upload-portrait" @click="changePortrait" v-if='isOwner'>点击修改头像</a>
+        <a href="javascript:;" class="upload-portrait" @click="changePortrait" v-if='isOwner'>
+          点击修改头像(请确定图片名字不包含中文且大小不超过3M)
+        </a>
         <input type="file" name="portrait" value="" ref="portrait" accept="image/gif,image/jpeg,image/jpg,image/png" @change='changeFile($event)'>
       </div>
       <div class="head-welcome-msg">

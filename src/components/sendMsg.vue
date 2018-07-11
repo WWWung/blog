@@ -4,7 +4,7 @@
       <h3 id="send-wrap-title">发送私信</h3>
       <div id="send-wrap-input-box">
         <div id="msg-record">
-          <a href="javascript:;">对话记录</a>
+          <!-- <a href="javascript:;">对话记录</a> -->
         </div>
         <textarea name="sendMsg" id="send-wrap-input" v-model='content'></textarea>
       </div>
