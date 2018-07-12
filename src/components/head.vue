@@ -28,6 +28,12 @@
                   </router-link>
                 </li>
                 <li v-if='isBloger'>
+                  <router-link to="/follow" name='FollowPage' tag='a'>
+                    <img src="../assets/imgs/write.svg" alt="" class="svg-icon">
+                    收藏列表
+                  </router-link>
+                </li>
+                <li v-if='isBloger'>
                   <router-link to="/write/new" name='WritePage' tag='a'>
                     <img src="../assets/imgs/write.svg" alt="" class="svg-icon">
                     写博客
@@ -163,6 +169,7 @@ export default {
     right: 0;
     position: fixed;
     background-color: rgba(57, 61, 73, 0.75);
+    z-index: 50;
   }
 
   .user-title {

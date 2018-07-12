@@ -10,6 +10,7 @@ import MsgPage from '@/views/msgPage'
 import AdminPage from '@/views/adminPage'
 import WordsPage from '@/views/WordsPage'
 import LoadingPage from '@/views/loadingPage'
+import FollowPage from '@/views/followPage'
 
 Vue.use(Router)
 const router = new Router({
@@ -85,6 +86,11 @@ const router = new Router({
       path: '/loading',
       name: 'LoadingPage',
       component: LoadingPage
+    },
+    {
+      path: '/follow',
+      name: 'FollowPage',
+      component: FollowPage
     }
   ]
 })

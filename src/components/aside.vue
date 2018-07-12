@@ -108,6 +108,7 @@ export default {
   left: 0;
   top: 0;
   height: 100vh;
+  z-index: 100;
 }
 .blogger-portrait {
   display: block;

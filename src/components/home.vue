@@ -152,6 +152,7 @@ export default {
     bottom: 0;
     margin: auto;
     position: absolute;
+    z-index: 10;
   }
   .easy-content {
     font-size: 15px;

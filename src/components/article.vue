@@ -1,12 +1,24 @@
 <template lang="html">
   <div id="artical">
-    <div id="blog-title">
-      {{blog.title}}
+    <div class="blog-box">
+      <div id="blog-title">
+        {{blog.title}}
+      </div>
+      <div id="blog-time" class="clearfix">
+        <time class="blog-info-time">
+          {{getTime(blog.time)}}
+        </time>
+        <span class="blog-info-clickNumber">
+          阅读数:
+          {{blog.clickNumber}}
+        </span>
+        <a href="javascript:;" class="follow-blog" @click='followBlog'>
+          <img src="../assets/imgs/tail-spin.svg" alt="" v-if='following'>
+          {{followedTip}}
+        </a>
+      </div>
+      <div id="blog-content" v-html='blog.content'></div>
     </div>
-    <div id="blog-time">
-      {{getTime(blog.time)}}
-    </div>
-    <div id="blog-content" v-html='blog.content'></div>
     <div class="blog-btns">
       <a href="javascript:;" @click='toPrevBlog'>{{getPrevBlog}}</a>
       <a href="javascript:;" @click='toNextBlog'>{{getNextBlog}}</a>
@@ -89,7 +101,8 @@ export default {
         prevTitle: null,
         nextId: null,
         nextTitle: null,
-        commentNumber: 0
+        commentNumber: 0,
+        followedUser: []
       },
       pageCount: 10,
       comment: {
@@ -111,7 +124,9 @@ export default {
       commentslist: {
         count: 0,
         data: []
-      }
+      },
+      //  是否正在执行收藏博客操作
+      following: false
     }
   },
   created () {
@@ -139,7 +154,7 @@ export default {
     },
     getTime (t) {
       const time = new Date(t)
-      return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.getHours() + ':' + time.getMinutes()
+      return time.getFullYear() + '年' + (time.getMonth() + 1) + '月' + time.getDate() + '日 ' + time.getHours() + ':' + time.getMinutes()
     },
     toSelfPage (index) {
       const name = this.blog.comments[index].username
@@ -238,6 +253,54 @@ export default {
     toFinalPage () {
       const p = Math.ceil(this.total / this.pageCount)
       this.page.currentPage = p
+    },
+    followBlog () {
+      if (!this.$store.state.isLogin) {
+        return false
+      }
+      if (this.following) {
+        return false
+      }
+      this.following = true
+      const userId = this.$store.state.user.id
+      const index = this.isFollowed()
+      if (index < 0) {
+        const url = 'http://127.0.0.8:3000/follow?blogId=' + this.blog.id + '&userId=' + userId
+        this.$http.post(url).then(d => {
+          this.following = false
+          this.blog.followedUser.push({
+            id: d.id,
+            userId: userId,
+            blogId: this.blogId
+          })
+        }).catch(err => {
+          console.log(err)
+          this.following = false
+        })
+      } else {
+        const url = 'http://127.0.0.8:3000/unfollow?blogId=' + this.blog.id + '&userId=' + userId
+        this.$http.post(url).then(d => {
+          this.following = false
+          this.blog.followedUser.splice(index, 1)
+        }).catch(err => {
+          console.log(err)
+          this.following = false
+        })
+      }
+    },
+    isFollowed () {
+      if (!this.$store.state.isLogin) {
+        return -1
+      }
+      let flag = -1
+      let userId = this.$store.state.user.id
+      for (let i = 0; i < this.blog.followedUser.length; i++) {
+        if (userId === this.blog.followedUser[i].userId) {
+          flag = i
+          break
+        }
+      }
+      return flag
     }
   },
   computed: {
@@ -249,6 +312,9 @@ export default {
     },
     moreThenFive () {
       return this.commentslist.countr / this.pageCount
+    },
+    followedTip () {
+      return this.isFollowed() < 0 ? '收藏' : '已收藏'
     }
   },
   watch: {
@@ -265,9 +331,9 @@ export default {
 <style lang="css">
 #blog-title {
   line-height: 56px;
-  font-size: 32px;
-  color: #888a8b;
-  text-indent: 40px;
+  font-size: 28px;
+  color: #000;
+  font-weight: bold;
 }
 .no-comment {
   margin-top: 40px;
@@ -297,11 +363,10 @@ export default {
   padding: 20px;
 }
 #blog-time {
-  line-height: 16px;
+  line-height: 50px;
   font-size: 12px;
-  margin-top: 10px;
-  width: 130px;
-  margin-left: 60px;
+  border-bottom: 1px solid #e3e3e3;
+  color: #858585;
 }
 #comment-wrap {
   /* margin-top: 20px; */
@@ -396,5 +461,29 @@ export default {
 }
 .blog-page-num-list .page-active a {
   color: #f0882b;
+}
+.blog-box {
+  padding: 0 20px;
+}
+.blog-info-time {
+  float: left;
+}
+.blog-info-clickNumber {
+  float: right;
+  margin-right: 15px;
+}
+.follow-blog {
+  float: right;
+  width: 40px;
+  position: relative;
+  margin-right: 15px;
+}
+.follow-blog img {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #fff;
 }
 </style>
