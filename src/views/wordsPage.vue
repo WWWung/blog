@@ -115,7 +115,7 @@ export default {
   },
   computed: {
     moreThenFive () {
-      return this.total / this.pageCount > 5
+      return this.data.total / this.data.pageCount > 5
     }
   },
   methods: {
@@ -129,7 +129,7 @@ export default {
       this.$router.push({path: '/words?page=1'})
     },
     toFinalPage () {
-      const p = Math.ceil(this.total / this.pageCount)
+      const p = Math.ceil(this.data.total / this.data.pageCount)
       this.$router.push({path: '/words?page=' + p})
     },
     getWordList () {
@@ -154,7 +154,7 @@ export default {
       }
       this.$http.post(url, JSON.stringify(words)).then(d => {
         this.cancleReply()
-        this.getWordList()
+        this.$router.push({path: '/words?page=1'})
         this.content = ''
       }).catch(err => {
         console.log(err)
@@ -209,7 +209,6 @@ export default {
     turnPage (page) {
       this.$router.push({path: '/words?page=' + page})
       this.page.currentPage = this.$route.query.page
-      this.getWordList()
     },
     getPageArr () {
       const page = Math.ceil(this.data.total / this.data.pageCount)
@@ -246,6 +245,12 @@ export default {
           el.focus()
         }
       }
+    }
+  },
+  watch: {
+    '$route' () {
+      this.page.currentPage = Number.parseInt(this.$route.query.page)
+      this.getWordList()
     }
   }
 }

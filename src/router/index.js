@@ -7,7 +7,6 @@ import LoginPage from '@/views/loginPage'
 import RegisterPage from '@/views/regPage'
 import SelfPage from '@/views/selfPage'
 import MsgPage from '@/views/msgPage'
-import AdminPage from '@/views/adminPage'
 import WordsPage from '@/views/WordsPage'
 import LoadingPage from '@/views/loadingPage'
 import FollowPage from '@/views/followPage'
@@ -71,11 +70,6 @@ const router = new Router({
       meta: {
         isLogin: true
       }
-    },
-    {
-      path: '/admin',
-      name: 'AdminPage',
-      component: AdminPage
     },
     {
       path: '/words',

@@ -65,7 +65,7 @@ export default {
 <style>
 body {
   background-color: #f0f0f0;
-  font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+  font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
 }
 #page {
   width: 1000px;
